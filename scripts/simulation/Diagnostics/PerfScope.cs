@@ -6,7 +6,7 @@ namespace TiefBerg.Diagnostics;
 // Misst von der Erzeugung bis Dispose. Struct, damit pro Messung nichts auf dem Heap landet.
 public readonly struct PerfScope : IDisposable
 {
-    private readonly PerfStats _stats;
+    private readonly PerfStats? _stats;
     private readonly double _budgetMs;
     private readonly long _start;
 

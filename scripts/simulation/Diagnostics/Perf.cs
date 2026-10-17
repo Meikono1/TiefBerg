@@ -21,9 +21,9 @@ public static class Perf
     // Schlüssel aus Caller-Infos: Compile-Zeit-Konstanten, daher keine String-Erzeugung pro Messung
     private static readonly ConcurrentDictionary<(string File, string Member), PerfStats> StatsById = new();
 
-    private static ILogger _log;
+    private static ILogger? _log;
 
-    public static void Initialize(ILogger log)
+    public static void Initialize(ILogger? log)
     {
         _log = log;
     }
@@ -80,7 +80,7 @@ public static class Perf
             .OrderByDescending(r => r.TotalTicks)
             .ToList();
 
-        ILogger log = _log;
+        ILogger? log = _log;
         if (rows.Count == 0 || log == null || !log.IsEnabled(LogLevel.Information))
         {
             return;

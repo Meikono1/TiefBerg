@@ -52,10 +52,6 @@ Der Simulationskern ist reines C# ohne Godot-Abhängigkeit; Godot ist nur Darste
 - E - Kontinente und grobe Verteilung der Spezies sind fest. Ressourcen liegen teilweise zufällig.
 - E - Zufall nur über seedbare RNG-Instanzen. Gleicher Seed ergibt gleiche Welt.
 
-unterstützt multicore
-
-&#32;-YAML
-
 ## 3. Zeit
 
 Die Weltzeit ist ein `ulong`-Zähler in Sekunden seit Weltstart; Kalender und Anzeigen werden daraus berechnet.
@@ -68,14 +64,6 @@ Die Weltzeit ist ein `ulong`-Zähler in Sekunden seit Weltstart; Kalender und An
 - E - Abarbeitung über eine nach Fälligkeit sortierte Liste, statt jedes Mal zu prüfen, was berechnet werden muss.
 - E - Freie Kapazität wird genutzt, um Berechnungen vorzuziehen. Beispiel: Pro Tick werden 100 Personen berechnet; an einem Feiertag ist Kapazität frei, also rechnet das System Nachbardörfer vor. Vorgezogenes wird nicht unnötig neu berechnet.
 - O - Wann vorgezogene Ergebnisse ungültig werden (z. B. Krieg, Seuche, Spielereingriff).
-
-&#32;-Ja
-
-&#32;und Jahrzehnte
-
-&#32;- Es gibt zeitraffer. Was soll der Punkt aussagen ? Der punkt drüber bestätigt schon verschiedene Geschwindigkeiten.
-
-&#32;-Es gibt auch eine Abarbeitungsliste. Um nicht zu prüfen, welche sachen berechnet werden müssen, werden diese über eine Sortierte liste abgearbeitet. gibt es momente ohne viel leistung, können bestimmte punkte berechnet werden, um später kapazität zu sparen. z.B. jeden tick werden 100 Personen berechnet, aber ein Tag ist ein Feiertag also erkennt das System die Kapazität und rechnet die nachbarsdörfer nach, da kapazität offen ist. Dabei sollte auch nicht zuviel neuberechnet werden.&#32;
 
 ## 4. Welt und Karte
 
@@ -91,8 +79,6 @@ Die Welt ist fest und wird über mehrere Bitmaps beschrieben, aus denen Grenzen 
 - O - Welche Bitmap-Layer es gibt (z. B. Terrain, Höhe, Ressourcen, Spezies, Kultur).
 - O - Was eine Region im Ortsgraph ist und welche Daten sie trägt.
 - O - Startort von Szenario 1 auf dem Ostkontinent.
-
-&#32;- das war eine Frage, ob es reicht mit 5km pro pixel.&#32;
 
 ## 5. Völker und Fauna
 
@@ -133,16 +119,6 @@ O - Nagaji (Abschnitt 9, Währung) fehlen in der Tabelle: eigene Spezies, Fauna 
 
 Der Spieler steuert eine Party aus beliebigen Personen und pflegt einen lesbaren Stammbaum.
 
-&#32;der Spieler kann unabhängig von Familie Charaktere in die "Party" aufnehmen und zwischen denen wechseln. Die sind immernoch eigenständig und verfolgen eigene ziele, wenn nicht kontrolliert oder aufgabe gegeben, aber können jederzeit übernommen werden.&#32;
-
-&#32;Personen werden nach entscheidung hinzugefügt. Alle sind möglich. Jede "Intelligente" Spezies.&#32;
-
-&#32;-Über ID verlinkt, schneller.&#32;
-
-&#32;-Stammbaum sollte lesbar sein. Genau wie tote und sowas. NPC's haben auch stammbaum, aber eher generiert, wenn ein NPC wichtig wird.&#32;
-
-&#32;
-
 - E - Party: bis zu 6 Charaktere, unabhängig von Familie. Aufnahme per Entscheidung des Spielers, jede intelligente Spezies möglich.
 - E - Nicht gesteuerte Partymitglieder bleiben eigenständig, verfolgen eigene Ziele oder gegebene Aufgaben und können jederzeit übernommen werden.
 - E - Person-Felder: ID (nie wiederverwendet), Name, Geschlecht, Spezies, Kultur, Geburt und Tod (Weltzeit), Eltern, Kinder, Partner, Level und Attribute, KCAL-Reserve, Merkmale, Ort, Zugehörigkeit, Flag Spielercharakter.
@@ -165,16 +141,6 @@ Alles hat ein Level von 0 bis 30 (30 = gottgleich); Proben sind W20 plus Level, 
 - O - Kritische Erfolge, Attribute, Fertigkeiten.
 - O - Herkunft der Dungeons (handgebaut oder generiert), Darstellung des Rasterkampfs im Textadventure.
 
-&#32;-genau, wei bei PF2e .
-
-&#32;- Voller Bonos. Ein Drache stufe 15 wird mit Bauern Stufe 1 den Boden wischen und alles fressen. Schlachten können auch mehrere Hundert leute beinhalten. Was zum massaker führen kann, wenn man nicht weiss gegen was man kämpft.&#32;
-
-&#32;-Personen , Kreaturen gegenstände, zauber und Städte.&#32;
-
-&#32;-Sehr gut.
-
-&#32;-Partygröße für spieler 6. Steuerung ist dann Sqaure based. Am liebsten Hexagon aber das gibt andere Probleme mit Nichtmehr Quadratischen räumen oder gebäude.&#32;
-
 ## 8. Magie
 
 Magie kostet KCAL und verknüpft damit Magie, Ernährung, Spezies-Größe und Wirtschaft.
@@ -187,23 +153,9 @@ Magie kostet KCAL und verknüpft damit Magie, Ernährung, Spezies-Größe und Wi
 - O - Reserve, Regeneration, Folgen von Überverbrauch (Erschöpfung, Abbau, Tod).
 - O - Weitere Kosten, externe Speicher (Tränke, Kristalle) und wer zaubern kann; hängt auch von der Spezies ab.
 
-&#32;-ja
-
-&#32;- Jeder hat eine Reserve, wobei das nur bei Magiern wichtig ist. Ansonsten ist Magie wie Technologie und gibt boni, da Bestimmt leute gelernt haben die Magie zu verwenden. Sonstige Kcal werden getrackt, wenn magier oder anderweitig wichtig. nicht für Bauern.&#32;
-
-&#32;-Kommt auch noch durch die Rassen dazu.
-
 ## 9. Siedlung, Wirtschaft, Technologie, Konflikte
 
 Der Herrscher vergibt Aufträge, die Einwohner arbeiten sie ab und bringen ihre Kultur ein; unterschiedliche Präferenzen erzeugen Konflikte, die er löst.
-
-&#32;-Habe mir das ein wenig wie ein Baukasten vorgestellt. womit Besonders Offizielle gebäude vorlieben und ähnliches berücksichten müssen. Ansonsten bauen die einzelnen Personen die Gebäude nach deren Vorlieben. Die Rassen haben also eine prioritäten und wollensliste, was die im Dorf verändern wollen. Wobei natürlich neubau und erweiterung lieber gemacht wird als umstrukturieren und abreißen. Damit sich unterschiedliche Gruppen nicht permanent etwas bauen und die anderen abreißen und die alternative bauen.&#32;
-
-&#32;-Rezepte kommen auch Zusätzlich über personen. Einen Meisterschmied zu bekommen, lässt einen ein neues Material Schmelzen oder verarbeiten. Und wenn eine neue Technologie kommen soll, dann muss der Spieler die Freiheit ermöglichen, dass der NPC's das selbstständig herraus bekommt.&#32;
-
-&#32;-steht offen.
-
-&#32;
 
 - E - Aufträge für Gebäude und Pläne, ausgeführt von den Einwohnern.
 - E - Aufgabenlisten wie in Prison Architect: offene und laufende Aufgaben, filterbar nach Person, Dorf, Königreich.
@@ -222,14 +174,6 @@ Der Herrscher vergibt Aufträge, die Einwohner arbeiten sie ab und bringen ihre 
 - O - Welche Pflanzen und Materialien natürlich vorkommen (Grundlage aller Rezepte).
 - E - Das Spiel startet nicht im Kapitalismus. Bis Wohlstand entsteht, zählen Vertrauen und Beziehungen mehr; jeder kennt jeden, die Gemeinschaft hilft sich.
 - E - Währung ergibt sich aus den Umständen: das Gut, das die Krone festlegt und das akzeptiert wird, oder ein Gut, das selten, aber verfügbar ist. Beispiel: Die Startkobolde handeln mit Zähnen oder Schuppen von Nagaji; wer Besucher will, muss die Nagaji beschützen.
-
-&#32;-Es gibt keinen Kapitalismus am anfang des Spiels, abnutzung und wirtschaft sind Kapitalistische ansätze. Früher haben personen alles daführ getan das etwas Stabil und Zuverlässig ist. Auch sind reperaturen wichtiger als laufender bedarf nach neuem.&#32;
-
-&#32;-Genau, es wird Bedürfnisse geben, welche gut ausgearbeitet werden müssen und dazugehörig technologien oder Lösungen welche von NPC's genutzt werden. Viele bedürfnisse wie Familie und Freude würde dann durch nichts kostende Feiern oder anderes gefüllt, wodurch weniger gearbeitet wird. Auch sowas wie Bier mit harten Drogen würden weiter oben stehen bei NPC's da diese ein Geiles leben führen wollen und nicht arbeiten. Dabei aber Leidenschaften nicht vernachlässigen. NPC's mit viel freizeit gucken nach beschäftigungen. NPC's welche viel arbeiten um ihr Leben (Beeren Sammeln, Holz hacken) zu sichern, werden wenig für den Herscher tun.&#32;
-
-&#32;- Ich muss dann noch Gucken welche Pflanzen und Materialien Natürlcih vorkommen, von diesen würden dann die Rezeopte kommen. Das ist auch keine Feste abfolge, ägypten hatte Papyrus, Europa Holz Papier.&#32;
-
-&#32;-Was soll mir der Punkt sagen ?
 
 **Bedürfnisse**
 
@@ -256,15 +200,8 @@ Bei 100.000+ Einwohnern pro Reich und vielen parallelen Reichen wird nicht jeder
 - O - Vorschlag: Personen ohne Rolle und ohne Spielerkontakt über lange Zeit dürfen zurück in die Statistik, falls Speicher knapp wird.
 - E - Massendaten in Arrays oder Structs statt tiefer Objektgraphen. Vor allem Zeitstempel loggen.
 - E - Eine Übersicht zeigt, wo wie viel Aufwand in die Simulation fließt.
+- E - Ein Simulations-Tick dauert höchstens 8 ms (Ziel: 120 FPS). Überschreitungen werden als Warning geloggt.
 - O - Zeitbudget pro Spieltag im Zeitraffer.
-
-&#32;-Ja
-
-&#32;-Muss nicht zurück gehen, da wichtige Schmiede, Magier und sowas gerne an namen erinnern.&#32;
-
-&#32;-Vorallem Zeitstempel loggen.&#32;
-
-&#32;-Am besten auch eine Übersicht um abzuleiten, wo wieviel aufwand in die Simulation fließt.&#32;
 
 ## 11. Szenarien
 
@@ -278,10 +215,6 @@ Ein Szenario ist eine Startkonfiguration in der Welt: Person, Ort, Umstände, Zi
 - E - Nur die Dialoge des Kobolds sind gescriptet, sein Verhalten läuft über die normale Simulation. Tutorial-Fortschritt ist Szenario-Zustand.
 - O - Sind die besonderen Charaktere unsterblich?
 - O - Startort.
-
-&#32;-ja
-
-&#32;-Ertstmal alleine, erkundung gibt weitere Charaktere, welche alle besonders sind. Vielleicht unsterblich ?
 
 **Spätere Szenarien**
 
@@ -297,6 +230,7 @@ Logging ist Pflicht und dient zugleich als Chronik des Reiches im Spiel.
 - E - Logging ist Pflicht, darf aber am Ende nicht viel Leistung kosten.
 - E - Technisches Log über `Microsoft.Extensions.Logging` oder Serilog im Simulationskern, unabhängig von `GD.Print`. Logger per Konstruktor. Jede Simulationsmeldung trägt die Weltzeit.
 - O - Vorschlag: Teure Meldungen nur nach Level-Prüfung erzeugen; im Release standardmäßig ab Warning.
+- E - Jede Logzeile enthält Systemzeit und Klasse.Methode, damit Logs nach Abläufen und Laufzeit ausgewertet werden können.
 - E - Log-Level: Error für Invariantenverletzungen, Warning für Budgetüberschreitungen, Information für System- und Szenariostarts, Debug für Würfe und Entscheidungen.
 - E - Debug-Werkzeuge dürfen Spielern zugänglich sein, auch zum Cheaten. Spaß hat hohe Priorität.
 - E - Weltereignislog (Geburten, Tode, Krönungen, Bauten, Kriege, Konflikte) als strukturierte Ereignisse. Daraus entsteht die Chronik.
@@ -305,24 +239,6 @@ Logging ist Pflicht und dient zugleich als Chronik des Reiches im Spiel.
 - E - Regelmäßige Autosaves, nicht destruktiv (überschreiben keine älteren Stände ohne Rotation).
 - E - Spiel komplett auf Englisch.
 - E - Texte immer über Schlüssel, nie im Code, damit später weitere Sprachen möglich sind.
-
-&#32;-Ja
-
-&#32;-Welche ansichten alle nötig sind kommt später.&#32;
-
-&#32;-Logging sollte aber am ende nicht zuviel leistung fressen.&#32;
-
-&#32;-ja, spieler könnten theoretisch auch Cheaten. die sind zum debuggen da, aber spaß ist hohe prio.&#32;
-
-&#32;-ja
-
-&#32;- Ja damit könnte man auch wechseln.&#32;
-
-&#32;- Binär : damit würde man schneller laden und süeichern können. Autosaves müssen auch regelmäzig kommen aber nicht destruktiv sein.&#32;
-
-&#32;- Spiel wird 100% Englisch. Code Deutsche kommentare.&#32;
-
-&#32;-Sollten Sprachen hinzukommen. Erstmal ist nur englisch geplant aber das würde das vereinfachen.&#32;
 
 ## 13. Meilensteine und Glossar
 

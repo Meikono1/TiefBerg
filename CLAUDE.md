@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Tiefberg: 2D-Zivilisationssimulator mit RPG-Elementen (Textadventure mit GUI), Solo-Entwicklung. Godot 4.7.1 + C# auf .NET 10 (`net10.0`).
 
-**Verbindliche Referenz:** `defines/Zivilisations-RPG – Design- & Architekturreferenz (KI-optimiert)(1).md`. Bei Widerspruch zwischen Code und Dokument gilt das Dokument. Vor Arbeit an einem Spielsystem (Zeit, Welt, Völker, Personen, RPG, Magie, Siedlung, Simulationsebenen, Speichern) den passenden Abschnitt dort lesen, statt Annahmen zu treffen. Status-Präfixe im Dokument:
+**Verbindliche Referenz:** `defines/ZivilisationArchitektur Design Referenz.md`. Bei Widerspruch zwischen Code und Dokument gilt das Dokument. Vor Arbeit an einem Spielsystem (Zeit, Welt, Völker, Personen, RPG, Magie, Siedlung, Simulationsebenen, Speichern) den passenden Abschnitt dort lesen, statt Annahmen zu treffen. Status-Präfixe im Dokument:
 - `E -` entschieden → umsetzen.
 - `O -` offen → nicht erfinden, `// TODO:` mit Abschnittsverweis setzen (z. B. `// TODO: Abschnitt 8 – Regeneration offen`).
 - `O - Vorschlag:` darf umgesetzt werden, im Code als Annahme markieren.

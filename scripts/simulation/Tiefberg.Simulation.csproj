@@ -4,8 +4,10 @@
     <TargetFramework>net10.0</TargetFramework>
     <RootNamespace>TiefBerg</RootNamespace>
     <AssemblyName>Tiefberg.Simulation</AssemblyName>
+    <!-- Null-Sicherheit zur Compile-Zeit, kostet zur Laufzeit nichts; Verstöße brechen den Build ab -->
+    <Nullable>enable</Nullable>
     <!-- RS0030: Aufruf einer in BannedSymbols.txt gesperrten API bricht den Build ab -->
-    <WarningsAsErrors>$(WarningsAsErrors);RS0030</WarningsAsErrors>
+    <WarningsAsErrors>$(WarningsAsErrors);RS0030;nullable</WarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
     <!-- Nur die Schnittstellen (ILogger<T>). Die Ausgabe stellt der Host bereit, ein Wechsel auf Serilog bleibt ohne Kernänderung möglich. -->

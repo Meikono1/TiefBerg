@@ -14,19 +14,19 @@ public static class LoggerCallerExtensions
     public static void Info(this ILogger log, string message, [CallerMemberName] string member = "") =>
         Write(log, LogLevel.Information, message, null, member);
 
-    public static void Warn(this ILogger log, string message, Exception exception = null,
+    public static void Warn(this ILogger log, string message, Exception? exception = null,
         [CallerMemberName] string member = "") =>
         Write(log, LogLevel.Warning, message, exception, member);
 
-    public static void Error(this ILogger log, string message, Exception exception = null,
+    public static void Error(this ILogger log, string message, Exception? exception = null,
         [CallerMemberName] string member = "") =>
         Write(log, LogLevel.Error, message, exception, member);
 
-    public static void Fatal(this ILogger log, string message, Exception exception = null,
+    public static void Fatal(this ILogger log, string message, Exception? exception = null,
         [CallerMemberName] string member = "") =>
         Write(log, LogLevel.Critical, message, exception, member);
 
-    private static void Write(ILogger log, LogLevel level, string message, Exception exception, string member)
+    private static void Write(ILogger log, LogLevel level, string message, Exception? exception, string member)
     {
         if (!log.IsEnabled(level))
         {

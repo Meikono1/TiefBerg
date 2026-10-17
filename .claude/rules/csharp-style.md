@@ -13,6 +13,10 @@ Orientierung am bestehenden Code in `scripts/core/` (Referenz: `GameManager.cs`,
 - Namespace folgt dem Ordner: `scripts/core/logging/` → `TiefBerg.Core.Logging`, `scripts/ui/` → `TiefBerg.UI`. Im Simulationskern entfällt `simulation/`: `scripts/simulation/Data/Species/` → `TiefBerg.Data.Species`. Kein Code im globalen Namespace.
 - `using` statt vollqualifizierter Namen (Ausnahme: echte Namenskonflikte wie `System.Environment` vs. `Godot.Environment`).
 
+## Null-Sicherheit
+- Im Simulationskern ist `<Nullable>enable</Nullable>` aktiv, und Nullable-Warnungen sind Build-Fehler. Was `null` sein darf, wird mit `?` markiert (`ILogger?`, `Exception? e = null`). Kein `!` (Null-Forgiving) ohne Kommentar, warum es sicher ist.
+- Godot-Projekt (`scripts/core/`, `scripts/ui/`): Nullable aus, weil Godot `[Export]`-Felder erst zur Laufzeit setzt.
+
 ## Benennung
 - Klassen, Methoden, Properties, Konstanten: `PascalCase`.
 - Private Felder: `_camelCase`. Statische readonly Felder: `PascalCase` (z. B. `Log`, `WriteLock`).
