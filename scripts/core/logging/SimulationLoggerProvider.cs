@@ -1,5 +1,6 @@
 using System;
 using Microsoft.Extensions.Logging;
+using TiefBerg.Simulation.Time;
 using MsLogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace TiefBerg.Core.Logging;
@@ -58,10 +59,9 @@ public sealed class SimulationLoggerProvider : ILoggerProvider
                 return;
             }
 
-            // TODO: Weltzeit als Kalenderdatum formatieren, sobald T-009 steht (Abschnitt 3)
             // TODO: Bei vorgezogenen Berechnungen (Abschnitt 3) gilt nicht die globale Weltzeit, sondern die des berechneten Ticks
             Func<ulong> worldTime = LogManager.WorldTimeSource;
-            string time = worldTime != null ? worldTime().ToString() : "-";
+            string time = worldTime != null ? WorldCalendar.Format(worldTime()) : "-";
             // EventId.Name trägt die aufrufende Methode (TiefBerg.Diagnostics.LoggerCallerExtensions)
             LogManager.Write(level.Value, _category, $"[T={time}] {formatter(state, exception)}", exception,
                 eventId.Name);

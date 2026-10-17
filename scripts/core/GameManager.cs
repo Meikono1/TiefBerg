@@ -3,6 +3,8 @@ using TiefBerg.Core.Logging;
 using Microsoft.Extensions.Logging;
 using TiefBerg.Diagnostics;
 using TiefBerg.Simulation;
+using TiefBerg.Simulation.Scheduling;
+using TiefBerg.Simulation.Time;
 
 namespace TiefBerg.Core;
 
@@ -32,13 +34,19 @@ public partial class GameManager : Node
         LogEnvironmentInfo();
 
         // TODO: Erst mit StartNewGame()/LoadGame() starten, sobald es eine Welt gibt; vorerst ab Spielstart für die Aufwandsübersicht
-        _simulation = new SimulationRunner(LogManager.SimulationLoggerFactory.CreateLogger<SimulationRunner>());
+        ILoggerFactory loggers = LogManager.SimulationLoggerFactory;
+        // TODO: Startzeit aus Welt-/Szenariodaten statt Weltzeit 0 (Abschnitt 3, 11; T-025)
+        var clock = new WorldClock(loggers.CreateLogger<WorldClock>());
+        var scheduler = new Scheduler(loggers.CreateLogger<Scheduler>());
+        // TODO: Systeme (Bedürfnisse, Wirtschaft, Diplomatie …) registrieren, sobald es sie gibt (Abschnitt 3)
+        _simulation = new SimulationRunner(loggers.CreateLogger<SimulationRunner>(), clock, scheduler);
+        LogManager.WorldTimeSource = () => clock.Now;
         _simulation.Start();
     }
 
     public override void _Process(double delta)
     {
-        // TODO: Tick vom Frame entkoppeln (eigener Takt/Thread, Godot liest Snapshots), sobald der Scheduler steht (T-010)
+        // TODO: Tick vom Frame entkoppeln (eigener Takt/Thread, Godot liest Snapshots) (Abschnitt 2, T-027)
         _simulation?.Tick();
 
         _perfSummaryTimer += delta;

@@ -44,6 +44,10 @@ public static class Perf
         return new PerfScope(stats, budgetMs);
     }
 
+    // Für Messungen im Namen eines anderen, z. B. pro System im Scheduler: ID = className.member
+    public static PerfScope MeasureAs(string className, string member, double budgetMs = 0) =>
+        Measure(budgetMs, className, member);
+
     internal static void Record(PerfStats stats, double budgetMs, long elapsedTicks)
     {
         stats.Add(elapsedTicks);

@@ -24,8 +24,7 @@ public static class LogManager
     // Liefert die ILogger<T> für den Simulationskern (Konstruktor-Injektion), null vor Initialize()
     public static ILoggerFactory SimulationLoggerFactory { get; private set; }
 
-    // Aktuelle Weltzeit in Sekunden für Kern-Logmeldungen, null solange keine Welt läuft
-    // TODO: Beim Start der Simulation setzen, sobald die Weltzeit existiert (T-009)
+    // Aktuelle Weltzeit in Sekunden für Kern-Logmeldungen, null solange keine Welt läuft; setzt der GameManager
     public static Func<ulong> WorldTimeSource { get; set; }
 
     public static GameLogger GetLogger<T>() => new GameLogger(typeof(T).Name);

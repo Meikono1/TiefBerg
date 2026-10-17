@@ -16,9 +16,10 @@ Quelle: Design-Dokument Abschnitte 2, 3, 7, 10, 12. Bei Unklarheit dort nachlese
 | `scripts/simulation/Simulation/` | `Tiefberg.Simulation.csproj` | `TiefBerg.Simulation` | Simulation |
 | `scripts/simulation/Scenario/` | `Tiefberg.Simulation.csproj` | `TiefBerg.Scenario` | Szenario |
 | `scripts/core/`, `scripts/ui/` | `Tiefberg.csproj` (Godot) | `TiefBerg.Core`, `TiefBerg.UI` | Präsentation |
+| `tests/Tiefberg.Simulation.Tests/` | eigenes Testprojekt (xUnit v3) | `TiefBerg.Tests.*`, Ordner wie im Kern | nur Tests, referenziert den Kern |
 
 - `Tiefberg.Simulation.csproj` referenziert kein Godot; der Compiler verhindert also Godot-Typen im Kern. Keine Godot-Pakete dort hinzufügen. Abhängigkeiten bisher: `Microsoft.Extensions.Logging.Abstractions` und der Analyzer `Microsoft.CodeAnalysis.BannedApiAnalyzers` (gesperrte APIs in `BannedSymbols.txt`, Verstoß = Build-Fehler). Konkrete Logging-Implementierungen (Serilog o. Ä.) gehören in den Host, nicht in den Kern.
-- `Tiefberg.csproj` schließt `scripts/simulation/**` vom Kompilieren aus und referenziert das Kernprojekt.
+- `Tiefberg.csproj` schließt `scripts/simulation/**` und `tests/**` vom Kompilieren aus und referenziert das Kernprojekt.
 - Daten, Simulation und Szenario teilen sich eine Assembly. Die Richtung prüft also nicht der Compiler: `TiefBerg.Data` darf nichts aus `TiefBerg.Simulation`/`TiefBerg.Scenario` verwenden, `TiefBerg.Simulation` nichts aus `TiefBerg.Scenario`.
 - `scripts/simulation/.gdignore` blendet den Ordner im Godot-Editor aus (Kern-Klassen sind keine Godot-Skripte).
 

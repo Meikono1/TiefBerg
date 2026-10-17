@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Tests für den Godot-freien Simulationskern; laufen ohne Editor über "dotnet test", siehe CLAUDE.md -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>TiefBerg.Tests</RootNamespace>
+    <!-- xUnit v3: Testprojekte sind eigenständige Programme -->
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <Nullable>enable</Nullable>
+    <WarningsAsErrors>$(WarningsAsErrors);nullable</WarningsAsErrors>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Läuft über Microsoft.Testing.Platform (global.json), VSTest-Pakete sind nicht nötig -->
+    <PackageReference Include="xunit.v3" Version="4.0.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../scripts/simulation/Tiefberg.Simulation.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+</Project>

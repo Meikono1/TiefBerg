@@ -60,6 +60,12 @@ Die Weltzeit ist ein `ulong`-Zähler in Sekunden seit Weltstart; Kalender und An
 - E - Kalender: 60 Sekunden, 60 Minuten, 20 Stunden pro Tag, 23 Tage pro Monat, 12 Monate (276 Tage pro Jahr). Ergebnis einer Physiksimulation.
 - E - Setting orientiert sich am Mittelalter um das Jahr 1000. Jede Spezies bzw. Kultur hat einen eigenen Kalender für die Anzeige; intern gibt es eine Weltzeit.
 - E - Zeitraffer über Monate, Jahre und Jahrzehnte sowie "bis zum nächsten Ereignis".
+- E - Ein Simulations-Tick entspricht 1 Sekunde Weltzeit. Eine Kampfrunde dauert 6 Sekunden (Abschnitt 7).
+- E - Der Spieler kann Zeit in Abschnitten von Tagen, Monaten und Jahren laufen lassen. Eine Partie kann 500 Jahre und länger dauern (Stammbaum, Abschnitt 6; Drachen werden rund 200 Jahre alt und wachsen entsprechend). Lange Abschnitte springen daher von Fälligkeit zu Fälligkeit, statt jede Sekunde einzeln zu rechnen.
+- E - Weltzeit 0 ist ein fester Punkt weit in der Urzeit, nicht der Simulationsstart. Die Simulation beginnt bei einer Startzeit aus Welt- bzw. Szenariodaten; so bleibt auch Vergangenheit (z. B. Geburt eines Drachen, der zum Start 150 Jahre alt ist) als positive `ulong`-Weltzeit darstellbar, und Szenarien können zu verschiedenen Zeiten in dieselbe Welt einsteigen (Abschnitt 11).
+- E - Jede Spezies hat einen eigenen Kalender mit eigener Epoche: der Weltzeit, zu der dessen Jahr 1 beginnt. Aufbau (Tage, Monate, Jahre) ist für alle gleich.
+- E - Kalender kennen Daten vor ihrem Jahr 1 (wie "vor Christus"): Jahr 1 davor folgt direkt auf Jahr 1 danach, ein Jahr 0 gibt es nicht.
+- O - Konkreter Wert der Startzeit und wie weit Weltzeit 0 zurückliegt.
 - E - Systeme laufen in eigenen Takten (z. B. Bedürfnisse stündlich, Wirtschaft täglich, Diplomatie wöchentlich).
 - E - Abarbeitung über eine nach Fälligkeit sortierte Liste, statt jedes Mal zu prüfen, was berechnet werden muss.
 - E - Freie Kapazität wird genutzt, um Berechnungen vorzuziehen. Beispiel: Pro Tick werden 100 Personen berechnet; an einem Feiertag ist Kapazität frei, also rechnet das System Nachbardörfer vor. Vorgezogenes wird nicht unnötig neu berechnet.

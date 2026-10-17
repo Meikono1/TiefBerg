@@ -5,3 +5,7 @@
 # Build-Ausgaben des Simulationskerns (eigenes csproj)
 /scripts/simulation/bin/
 /scripts/simulation/obj/
+
+# Build-Ausgaben der Testprojekte
+/tests/**/bin/
+/tests/**/obj/

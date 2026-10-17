@@ -6,6 +6,8 @@
   <ItemGroup>
     <!-- Simulationskern ist ein eigenes Projekt und darf nicht doppelt kompiliert werden -->
     <Compile Remove="scripts/simulation/**" />
+    <!-- Testprojekte sind eigene csproj und gehören nicht in die Godot-Assembly -->
+    <Compile Remove="tests/**" />
     <ProjectReference Include="scripts/simulation/Tiefberg.Simulation.csproj" />
     <!-- LoggerFactory für die Logger, die dem Simulationskern per Konstruktor übergeben werden -->
     <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.11" />
