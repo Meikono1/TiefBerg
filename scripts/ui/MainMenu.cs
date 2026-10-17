@@ -1,46 +1,58 @@
 using Godot;
+using TiefBerg.Core;
+using TiefBerg.Core.Logging;
 
-public partial class MainMenu : Control {
-	private const string Cat = "MainMenu";
+namespace TiefBerg.UI;
 
-	[Export] private Button _startButton;
-	[Export] private Button _quitButton;
+public partial class MainMenu : Control
+{
+    private static readonly GameLogger Log = LogManager.GetLogger<MainMenu>();
 
-	private GameManager Manager => GetNodeOrNull<GameManager>("/root/GameManager");
+    [Export] private Button _startButton;
+    [Export] private Button _quitButton;
 
-	public override void _Ready() {
-		_startButton ??= GetNodeOrNull<Button>("CenterContainer/VBoxContainer/StartButton");
-		_quitButton  ??= GetNodeOrNull<Button>("CenterContainer/VBoxContainer/QuitButton");
+    public override void _Ready()
+    {
+        _startButton ??= GetNodeOrNull<Button>("CenterContainer/VBoxContainer/StartButton");
+        _quitButton ??= GetNodeOrNull<Button>("CenterContainer/VBoxContainer/QuitButton");
 
-		if (_startButton == null || _quitButton == null) {
-			Log.Error(Cat, $"Buttons nicht gefunden (start={_startButton != null}, quit={_quitButton != null})");
-			return;
-		}
+        if (_startButton == null || _quitButton == null)
+        {
+            Log.Error($"Buttons nicht gefunden (start={_startButton != null}, quit={_quitButton != null})");
+            return;
+        }
 
-		_startButton.Pressed += OnStartPressed;
-		_quitButton.Pressed += OnQuitPressed;
-		_startButton.GrabFocus();
-		Log.Debug(Cat, "Menü initialisiert");
-		// TODO: Fortsetzen-Button wenn Spielstand existiert
-		// TODO: Optionen (Auflösung, Sprache, Log-Level)
-	}
+        _startButton.Pressed += OnStartPressed;
+        _quitButton.Pressed += OnQuitPressed;
+        _startButton.GrabFocus();
+        Log.Debug("Menü initialisiert.");
+        // TODO: Fortsetzen-Button, wenn ein Spielstand existiert
+        // TODO: Optionen (Auflösung, Sprache, Log-Level)
+    }
 
-	private void OnStartPressed() {
-		Log.Info(Cat, "Start gedrückt");
-		// TODO: Insel-/Rassenauswahl vorschalten statt direkt auf die Map
-		var mgr = Manager;
-		if (mgr != null) { mgr.LoadScene(GameScene.Map); return; }
+    private void OnStartPressed()
+    {
+        Log.Info("Start gedrückt.");
+        // TODO: Szenario-Auswahl vorschalten statt direkt auf die Map (Abschnitt 11)
+        if (GameManager.Instance == null)
+        {
+            Log.Error("GameManager-Autoload fehlt, Szenenwechsel nicht möglich.");
+            return;
+        }
 
-		Log.Warn(Cat, "GameManager-Autoload fehlt, direkter Szenenwechsel");
-		GetTree().ChangeSceneToFile("res://scenes/world/Map.tscn");
-	}
+        GameManager.Instance.ChangeScene(ScenePaths.Map);
+    }
 
-	private void OnQuitPressed() {
-		Log.Info(Cat, "Beenden gedrückt");
-		var mgr = Manager;
-		if (mgr != null) { mgr.QuitGame(); return; }
+    private void OnQuitPressed()
+    {
+        Log.Info("Beenden gedrückt.");
+        if (GameManager.Instance == null)
+        {
+            Log.Error("GameManager-Autoload fehlt, beende direkt.");
+            GetTree().Quit();
+            return;
+        }
 
-		Log.Warn(Cat, "GameManager-Autoload fehlt, direktes Quit");
-		GetTree().Quit();
-	}
+        GameManager.Instance.QuitGame();
+    }
 }

@@ -50,7 +50,7 @@ public partial class GameManager : Node
             return;
         }
 
-        // TODO: SaveService.Load() -> PetData, Offline-Fortschritt berechnen, dann ChangeScene(ScenePaths.Game)
+        // TODO: SaveService.Load() -> Welt- und Szenariozustand getrennt laden, dann ChangeScene(ScenePaths.Map) (Abschnitt 12)
         Log.Warn("Laden ist noch nicht implementiert.");
     }
 
