@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Godot-freier Simulationskern: Daten ← Simulation ← Szenario (Abschnitt 2). Keine Referenz auf GodotSharp. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>TiefBerg</RootNamespace>
+    <AssemblyName>Tiefberg.Simulation</AssemblyName>
+    <!-- RS0030: Aufruf einer in BannedSymbols.txt gesperrten API bricht den Build ab -->
+    <WarningsAsErrors>$(WarningsAsErrors);RS0030</WarningsAsErrors>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Nur die Schnittstellen (ILogger<T>). Die Ausgabe stellt der Host bereit, ein Wechsel auf Serilog bleibt ohne Kernänderung möglich. -->
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.11" />
+    <PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="5.3.0" PrivateAssets="all" />
+    <AdditionalFiles Include="BannedSymbols.txt" />
+  </ItemGroup>
+</Project>

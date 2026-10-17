@@ -18,10 +18,12 @@ Detaillierte Regeln liegen in `.claude/rules/` (C#-Stil, Architektur, Godot) und
 ## Befehle
 
 ```bash
-dotnet build                 # kompiliert Tiefberg.csproj (Godot.NET.Sdk), schneller Compile-Check ohne Editor
+dotnet build Tiefberg.sln    # baut Simulationskern + Godot-Projekt, schneller Compile-Check ohne Editor
 ```
 
 - Spiel starten: im Godot-Editor (F5), Hauptszene ist `scenes/ui/MainMenu.tscn`.
+- Laufzeit-Check ohne Fenster (ca. 12 s, Log auf der Konsole; vorher `dotnet build Tiefberg.sln`):
+  `& "C:\Users\Christian\Desktop\shadowrun\test\Godot_v4.7.1-stable_mono_win64_console.exe" --headless --path . --max-fps 120 --quit-after 1500`
 - Tests und Linter gibt es noch nicht.
 - Logs zur Laufzeit: `user://logs/game_*.log` (Windows: `%APPDATA%\Godot\app_userdata\Tiefberg\logs`), die letzten 10 werden behalten.
 
@@ -34,9 +36,12 @@ Ziel-Architektur (Dokument Abschnitt 2), noch größtenteils nicht umgesetzt:
 - Zufall nur über seedbare RNG-Instanzen bzw. den zentralen Würfeldienst.
 - Weltzeit: `ulong` Sekunden seit Weltstart; Kalender wird daraus berechnet.
 
+Der Kern liegt als eigenes, Godot-freies Projekt `scripts/simulation/Tiefberg.Simulation.csproj` vor (Namespaces `TiefBerg.Data`, `TiefBerg.Simulation`, `TiefBerg.Scenario`); das Godot-Projekt referenziert es. Details: `.claude/rules/architecture.md`.
+
 Aktueller Stand (Meilenstein 1 „Fundament“ begonnen):
-- `GameManager` (`scripts/core/`) ist Autoload-Singleton (`/root/GameManager`, `GameManager.Instance`). Initialisiert und beendet das Logging, bündelt Szenenwechsel (`ChangeScene`) und Start/Laden/Beenden.
-- Logging: `LogManager` (statisch, Datei + Godot-Konsole, Thread-sicher, fängt unbehandelte Exceptions) und `GameLogger` pro Klasse über `LogManager.GetLogger<T>()`. Dieses Logging nutzt Godot-APIs und gehört damit zur Präsentations-/Host-Schicht. Für den Simulationskern ist laut Dokument `Microsoft.Extensions.Logging` oder Serilog mit Logger per Konstruktor und Weltzeit in jeder Meldung vorgesehen.
+- `GameManager` (`scripts/core/`) ist Autoload-Singleton (`/root/GameManager`, `GameManager.Instance`). Initialisiert und beendet das Logging, bündelt Szenenwechsel (`ChangeScene`) und Start/Laden/Beenden. Er startet ab Spielstart den `SimulationRunner` (`TiefBerg.Simulation`) und ruft vorerst pro Frame `Tick()` auf; der Tick ist noch leer (TODOs für T-009/T-010).
+- Logging: `LogManager` (statisch, Datei + Godot-Konsole, Thread-sicher, fängt unbehandelte Exceptions) und `GameLogger` pro Klasse über `LogManager.GetLogger<T>()`. Dieses Logging nutzt Godot-APIs und gehört damit zur Präsentations-/Host-Schicht. Der Simulationskern bekommt `ILogger<T>` (Microsoft.Extensions.Logging) per Konstruktor. `LogManager.SimulationLoggerFactory` erzeugt diese Logger, und `SimulationLoggerProvider` leitet sie in denselben `LogManager` um: eine Datei, ein Format, die Weltzeit aus `LogManager.WorldTimeSource` vorangestellt. Jede Zeile enthält Systemzeit und Klasse.Methode (`[CallerMemberName]`); im Kern ist das per Analyzer erzwungen.
+- Zeitmessung: `TiefBerg.Diagnostics.Perf` misst pro Klasse.Methode, warnt bei Budgetüberschreitung (`PerfBudgets.TickMs = 8` ms für 120 FPS), und `GameManager._Process` loggt alle 10 s eine Aufwandsübersicht.
 - `SaveService` ist nur ein Stub.
 
 ## Bekannte Abweichungen (Stand jetzt)

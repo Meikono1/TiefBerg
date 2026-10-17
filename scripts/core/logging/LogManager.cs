@@ -3,6 +3,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Godot;
+using Microsoft.Extensions.Logging;
+using MsLogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace TiefBerg.Core.Logging;
 
@@ -18,6 +20,13 @@ public static class LogManager
 
     public static LogLevel MinLevel { get; set; } = LogLevel.Info;
     public static string CurrentLogFilePath { get; private set; }
+
+    // Liefert die ILogger<T> für den Simulationskern (Konstruktor-Injektion), null vor Initialize()
+    public static ILoggerFactory SimulationLoggerFactory { get; private set; }
+
+    // Aktuelle Weltzeit in Sekunden für Kern-Logmeldungen, null solange keine Welt läuft
+    // TODO: Beim Start der Simulation setzen, sobald die Weltzeit existiert (T-009)
+    public static Func<ulong> WorldTimeSource { get; set; }
 
     public static GameLogger GetLogger<T>() => new GameLogger(typeof(T).Name);
 
@@ -53,6 +62,11 @@ public static class LogManager
             }
 
             AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
+
+            // Filterung übernimmt SimulationLoggerProvider über MinLevel; die Factory selbst lässt alles durch
+            SimulationLoggerFactory = LoggerFactory.Create(builder => builder
+                .SetMinimumLevel(MsLogLevel.Trace)
+                .AddProvider(new SimulationLoggerProvider()));
             _initialized = true;
         }
 
@@ -71,6 +85,9 @@ public static class LogManager
             }
 
             AppDomain.CurrentDomain.UnhandledException -= OnUnhandledException;
+            SimulationLoggerFactory?.Dispose();
+            SimulationLoggerFactory = null;
+            WorldTimeSource = null;
             _writer?.Flush();
             _writer?.Dispose();
             _writer = null;
@@ -78,14 +95,17 @@ public static class LogManager
         }
     }
 
-    public static void Write(LogLevel level, string category, string message, Exception exception = null)
+    // Format jeder Zeile: [Systemzeit] [Level] [Klasse.Methode] Meldung – Grundlage für die Log-Auswertung
+    public static void Write(LogLevel level, string category, string message, Exception exception = null,
+        string member = null)
     {
         if (level < MinLevel)
         {
             return;
         }
 
-        string line = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] [{level,-5}] [{category}] {message}";
+        string source = string.IsNullOrEmpty(member) ? category : $"{category}.{member}";
+        string line = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] [{level,-5}] [{source}] {message}";
         if (exception != null)
         {
             line += System.Environment.NewLine + exception;

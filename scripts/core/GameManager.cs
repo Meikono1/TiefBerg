@@ -1,5 +1,8 @@
 using Godot;
 using TiefBerg.Core.Logging;
+using Microsoft.Extensions.Logging;
+using TiefBerg.Diagnostics;
+using TiefBerg.Simulation;
 
 namespace TiefBerg.Core;
 
@@ -7,7 +10,12 @@ public partial class GameManager : Node
 {
     private static readonly GameLogger Log = LogManager.GetLogger<GameManager>();
 
+    private const double PerfSummaryIntervalSeconds = 10.0;
+
     public static GameManager Instance { get; private set; }
+
+    private double _perfSummaryTimer;
+    private SimulationRunner _simulation;
 
     public override void _EnterTree()
     {
@@ -20,7 +28,27 @@ public partial class GameManager : Node
 
         Instance = this;
         LogManager.Initialize();
+        Perf.Initialize(LogManager.SimulationLoggerFactory?.CreateLogger("Perf"));
         LogEnvironmentInfo();
+
+        // TODO: Erst mit StartNewGame()/LoadGame() starten, sobald es eine Welt gibt; vorerst ab Spielstart für die Aufwandsübersicht
+        _simulation = new SimulationRunner(LogManager.SimulationLoggerFactory.CreateLogger<SimulationRunner>());
+        _simulation.Start();
+    }
+
+    public override void _Process(double delta)
+    {
+        // TODO: Tick vom Frame entkoppeln (eigener Takt/Thread, Godot liest Snapshots), sobald der Scheduler steht (T-010)
+        _simulation?.Tick();
+
+        _perfSummaryTimer += delta;
+        if (_perfSummaryTimer < PerfSummaryIntervalSeconds)
+        {
+            return;
+        }
+
+        _perfSummaryTimer = 0;
+        Perf.LogSummary();
     }
 
     public override void _ExitTree()
@@ -32,7 +60,9 @@ public partial class GameManager : Node
 
         // TODO: Automatisch speichern, sobald SaveService.Save() existiert
         Log.Info("Spiel wird beendet.");
+        _simulation?.Stop();
         Instance = null;
+        Perf.Shutdown();
         LogManager.Shutdown();
     }
 

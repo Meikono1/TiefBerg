@@ -1,0 +1,1 @@
+T:Microsoft.Extensions.Logging.LoggerExtensions;Liefert keine Klasse.Methode im Log. TiefBerg.Diagnostics.LoggerCallerExtensions verwenden (Debug/Info/Warn/Error/Fatal) oder [LoggerMessage] in Hot Paths.

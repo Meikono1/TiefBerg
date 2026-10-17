@@ -1,3 +1,7 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+
+# Build-Ausgaben des Simulationskerns (eigenes csproj)
+/scripts/simulation/bin/
+/scripts/simulation/obj/

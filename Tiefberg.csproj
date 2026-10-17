@@ -3,4 +3,11 @@
     <TargetFramework>net10.0</TargetFramework>
     <EnableDynamicLoading>true</EnableDynamicLoading>
   </PropertyGroup>
+  <ItemGroup>
+    <!-- Simulationskern ist ein eigenes Projekt und darf nicht doppelt kompiliert werden -->
+    <Compile Remove="scripts/simulation/**" />
+    <ProjectReference Include="scripts/simulation/Tiefberg.Simulation.csproj" />
+    <!-- LoggerFactory für die Logger, die dem Simulationskern per Konstruktor übergeben werden -->
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.11" />
+  </ItemGroup>
 </Project>

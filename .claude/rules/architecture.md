@@ -8,6 +8,20 @@ paths:
 
 Quelle: Design-Dokument Abschnitte 2, 3, 7, 10, 12. Bei Unklarheit dort nachlesen.
 
+## Projekte und Ordner
+| Ordner | Projekt | Namespace | Schicht |
+| --- | --- | --- | --- |
+| `scripts/simulation/Diagnostics/` | `Tiefberg.Simulation.csproj` | `TiefBerg.Diagnostics` | querschnittlich (Logging-Helfer, `Perf`), von allen Schichten nutzbar, hängt von keiner ab |
+| `scripts/simulation/Data/` | `Tiefberg.Simulation.csproj` | `TiefBerg.Data` | Daten |
+| `scripts/simulation/Simulation/` | `Tiefberg.Simulation.csproj` | `TiefBerg.Simulation` | Simulation |
+| `scripts/simulation/Scenario/` | `Tiefberg.Simulation.csproj` | `TiefBerg.Scenario` | Szenario |
+| `scripts/core/`, `scripts/ui/` | `Tiefberg.csproj` (Godot) | `TiefBerg.Core`, `TiefBerg.UI` | Präsentation |
+
+- `Tiefberg.Simulation.csproj` referenziert kein Godot; der Compiler verhindert also Godot-Typen im Kern. Keine Godot-Pakete dort hinzufügen. Abhängigkeiten bisher: `Microsoft.Extensions.Logging.Abstractions` und der Analyzer `Microsoft.CodeAnalysis.BannedApiAnalyzers` (gesperrte APIs in `BannedSymbols.txt`, Verstoß = Build-Fehler). Konkrete Logging-Implementierungen (Serilog o. Ä.) gehören in den Host, nicht in den Kern.
+- `Tiefberg.csproj` schließt `scripts/simulation/**` vom Kompilieren aus und referenziert das Kernprojekt.
+- Daten, Simulation und Szenario teilen sich eine Assembly. Die Richtung prüft also nicht der Compiler: `TiefBerg.Data` darf nichts aus `TiefBerg.Simulation`/`TiefBerg.Scenario` verwenden, `TiefBerg.Simulation` nichts aus `TiefBerg.Scenario`.
+- `scripts/simulation/.gdignore` blendet den Ordner im Godot-Editor aus (Kern-Klassen sind keine Godot-Skripte).
+
 ## Schichten
 Daten ← Simulation ← Szenario ← Präsentation. Abhängigkeiten nur nach links.
 - **Simulation/Daten/Szenario:** reines C#, kein `using Godot;`, keine Godot-Typen (`Vector2`, `Node`, `GD.*`, `FileAccess`). Damit bleibt der Kern testbar und multicore-fähig.
