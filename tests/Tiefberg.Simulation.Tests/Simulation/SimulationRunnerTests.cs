@@ -1,15 +1,13 @@
 using Microsoft.Extensions.Logging.Abstractions;
 using TiefBerg.Simulation;
 using TiefBerg.Simulation.Scheduling;
-using TiefBerg.Simulation.Time;
 
 namespace TiefBerg.Tests.Simulation;
 
 public class SimulationRunnerTests
 {
     private static SimulationRunner CreateRunner() =>
-        new(NullLogger<SimulationRunner>.Instance, new WorldClock(NullLogger<WorldClock>.Instance),
-            new Scheduler(NullLogger<Scheduler>.Instance));
+        new(NullLogger<SimulationRunner>.Instance, World.Create(NullLoggerFactory.Instance, 1, 0));
 
     [Fact]
     public void Tick_BeforeStart_DoesNothing()
@@ -90,6 +88,8 @@ public class SimulationRunnerTests
     private sealed class CountingSystem : ISimulationSystem
     {
         public int Runs { get; private set; }
+
+        public string Id => "counting";
 
         public ulong IntervalSeconds => 2;
 

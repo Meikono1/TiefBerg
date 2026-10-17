@@ -1,1 +1,2 @@
 T:Microsoft.Extensions.Logging.LoggerExtensions;Liefert keine Klasse.Methode im Log. TiefBerg.Diagnostics.LoggerCallerExtensions verwenden (Debug/Info/Warn/Error/Fatal) oder [LoggerMessage] in Hot Paths.
+T:System.Random;Folge über .NET-Versionen nicht garantiert, Zustand nicht speicherbar. TiefBerg.Simulation.Dice.RandomSource bzw. DiceService verwenden (Abschnitt 2, 7).

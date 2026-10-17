@@ -1,10 +1,12 @@
+using System;
+using System.Linq;
 using Godot;
 using TiefBerg.Core.Logging;
 using Microsoft.Extensions.Logging;
 using TiefBerg.Diagnostics;
+using TiefBerg.Scenario;
 using TiefBerg.Simulation;
-using TiefBerg.Simulation.Scheduling;
-using TiefBerg.Simulation.Time;
+using CryptoRandom = System.Security.Cryptography.RandomNumberGenerator;
 
 namespace TiefBerg.Core;
 
@@ -14,10 +16,15 @@ public partial class GameManager : Node
 
     private const double PerfSummaryIntervalSeconds = 10.0;
 
+    // Kommandozeile nach "--": Spiel ohne Menü starten, z. B. für Headless-Läufe
+    private const string NewGameArgument = "--new-game";
+    private const string ContinueArgument = "--continue";
+
     public static GameManager Instance { get; private set; }
 
     private double _perfSummaryTimer;
     private SimulationRunner _simulation;
+    private ScenarioState _scenario;
 
     public override void _EnterTree()
     {
@@ -32,16 +39,22 @@ public partial class GameManager : Node
         LogManager.Initialize();
         Perf.Initialize(LogManager.SimulationLoggerFactory?.CreateLogger("Perf"));
         LogEnvironmentInfo();
+    }
 
-        // TODO: Erst mit StartNewGame()/LoadGame() starten, sobald es eine Welt gibt; vorerst ab Spielstart für die Aufwandsübersicht
-        ILoggerFactory loggers = LogManager.SimulationLoggerFactory;
-        // TODO: Startzeit aus Welt-/Szenariodaten statt Weltzeit 0 (Abschnitt 3, 11; T-025)
-        var clock = new WorldClock(loggers.CreateLogger<WorldClock>());
-        var scheduler = new Scheduler(loggers.CreateLogger<Scheduler>());
-        // TODO: Systeme (Bedürfnisse, Wirtschaft, Diplomatie …) registrieren, sobald es sie gibt (Abschnitt 3)
-        _simulation = new SimulationRunner(loggers.CreateLogger<SimulationRunner>(), clock, scheduler);
-        LogManager.WorldTimeSource = () => clock.Now;
-        _simulation.Start();
+    public override void _Ready()
+    {
+        string[] args = OS.GetCmdlineUserArgs();
+        // Verzögert, weil die Hauptszene beim _Ready des Autoloads noch nicht geladen ist
+        if (args.Contains(NewGameArgument))
+        {
+            Log.Info($"{NewGameArgument} auf der Kommandozeile.");
+            Callable.From(StartNewGame).CallDeferred();
+        }
+        else if (args.Contains(ContinueArgument))
+        {
+            Log.Info($"{ContinueArgument} auf der Kommandozeile.");
+            Callable.From(LoadGame).CallDeferred();
+        }
     }
 
     public override void _Process(double delta)
@@ -66,9 +79,13 @@ public partial class GameManager : Node
             return;
         }
 
-        // TODO: Automatisch speichern, sobald SaveService.Save() existiert
         Log.Info("Spiel wird beendet.");
-        _simulation?.Stop();
+        if (_simulation != null)
+        {
+            SaveService.Autosave(_simulation.World.CaptureState(), _scenario);
+        }
+
+        StopSimulation();
         Instance = null;
         Perf.Shutdown();
         LogManager.Shutdown();
@@ -76,20 +93,39 @@ public partial class GameManager : Node
 
     public void StartNewGame()
     {
-        Log.Info("Neues Spiel wird gestartet.");
+        // Der Seed selbst darf zufällig sein; ab hier ist alles deterministisch und der Seed steht im Spielstand
+        ulong seed = BitConverter.ToUInt64(CryptoRandom.GetBytes(sizeof(ulong)));
+        Log.Info($"Neues Spiel wird gestartet, Seed {seed}.");
 
+        // TODO: Startzeit aus Welt-/Szenariodaten statt Weltzeit 0 (Abschnitt 3, 11; T-025)
+        World world = World.Create(LogManager.SimulationLoggerFactory, seed, 0);
+        // TODO: Szenario-Auswahl statt fest Expedition (Abschnitt 11)
+        StartSimulation(world, new ScenarioState(ScenarioState.ExpeditionId));
+        ChangeScene(ScenePaths.Map);
     }
 
     public void LoadGame()
     {
-        if (!SaveService.HasSave())
+        if (!SaveService.TryLoadLatest(out WorldState worldState, out ScenarioState scenario))
         {
-            Log.Warn("Laden angefordert, aber kein Spielstand vorhanden.");
+            Log.Warn("Laden angefordert, aber kein lesbarer Spielstand vorhanden.");
             return;
         }
 
-        // TODO: SaveService.Load() -> Welt- und Szenariozustand getrennt laden, dann ChangeScene(ScenePaths.Map) (Abschnitt 12)
-        Log.Warn("Laden ist noch nicht implementiert.");
+        World world = World.Restore(LogManager.SimulationLoggerFactory, worldState);
+        StartSimulation(world, scenario);
+        ChangeScene(ScenePaths.Map);
+    }
+
+    public bool SaveGame(string slotName)
+    {
+        if (_simulation == null)
+        {
+            Log.Warn("Speichern angefordert, aber es läuft kein Spiel.");
+            return false;
+        }
+
+        return SaveService.Save(slotName, _simulation.World.CaptureState(), _scenario);
     }
 
     public void QuitGame()
@@ -112,6 +148,28 @@ public partial class GameManager : Node
         {
             Log.Error($"Szenenwechsel fehlgeschlagen: {scenePath} ({result})");
         }
+    }
+
+    private void StartSimulation(World world, ScenarioState scenario)
+    {
+        StopSimulation();
+        _scenario = scenario;
+        _simulation = new SimulationRunner(LogManager.SimulationLoggerFactory.CreateLogger<SimulationRunner>(), world);
+        LogManager.WorldTimeSource = () => world.Clock.Now;
+        _simulation.Start();
+    }
+
+    private void StopSimulation()
+    {
+        if (_simulation == null)
+        {
+            return;
+        }
+
+        _simulation.Stop();
+        _simulation = null;
+        _scenario = null;
+        LogManager.WorldTimeSource = null;
     }
 
     private void LogEnvironmentInfo()

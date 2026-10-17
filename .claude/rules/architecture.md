@@ -30,7 +30,8 @@ Daten ← Simulation ← Szenario ← Präsentation. Abhängigkeiten nur nach li
 - Der Weltzustand kennt das Szenario nicht. Szenariozustand (z. B. Tutorial-Fortschritt) wird getrennt gehalten und gespeichert.
 
 ## Determinismus
-- Zufall ausschließlich über übergebene, seedbare RNG-Instanzen bzw. den zentralen Würfeldienst. Kein `new Random()` ohne Seed, kein `Random.Shared`, kein `GD.Randf()` im Kern.
+- Zufall ausschließlich über `TiefBerg.Simulation.Dice.DiceService` bzw. übergebene `RandomSource`-Instanzen. `System.Random` ist im Kern per `BannedSymbols.txt` gesperrt (Folge nicht versionsstabil, Zustand nicht speicherbar), `GD.Randf()` ist dort ohnehin nicht verfügbar.
+- Parallele Arbeit und ortsgebundene Erzeugung (Abschnitt 10) nutzen `RandomSource.Derive(seed, key)`, keine geteilte Instanz über Threads.
 - Gleicher Seed → gleiche Welt. Iteration über `Dictionary`/`HashSet` nicht für ergebnisrelevante Reihenfolgen nutzen.
 - Jeder Würfelwurf wird auf Debug geloggt.
 

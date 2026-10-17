@@ -10,16 +10,17 @@ public sealed class SimulationRunner
 {
     private readonly ILogger<SimulationRunner> _log;
 
-    public SimulationRunner(ILogger<SimulationRunner> log, WorldClock clock, Scheduler scheduler)
+    public SimulationRunner(ILogger<SimulationRunner> log, World world)
     {
         _log = log;
-        Clock = clock;
-        Scheduler = scheduler;
+        World = world;
     }
 
-    public WorldClock Clock { get; }
+    public World World { get; }
 
-    public Scheduler Scheduler { get; }
+    public WorldClock Clock => World.Clock;
+
+    public Scheduler Scheduler => World.Scheduler;
 
     // Ein Tick = 1 Sekunde Weltzeit (Abschnitt 3); eine Kampfrunde sind 6 Ticks (Abschnitt 7)
     public const ulong SecondsPerTick = 1;
@@ -38,7 +39,6 @@ public sealed class SimulationRunner
             return;
         }
 
-        // TODO: Seed und Weltzustand übergeben, sobald die Welt existiert; die Weltzeit setzt der Aufrufer über Clock (Abschnitt 2, T-012)
         TickCount = 0;
         IsRunning = true;
         _log.Info("Simulation gestartet.");

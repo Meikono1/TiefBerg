@@ -4,6 +4,10 @@ namespace TiefBerg.Simulation.Scheduling;
 // Der Scheduler ruft Run nur auf, wenn das System fällig ist; Systeme pollen nicht selbst.
 public interface ISimulationSystem
 {
+    // Feste, eindeutige Kennung (z. B. "needs"). Spielstände ordnen Fälligkeiten darüber zu,
+    // daher nie ändern; Klassen dürfen umbenannt werden, die Id nicht.
+    string Id { get; }
+
     // Abstand zwischen zwei Läufen in Sekunden Weltzeit, > 0
     ulong IntervalSeconds { get; }
 

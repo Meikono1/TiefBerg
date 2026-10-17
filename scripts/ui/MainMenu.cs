@@ -40,7 +40,7 @@ public partial class MainMenu : Control
             return;
         }
 
-        GameManager.Instance.ChangeScene(ScenePaths.Map);
+        GameManager.Instance.StartNewGame();
     }
 
     private void OnQuitPressed()

@@ -89,6 +89,38 @@ public class SchedulerTests
         Assert.Throws<InvalidOperationException>(() => _scheduler.RunDue(1));
     }
 
+    [Fact]
+    public void Register_SameIdTwice_Throws()
+    {
+        _scheduler.Register(new RecordingSystem("A", 10, _runs), 10);
+
+        Assert.Throws<InvalidOperationException>(() =>
+            _scheduler.Register(new RecordingSystem("A", 20, _runs), 10));
+    }
+
+    [Fact]
+    public void GetSchedule_ListsInRunOrder()
+    {
+        _scheduler.Register(new ThrowingSystem(), 50);
+        _scheduler.Register(new RecordingSystem("A", 10, _runs), 10);
+
+        Assert.Equal(new[] { new ScheduledRun("A", 10), new ScheduledRun("throwing", 50) },
+            _scheduler.GetSchedule());
+    }
+
+    [Fact]
+    public void ApplySchedule_RestoresDuesAndHandlesUnknownOrMissingSystems()
+    {
+        _scheduler.Register(new RecordingSystem("A", 10, _runs), 10);
+        _scheduler.Register(new ThrowingSystem(), 50);
+
+        _scheduler.ApplySchedule(new[] { new ScheduledRun("A", 1_000), new ScheduledRun("gone", 5) });
+
+        // A aus dem Spielstand, "throwing" fehlte dort und behält seine Fälligkeit, "gone" verworfen
+        Assert.Equal(new[] { new ScheduledRun("throwing", 50), new ScheduledRun("A", 1_000) },
+            _scheduler.GetSchedule());
+    }
+
     private sealed class RecordingSystem : ISimulationSystem
     {
         private readonly string _name;
@@ -101,6 +133,8 @@ public class SchedulerTests
             _runs = runs;
         }
 
+        public string Id => _name;
+
         public ulong IntervalSeconds { get; }
 
         public void Run(ulong dueSeconds) => _runs.Add($"{_name}@{dueSeconds}");
@@ -108,6 +142,8 @@ public class SchedulerTests
 
     private sealed class ThrowingSystem : ISimulationSystem
     {
+        public string Id => "throwing";
+
         public ulong IntervalSeconds => 1;
 
         public void Run(ulong dueSeconds) => throw new InvalidOperationException("Test");

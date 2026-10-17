@@ -144,7 +144,10 @@ Alles hat ein Level von 0 bis 30 (30 = gottgleich); Proben sind W20 plus Level, 
 - E - Charaktere ziehen als Party (Abschnitt 6) in Dungeons.
 - E - Ein zentraler, seedbarer Würfeldienst. Jeder Wurf wird auf Debug geloggt. Auf Statistik-Ebene (Abschnitt 10) wird mit Wahrscheinlichkeiten statt Würfen gerechnet.
 - O - Vorschlag: Schlachten mit hunderten Beteiligten statistisch abwickeln, Einzelwürfe nur für benannte Personen.
-- O - Kritische Erfolge, Attribute, Fertigkeiten.
+- E - Vier Erfolgsgrade wie PF2e: Ergebnis ≥ SG + 10 kritischer Erfolg, ≥ SG Erfolg, ≤ SG − 10 kritischer Fehlschlag, sonst Fehlschlag.
+- E - Rettungswurf gegen Schaden: kritischer Erfolg kein Schaden, Erfolg halber Schaden, Fehlschlag voller Schaden, kritischer Fehlschlag doppelter Schaden.
+- O - Natürliche 20 bzw. 1 verbessern bzw. verschlechtern den Erfolgsgrad um eine Stufe (PF2e)? Rundung bei halbem Schaden (Annahme im Code: abrunden). - Nat 20 und Nat 1 werden den GGrad entsprechend anpassen. Gerunded wird immer abwärts.
+- O - Attribute, Fertigkeiten.
 - O - Herkunft der Dungeons (handgebaut oder generiert), Darstellung des Rasterkampfs im Textadventure.
 
 ## 8. Magie
