@@ -1,0 +1,213 @@
+[gd_scene format=3 uid="uid://bdsi0rj2hbcf0"]
+
+[ext_resource type="Texture2D" uid="uid://mrlvs4q8sh70" path="res://lore/weltkarte.png" id="1_ftcy0"]
+[ext_resource type="Script" uid="uid://bhlwxdpp2v4lm" path="res://scripts/ui/scenario/ScenarioSelect.cs" id="1_vmjwq"]
+[ext_resource type="Script" uid="uid://d17o7mdkbykmu" path="res://scripts/ui/scenario/MapPanZoom.cs" id="2_503t2"]
+
+[node name="ScenarioSelect" type="Control" unique_id=184553995]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_vmjwq")
+
+[node name="Background" type="ColorRect" parent="." unique_id=1610891406]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.026930455, 0.39005136, 0.58845204, 1)
+
+[node name="Layout" type="VBoxContainer" parent="." unique_id=1312527492]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TopBar" type="PanelContainer" parent="Layout" unique_id=1220296145]
+layout_mode = 2
+
+[node name="TopBarBox" type="HBoxContainer" parent="Layout/TopBar" unique_id=167221214]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="YearDisplay" type="PanelContainer" parent="Layout/TopBar/TopBarBox" unique_id=1744703630]
+layout_mode = 2
+
+[node name="YearBox" type="HBoxContainer" parent="Layout/TopBar/TopBarBox/YearDisplay" unique_id=943849374]
+layout_mode = 2
+
+[node name="YearCaption" type="Label" parent="Layout/TopBar/TopBarBox/YearDisplay/YearBox" unique_id=748549925]
+layout_mode = 2
+
+[node name="YearLabel" type="Label" parent="Layout/TopBar/TopBarBox/YearDisplay/YearBox" unique_id=840991385]
+layout_mode = 2
+
+[node name="TopSpacer" type="Control" parent="Layout/TopBar/TopBarBox" unique_id=1146409070]
+layout_mode = 2
+
+[node name="ZoomToPointCheck" type="CheckButton" parent="Layout/TopBar/TopBarBox" unique_id=1254638017]
+layout_mode = 2
+
+[node name="MapModeCaption" type="Label" parent="Layout/TopBar/TopBarBox" unique_id=1699638464]
+layout_mode = 2
+
+[node name="MapModeBar" type="HBoxContainer" parent="Layout/TopBar/TopBarBox" unique_id=580021009]
+layout_mode = 2
+
+[node name="Main" type="HBoxContainer" parent="Layout" unique_id=1897779693]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="LeftColumn" type="VBoxContainer" parent="Layout/Main" unique_id=494769476]
+custom_minimum_size = Vector2(380, 0)
+layout_mode = 2
+
+[node name="ScenarioListPanel" type="PanelContainer" parent="Layout/Main/LeftColumn" unique_id=675804311]
+layout_mode = 2
+
+[node name="ScenarioListBox" type="VBoxContainer" parent="Layout/Main/LeftColumn/ScenarioListPanel" unique_id=259716073]
+layout_mode = 2
+
+[node name="ScenarioListCaption" type="Label" parent="Layout/Main/LeftColumn/ScenarioListPanel/ScenarioListBox" unique_id=1396077976]
+layout_mode = 2
+
+[node name="ListScroll" type="ScrollContainer" parent="Layout/Main/LeftColumn/ScenarioListPanel/ScenarioListBox" unique_id=711635113]
+custom_minimum_size = Vector2(0, 220)
+layout_mode = 2
+
+[node name="ScenarioList" type="VBoxContainer" parent="Layout/Main/LeftColumn/ScenarioListPanel/ScenarioListBox/ListScroll" unique_id=998654589]
+layout_mode = 2
+
+[node name="DetailPanel" type="PanelContainer" parent="Layout/Main/LeftColumn" unique_id=110269762]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="DetailMargin" type="MarginContainer" parent="Layout/Main/LeftColumn/DetailPanel" unique_id=1960342570]
+layout_mode = 2
+
+[node name="DetailBox" type="VBoxContainer" parent="Layout/Main/LeftColumn/DetailPanel/DetailMargin" unique_id=950218374]
+layout_mode = 2
+
+[node name="PreviewImage" type="TextureRect" parent="Layout/Main/LeftColumn/DetailPanel/DetailMargin/DetailBox" unique_id=1002104172]
+custom_minimum_size = Vector2(0, 180)
+layout_mode = 2
+
+[node name="ScenarioTitle" type="Label" parent="Layout/Main/LeftColumn/DetailPanel/DetailMargin/DetailBox" unique_id=1506524019]
+layout_mode = 2
+
+[node name="ScenarioTags" type="HFlowContainer" parent="Layout/Main/LeftColumn/DetailPanel/DetailMargin/DetailBox" unique_id=1922862267]
+layout_mode = 2
+
+[node name="ScenarioDescription" type="RichTextLabel" parent="Layout/Main/LeftColumn/DetailPanel/DetailMargin/DetailBox" unique_id=149274515]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="LockedHint" type="Label" parent="Layout/Main/LeftColumn/DetailPanel/DetailMargin/DetailBox" unique_id=2037356601]
+layout_mode = 2
+
+[node name="MapView" type="Control" parent="Layout/Main" unique_id=366247578]
+clip_contents = true
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("2_503t2")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Layout/Main/MapView" unique_id=883543325]
+layout_mode = 0
+offset_left = 1536.0
+offset_right = 1536.0
+offset_bottom = 938.0
+
+[node name="MapContent" type="Control" parent="Layout/Main/MapView" unique_id=998230136]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="WorldMap" type="TextureRect" parent="Layout/Main/MapView/MapContent" unique_id=312025973]
+texture_filter = 4
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("1_ftcy0")
+expand_mode = 1
+
+[node name="MarkerLayer" type="Control" parent="Layout/Main/MapView" unique_id=477060125]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="MapModeLabel" type="Label" parent="Layout/Main/MapView" unique_id=772845526]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -23.0
+offset_right = 40.0
+grow_vertical = 0
+
+[node name="MapControls" type="VBoxContainer" parent="Layout/Main/MapView" unique_id=1755249324]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -40.0
+offset_top = -40.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="ZoomInButton" type="Button" parent="Layout/Main/MapView/MapControls" unique_id=1377044566]
+layout_mode = 2
+text = "+"
+
+[node name="ZoomOutButton" type="Button" parent="Layout/Main/MapView/MapControls" unique_id=1826182212]
+layout_mode = 2
+text = "-"
+
+[node name="ResetViewButton" type="Button" parent="Layout/Main/MapView/MapControls" unique_id=1583942978]
+layout_mode = 2
+text = "O"
+
+[node name="BottomBar" type="PanelContainer" parent="Layout" unique_id=653183139]
+custom_minimum_size = Vector2(0, 110)
+layout_mode = 2
+
+[node name="BottomBox" type="HBoxContainer" parent="Layout/BottomBar" unique_id=1814377214]
+layout_mode = 2
+
+[node name="BackButton" type="Button" parent="Layout/BottomBar/BottomBox" unique_id=1254285174]
+custom_minimum_size = Vector2(160, 48)
+layout_mode = 2
+text = "UI_BACK"
+
+[node name="NewsScroll" type="ScrollContainer" parent="Layout/BottomBar/BottomBox" unique_id=925934713]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="NewsList" type="HBoxContainer" parent="Layout/BottomBar/BottomBox/NewsScroll" unique_id=417657759]
+layout_mode = 2
+
+[node name="ContinueButton" type="Button" parent="Layout/BottomBar/BottomBox" unique_id=2003675034]
+custom_minimum_size = Vector2(160, 48)
+layout_mode = 2
+text = "UI_CONTINUE"

@@ -236,6 +236,15 @@ Logging ist Pflicht und dient zugleich als Chronik des Reiches im Spiel.
 
 - E - Haupttext über `RichTextLabel` mit BBCode. Namen und Orte sind anklickbar (`meta_clicked`) und öffnen Personenkarte, Stammbaum oder Ort.
 - O - Welche Ansichten nötig sind, kommt später.
+- E - Szenarioauswahl: Hauptmenü → Start → Szenarioauswahl auf der Weltkarte, Layout nach Vorlage Europa Universalis IV. Oben Jahresanzeige (Startjahr des gewählten Szenarios) und Buttons für Kartenmodi; links die Liste aller Szenarien und darunter die Details (Vorschaubild, Titel, Tags, Beschreibung); in der Mitte die Karte; unten die neuesten Szenarien mit Text zu Änderungen und Features; unten links Zurück (Hauptmenü), unten rechts Weiter.
+- E - Die Karte lässt sich verschieben (Ziehen) und zoomen (Mausrad, Buttons, Zurücksetzen auf Gesamtansicht). Kartenmodi tauschen die Kartenebene, Ausschnitt und Zoom bleiben.
+- E - Szenarien erscheinen zusätzlich als Punkte mit Icon auf der Karte. Punkt, Listeneintrag und News-Karte wählen dasselbe aus; die Auswahl fährt die Karte an den Punkt heran („Zoom zum Punkt“), abschaltbar. Doppelklick wirkt wie Weiter.
+- E - Gesperrte bzw. geplante Szenarien erscheinen als gesperrt, zeigen ihre Details und lassen sich nicht starten.
+- E - Szenarien werden über eine Konfigurationsdatei beschrieben (Position auf der Weltkarte, Icon, Vorschaubild, Startjahr, Texte über Schlüssel, Neuigkeiten mit Datum/Version). Icons liegen unter `resources/MapIcons/`.
+- O - Vorschlag: Zustand der Punkte (normal, Hover, ausgewählt, gesperrt) über einen Ring bzw. Hintergrundkreis hinter dem Icon, da die Icons schwarz sind und sich per `Modulate` nicht einfärben lassen.
+- O - Ob Weiter später einen Zwischenschritt öffnet (Charakter, Optionen) statt direkt zu starten; ob das Startjahr wie in EU4 wählbar wird; welche Kartenmodi es gibt (Vorschlag: Terrain, Klima, Vegetation, Völker); ob „Zoom zum Punkt“ gespeichert wird.
+- E - Aufbau in Godot (Node-Baum, Namen, Module, Theme-Varianten, Exports) steht in `defines/UI Szenarioauswahl.md`. Szenen und Theme baut der Entwickler im Editor, Scripts kommen dazu passend.
+- O - Vorschlag (nach CK3, Battle Brothers, Kenshi): Tooltip am Kartenpunkt, Tastatursteuerung (Pfeil hoch/runter, Enter, Esc), letzte Auswahl merken, Schwierigkeit/Tags im Panel, Freischalt-Hinweis bei gesperrten Szenarien.
 - E - Logging ist Pflicht, darf aber am Ende nicht viel Leistung kosten.
 - E - Technisches Log über `Microsoft.Extensions.Logging` oder Serilog im Simulationskern, unabhängig von `GD.Print`. Logger per Konstruktor. Jede Simulationsmeldung trägt die Weltzeit.
 - O - Vorschlag: Teure Meldungen nur nach Level-Prüfung erzeugen; im Release standardmäßig ab Warning.

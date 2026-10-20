@@ -23,6 +23,17 @@ config/icon="res://icon.svg"
 
 GameManager="*uid://chsl1escc4wlp"
 
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+
 [dotnet]
 
 project/assembly_name="Tiefberg"
+
+[gui]
+
+theme/custom="uid://dasqvd84nw2on"

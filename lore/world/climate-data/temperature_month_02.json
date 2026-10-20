@@ -1,0 +1,38 @@
+{
+  "format": "wcl-climate-data",
+  "format_version": 1,
+  "file": "temperature_month_02.png",
+  "quantity": "Monthly mean temperature, month 2",
+  "description": "Near-surface air temperature, about 2 m above the ground or sea surface. At the ground's own height: not reduced to sea level. Mean over month 2.",
+  "grid": {
+    "projection": "equirectangular (plate carree), longitude and latitude in degrees",
+    "width": 2048,
+    "height": 1024,
+    "longitude_left_edge": -180.0,
+    "longitude_right_edge": 180.0,
+    "latitude_top_edge": 90.0,
+    "latitude_bottom_edge": -90.0,
+    "first_row": "north",
+    "pixel_registration": "area: pixel (i, j) covers the cell whose centre is at longitude -180 + (i + 0.5) * 360 / width, latitude 90 - (j + 0.5) * 180 / height",
+    "seam_longitude": 180.0
+  },
+  "period": {
+    "type": "climatology",
+    "description": "Long-term means of the settled climate, averaged over several simulated years. Annual amounts are the average year, not one particular year.",
+    "year_length_days": 365.256,
+    "months": "Twelve equal parts of this world's year.",
+    "month_1_start": "The point of the orbit that corresponds to 1 January on Earth."
+  },
+  "month": 2,
+  "units": "degC",
+  "encoding": {
+    "type": "linear",
+    "bits": 16,
+    "encoding_min": -150.0,
+    "encoding_max": 150.0,
+    "formula": "value = encoding_min + pixel / 65535 * (encoding_max - encoding_min)"
+  },
+  "observed_min": -58.4,
+  "observed_max": 37.466,
+  "valid": "all"
+}

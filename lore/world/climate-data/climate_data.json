@@ -1,0 +1,202 @@
+{
+  "format": "wcl-climate-data",
+  "format_version": 1,
+  "generator": "World Climate Lab 0.1.10",
+  "created": "2026-10-20T10:12:52Z",
+  "grid": {
+    "projection": "equirectangular (plate carree), longitude and latitude in degrees",
+    "width": 2048,
+    "height": 1024,
+    "longitude_left_edge": -180.0,
+    "longitude_right_edge": 180.0,
+    "latitude_top_edge": 90.0,
+    "latitude_bottom_edge": -90.0,
+    "first_row": "north",
+    "pixel_registration": "area: pixel (i, j) covers the cell whose centre is at longitude -180 + (i + 0.5) * 360 / width, latitude 90 - (j + 0.5) * 180 / height",
+    "seam_longitude": 180.0
+  },
+  "period": {
+    "type": "climatology",
+    "description": "Long-term means of the settled climate, averaged over several simulated years. Annual amounts are the average year, not one particular year.",
+    "year_length_days": 365.256,
+    "months": "Twelve equal parts of this world's year.",
+    "month_1_start": "The point of the orbit that corresponds to 1 January on Earth."
+  },
+  "files": [
+    {
+      "file": "land_mask.png",
+      "metadata": "land_mask.json",
+      "quantity": "Land and sea"
+    },
+    {
+      "file": "elevation.png",
+      "metadata": "elevation.json",
+      "quantity": "Land elevation"
+    },
+    {
+      "file": "temperature_annual_mean.png",
+      "metadata": "temperature_annual_mean.json",
+      "quantity": "Annual mean temperature"
+    },
+    {
+      "file": "temperature_coldest_month.png",
+      "metadata": "temperature_coldest_month.json",
+      "quantity": "Coldest month temperature"
+    },
+    {
+      "file": "temperature_warmest_month.png",
+      "metadata": "temperature_warmest_month.json",
+      "quantity": "Warmest month temperature"
+    },
+    {
+      "file": "precipitation_annual.png",
+      "metadata": "precipitation_annual.json",
+      "quantity": "Annual precipitation"
+    },
+    {
+      "file": "rainfall_annual.png",
+      "metadata": "rainfall_annual.json",
+      "quantity": "Annual rainfall"
+    },
+    {
+      "file": "snowfall_annual.png",
+      "metadata": "snowfall_annual.json",
+      "quantity": "Annual snowfall"
+    },
+    {
+      "file": "soil_water_index.png",
+      "metadata": "soil_water_index.json",
+      "quantity": "Soil water"
+    },
+    {
+      "file": "snow_ice_cover.png",
+      "metadata": "snow_ice_cover.json",
+      "quantity": "Snow and ice cover"
+    },
+    {
+      "file": "climate_class.png",
+      "metadata": "climate_class.json",
+      "quantity": "Climate class"
+    },
+    {
+      "file": "temperature_month_01.png",
+      "metadata": "temperature_month_01.json",
+      "quantity": "Monthly mean temperature, month 1"
+    },
+    {
+      "file": "temperature_month_02.png",
+      "metadata": "temperature_month_02.json",
+      "quantity": "Monthly mean temperature, month 2"
+    },
+    {
+      "file": "temperature_month_03.png",
+      "metadata": "temperature_month_03.json",
+      "quantity": "Monthly mean temperature, month 3"
+    },
+    {
+      "file": "temperature_month_04.png",
+      "metadata": "temperature_month_04.json",
+      "quantity": "Monthly mean temperature, month 4"
+    },
+    {
+      "file": "temperature_month_05.png",
+      "metadata": "temperature_month_05.json",
+      "quantity": "Monthly mean temperature, month 5"
+    },
+    {
+      "file": "temperature_month_06.png",
+      "metadata": "temperature_month_06.json",
+      "quantity": "Monthly mean temperature, month 6"
+    },
+    {
+      "file": "temperature_month_07.png",
+      "metadata": "temperature_month_07.json",
+      "quantity": "Monthly mean temperature, month 7"
+    },
+    {
+      "file": "temperature_month_08.png",
+      "metadata": "temperature_month_08.json",
+      "quantity": "Monthly mean temperature, month 8"
+    },
+    {
+      "file": "temperature_month_09.png",
+      "metadata": "temperature_month_09.json",
+      "quantity": "Monthly mean temperature, month 9"
+    },
+    {
+      "file": "temperature_month_10.png",
+      "metadata": "temperature_month_10.json",
+      "quantity": "Monthly mean temperature, month 10"
+    },
+    {
+      "file": "temperature_month_11.png",
+      "metadata": "temperature_month_11.json",
+      "quantity": "Monthly mean temperature, month 11"
+    },
+    {
+      "file": "temperature_month_12.png",
+      "metadata": "temperature_month_12.json",
+      "quantity": "Monthly mean temperature, month 12"
+    },
+    {
+      "file": "precipitation_month_01.png",
+      "metadata": "precipitation_month_01.json",
+      "quantity": "Monthly precipitation, month 1"
+    },
+    {
+      "file": "precipitation_month_02.png",
+      "metadata": "precipitation_month_02.json",
+      "quantity": "Monthly precipitation, month 2"
+    },
+    {
+      "file": "precipitation_month_03.png",
+      "metadata": "precipitation_month_03.json",
+      "quantity": "Monthly precipitation, month 3"
+    },
+    {
+      "file": "precipitation_month_04.png",
+      "metadata": "precipitation_month_04.json",
+      "quantity": "Monthly precipitation, month 4"
+    },
+    {
+      "file": "precipitation_month_05.png",
+      "metadata": "precipitation_month_05.json",
+      "quantity": "Monthly precipitation, month 5"
+    },
+    {
+      "file": "precipitation_month_06.png",
+      "metadata": "precipitation_month_06.json",
+      "quantity": "Monthly precipitation, month 6"
+    },
+    {
+      "file": "precipitation_month_07.png",
+      "metadata": "precipitation_month_07.json",
+      "quantity": "Monthly precipitation, month 7"
+    },
+    {
+      "file": "precipitation_month_08.png",
+      "metadata": "precipitation_month_08.json",
+      "quantity": "Monthly precipitation, month 8"
+    },
+    {
+      "file": "precipitation_month_09.png",
+      "metadata": "precipitation_month_09.json",
+      "quantity": "Monthly precipitation, month 9"
+    },
+    {
+      "file": "precipitation_month_10.png",
+      "metadata": "precipitation_month_10.json",
+      "quantity": "Monthly precipitation, month 10"
+    },
+    {
+      "file": "precipitation_month_11.png",
+      "metadata": "precipitation_month_11.json",
+      "quantity": "Monthly precipitation, month 11"
+    },
+    {
+      "file": "precipitation_month_12.png",
+      "metadata": "precipitation_month_12.json",
+      "quantity": "Monthly precipitation, month 12"
+    }
+  ]
+}

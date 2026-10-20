@@ -1,0 +1,37 @@
+{
+  "format": "wcl-climate-data",
+  "format_version": 1,
+  "file": "elevation.png",
+  "quantity": "Land elevation",
+  "description": "Height of the land above sea level, in metres. Sea pixels are 0: this map holds no sea floor depth.",
+  "grid": {
+    "projection": "equirectangular (plate carree), longitude and latitude in degrees",
+    "width": 2048,
+    "height": 1024,
+    "longitude_left_edge": -180.0,
+    "longitude_right_edge": 180.0,
+    "latitude_top_edge": 90.0,
+    "latitude_bottom_edge": -90.0,
+    "first_row": "north",
+    "pixel_registration": "area: pixel (i, j) covers the cell whose centre is at longitude -180 + (i + 0.5) * 360 / width, latitude 90 - (j + 0.5) * 180 / height",
+    "seam_longitude": 180.0
+  },
+  "period": {
+    "type": "climatology",
+    "description": "Long-term means of the settled climate, averaged over several simulated years. Annual amounts are the average year, not one particular year.",
+    "year_length_days": 365.256,
+    "months": "Twelve equal parts of this world's year.",
+    "month_1_start": "The point of the orbit that corresponds to 1 January on Earth."
+  },
+  "units": "m",
+  "encoding": {
+    "type": "linear",
+    "bits": 16,
+    "encoding_min": 0.0,
+    "encoding_max": 20000.0,
+    "formula": "value = encoding_min + pixel / 65535 * (encoding_max - encoding_min)"
+  },
+  "observed_min": 0.0,
+  "observed_max": 8831.6,
+  "valid": "all"
+}

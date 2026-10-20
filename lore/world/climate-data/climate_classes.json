@@ -1,0 +1,446 @@
+{
+  "format": "wcl-climate-data",
+  "format_version": 1,
+  "file": "climate_class.png",
+  "no_class": 0,
+  "classes": [
+    {
+      "value": 1,
+      "system": "Koppen-Geiger",
+      "code": "Af",
+      "name": "Tropical Rainforest"
+    },
+    {
+      "value": 2,
+      "system": "Koppen-Geiger",
+      "code": "Am",
+      "name": "Tropical Monsoon"
+    },
+    {
+      "value": 3,
+      "system": "Koppen-Geiger",
+      "code": "Aw",
+      "name": "Savanna, Dry Winter"
+    },
+    {
+      "value": 4,
+      "system": "Koppen-Geiger",
+      "code": "As",
+      "name": "Savanna, Dry Summer"
+    },
+    {
+      "value": 5,
+      "system": "Koppen-Geiger",
+      "code": "BWh",
+      "name": "Hot Desert"
+    },
+    {
+      "value": 6,
+      "system": "Koppen-Geiger",
+      "code": "BWk",
+      "name": "Cold Desert"
+    },
+    {
+      "value": 7,
+      "system": "Koppen-Geiger",
+      "code": "BSh",
+      "name": "Hot Steppe"
+    },
+    {
+      "value": 8,
+      "system": "Koppen-Geiger",
+      "code": "BSk",
+      "name": "Cold Steppe"
+    },
+    {
+      "value": 9,
+      "system": "Koppen-Geiger",
+      "code": "Cfa",
+      "name": "Humid Subtropical"
+    },
+    {
+      "value": 10,
+      "system": "Koppen-Geiger",
+      "code": "Cfb",
+      "name": "Oceanic"
+    },
+    {
+      "value": 11,
+      "system": "Koppen-Geiger",
+      "code": "Cfc",
+      "name": "Subpolar Oceanic"
+    },
+    {
+      "value": 12,
+      "system": "Koppen-Geiger",
+      "code": "Csa",
+      "name": "Hot Mediterranean"
+    },
+    {
+      "value": 13,
+      "system": "Koppen-Geiger",
+      "code": "Csb",
+      "name": "Warm Mediterranean"
+    },
+    {
+      "value": 14,
+      "system": "Koppen-Geiger",
+      "code": "Csc",
+      "name": "Cold Mediterranean"
+    },
+    {
+      "value": 15,
+      "system": "Koppen-Geiger",
+      "code": "Cwa",
+      "name": "Dry-Winter Subtropical"
+    },
+    {
+      "value": 16,
+      "system": "Koppen-Geiger",
+      "code": "Cwb",
+      "name": "Subtropical Highland"
+    },
+    {
+      "value": 17,
+      "system": "Koppen-Geiger",
+      "code": "Cwc",
+      "name": "Cold Highland"
+    },
+    {
+      "value": 18,
+      "system": "Koppen-Geiger",
+      "code": "Dfa",
+      "name": "Hot Humid Continental"
+    },
+    {
+      "value": 19,
+      "system": "Koppen-Geiger",
+      "code": "Dfb",
+      "name": "Warm Humid Continental"
+    },
+    {
+      "value": 20,
+      "system": "Koppen-Geiger",
+      "code": "Dfc",
+      "name": "Subarctic"
+    },
+    {
+      "value": 21,
+      "system": "Koppen-Geiger",
+      "code": "Dfd",
+      "name": "Extreme Subarctic"
+    },
+    {
+      "value": 22,
+      "system": "Koppen-Geiger",
+      "code": "Dsa",
+      "name": "Hot Dry-Summer Continental"
+    },
+    {
+      "value": 23,
+      "system": "Koppen-Geiger",
+      "code": "Dsb",
+      "name": "Warm Dry-Summer Continental"
+    },
+    {
+      "value": 24,
+      "system": "Koppen-Geiger",
+      "code": "Dsc",
+      "name": "Cold Dry-Summer Continental"
+    },
+    {
+      "value": 25,
+      "system": "Koppen-Geiger",
+      "code": "Dsd",
+      "name": "Extreme Dry-Summer Continental"
+    },
+    {
+      "value": 26,
+      "system": "Koppen-Geiger",
+      "code": "Dwa",
+      "name": "Hot Dry-Winter Continental"
+    },
+    {
+      "value": 27,
+      "system": "Koppen-Geiger",
+      "code": "Dwb",
+      "name": "Warm Dry-Winter Continental"
+    },
+    {
+      "value": 28,
+      "system": "Koppen-Geiger",
+      "code": "Dwc",
+      "name": "Cold Dry-Winter Subarctic"
+    },
+    {
+      "value": 29,
+      "system": "Koppen-Geiger",
+      "code": "Dwd",
+      "name": "Extreme Dry-Winter Subarctic"
+    },
+    {
+      "value": 30,
+      "system": "Koppen-Geiger",
+      "code": "ET",
+      "name": "Tundra"
+    },
+    {
+      "value": 31,
+      "system": "Koppen-Geiger",
+      "code": "EF",
+      "name": "Ice Cap"
+    },
+    {
+      "value": 32,
+      "system": "Water",
+      "code": "WI",
+      "name": "Permanent sea ice"
+    },
+    {
+      "value": 33,
+      "system": "Water",
+      "code": "WS",
+      "name": "Seasonal sea ice"
+    },
+    {
+      "value": 34,
+      "system": "Water",
+      "code": "WC",
+      "name": "Cold water"
+    },
+    {
+      "value": 35,
+      "system": "Water",
+      "code": "WT",
+      "name": "Temperate water"
+    },
+    {
+      "value": 36,
+      "system": "Water",
+      "code": "WW",
+      "name": "Warm water"
+    },
+    {
+      "value": 37,
+      "system": "Water",
+      "code": "WH",
+      "name": "Hot water"
+    },
+    {
+      "value": 38,
+      "system": "Water",
+      "code": "WE",
+      "name": "Evaporating water"
+    },
+    {
+      "value": 39,
+      "system": "Water",
+      "code": "WB",
+      "name": "Boiling water"
+    },
+    {
+      "value": 40,
+      "system": "Erebus",
+      "code": "Cp",
+      "name": "Convergent core forest"
+    },
+    {
+      "value": 41,
+      "system": "Erebus",
+      "code": "Cx",
+      "name": "Hard substellar desert"
+    },
+    {
+      "value": 42,
+      "system": "Erebus",
+      "code": "Bp",
+      "name": "Day-belt wet forest"
+    },
+    {
+      "value": 43,
+      "system": "Erebus",
+      "code": "Bs",
+      "name": "Source-margin growth"
+    },
+    {
+      "value": 44,
+      "system": "Erebus",
+      "code": "Bc",
+      "name": "Corridor vegetation"
+    },
+    {
+      "value": 45,
+      "system": "Erebus",
+      "code": "Fc",
+      "name": "Savanna fringe"
+    },
+    {
+      "value": 46,
+      "system": "Erebus",
+      "code": "Fp",
+      "name": "Sun-to-shade transition forest"
+    },
+    {
+      "value": 47,
+      "system": "Erebus",
+      "code": "Fo",
+      "name": "Fringe fog forest"
+    },
+    {
+      "value": 48,
+      "system": "Erebus",
+      "code": "To",
+      "name": "Twilight cloud forest"
+    },
+    {
+      "value": 49,
+      "system": "Erebus",
+      "code": "To-l",
+      "name": "Cold-wet-shadow fog scrub"
+    },
+    {
+      "value": 50,
+      "system": "Erebus",
+      "code": "Tx",
+      "name": "Twilight Desert"
+    },
+    {
+      "value": 51,
+      "system": "Erebus",
+      "code": "Aw",
+      "name": "Aphotic temperate zone"
+    },
+    {
+      "value": 52,
+      "system": "Erebus",
+      "code": "Gp",
+      "name": "Glacial"
+    },
+    {
+      "value": 53,
+      "system": "Erebus",
+      "code": "Nx",
+      "name": "Frozen night waste"
+    },
+    {
+      "value": 54,
+      "system": "Erebus",
+      "code": "Ah",
+      "name": "Hot dim zone"
+    },
+    {
+      "value": 55,
+      "system": "Erebus",
+      "code": "Nc",
+      "name": "Collapsed atmosphere"
+    },
+    {
+      "value": 57,
+      "system": "Demeter",
+      "code": "Doc",
+      "name": "Equable humid land"
+    },
+    {
+      "value": 58,
+      "system": "Demeter",
+      "code": "Dot",
+      "name": "Damped low-light belt"
+    },
+    {
+      "value": 59,
+      "system": "Demeter",
+      "code": "Db",
+      "name": "Moist mid-light belt"
+    },
+    {
+      "value": 60,
+      "system": "Demeter",
+      "code": "Dbq",
+      "name": "Wide-range scrub"
+    },
+    {
+      "value": 61,
+      "system": "Demeter",
+      "code": "Dbs",
+      "name": "Fringe-light savanna"
+    },
+    {
+      "value": 62,
+      "system": "Demeter",
+      "code": "Dba",
+      "name": "High-rainfall barren"
+    },
+    {
+      "value": 63,
+      "system": "Demeter",
+      "code": "Dbf",
+      "name": "Oblique-light cover"
+    },
+    {
+      "value": 64,
+      "system": "Demeter",
+      "code": "Dw",
+      "name": "Strong-light wet forest"
+    },
+    {
+      "value": 65,
+      "system": "Demeter",
+      "code": "Dr",
+      "name": "Frost-margin scrub"
+    },
+    {
+      "value": 66,
+      "system": "Demeter",
+      "code": "De",
+      "name": "Wide-range continental waste"
+    },
+    {
+      "value": 67,
+      "system": "Demeter",
+      "code": "Dx",
+      "name": "Extreme-range margin"
+    },
+    {
+      "value": 68,
+      "system": "Demeter",
+      "code": "Dp",
+      "name": "Scald pan"
+    },
+    {
+      "value": 69,
+      "system": "Demeter",
+      "code": "Dc",
+      "name": "Cold-season steppe"
+    },
+    {
+      "value": 70,
+      "system": "Demeter",
+      "code": "Da",
+      "name": "Light-starved warm zone"
+    },
+    {
+      "value": 71,
+      "system": "Demeter",
+      "code": "Dn",
+      "name": "Frozen dark waste"
+    },
+    {
+      "value": 72,
+      "system": "Demeter",
+      "code": "Ddh",
+      "name": "Hot desert"
+    },
+    {
+      "value": 73,
+      "system": "Demeter",
+      "code": "Ddk",
+      "name": "Cold desert"
+    },
+    {
+      "value": 74,
+      "system": "Demeter",
+      "code": "Di",
+      "name": "Permanent ice"
+    }
+  ]
+}

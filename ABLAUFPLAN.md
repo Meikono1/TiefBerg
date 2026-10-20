@@ -7,11 +7,23 @@ Lebende Aufgabenliste. Claude aktualisiert sie nach jeder erledigten Aufgabe, du
 - Ergibt sich aus einer Aufgabe eine neue, steht bei der neuen `← T-###` (Herkunft).
 - Erledigte Aufgaben wandern nach **Erledigt**, mit Datum und ggf. `→ T-###` (Folgeaufgaben).
 - Verweise auf das Design-Dokument als `(Abschnitt N)`.
-- Nächste freie ID: **T-030**
+- Nächste freie ID: **T-041**
 
 ## In Arbeit
 
 _(nichts)_
+
+## Als Nächstes – Szenarioauswahl (Abschnitt 11, 12)
+
+Ablauf: Hauptmenü → Start → Szenarioauswahl (Layout nach EU4, Bauplan `defines/UI Szenarioauswahl.md`) → Szenario wählen → Weiter bzw. Doppelklick.
+
+- [ ] **T-031** Szenario-Konfigurationsdatei: YAML unter `data/scenarios/` mit Id, Übersetzungsschlüssel für Titel/Beschreibung, Position auf der Weltkarte (Pixel der Originalkarte, damit unabhängig von Skalierung), Icon (aus `resources/MapIcons/`), Pfad zum Vorschaubild, Tags (Spezies, Region, Schwierigkeit), Startjahr (bis T-025 als Anzeigewert), gesperrt ja/nein + Freischalt-Hinweis, Neuigkeiten (Datum, Version, Art neu/geändert/geplant, Textschlüssel für Änderungen und Features); später Startzeit (T-025) und Startort. Ladecode im Kern (`TiefBerg.Data`), ungültige Einträge loggen und überspringen, Tests. YAML-Bibliothek auswählen (erste YAML-Daten im Projekt) ← T-030.
+- [ ] **T-032** Weltkarte als Spielressource: `lore/weltkarte.png` (4320×2160, 5,8 MB) als Ressource übernehmen, Import-Einstellungen prüfen (Mipmaps an und `WorldMap` mit Filter „Linear Mipmap“ seit 2026-10-20, Kompression noch offen; liegt noch unter `lore/`). Map-Icons (`resources/MapIcons/`, 256×256, schwarz mit Alpha) importieren; Zustand über Ring dahinter statt Einfärben (Abschnitt 12, Vorschlag). Platzhalter-Vorschaubild für Szenarien ohne eigenes Bild ← T-030.
+- [ ] **T-036** (Entwickler) Szenen und Theme im Godot-Editor bauen nach `defines/UI Szenarioauswahl.md`: Projekt-Grundeinstellungen (1920×1080, `canvas_items`, `expand`), `TiefbergTheme.tres` mit Typ-Varianten, `ScenarioSelect.tscn`, `scenario/ScenarioMarker.tscn`, `scenario/ScenarioListEntry.tscn`, `scenario/NewsCard.tscn`, `scenario/MapModeButton.tscn`, `ScenarioButtonGroup.tres`, `MapModeButtonGroup.tres`. Node-Namen und -Typen wie im Bauplan, Optik frei ← T-030.
+- [ ] **T-033** Scripts `ScenarioSelect.cs`, `MapPanZoom.cs`, `ScenarioMarker.cs`, `ScenarioListEntry.cs`, `NewsCard.cs`, `MapModeButton.cs` unter `scripts/ui/scenario/` nach Bauplan (Exports, Signale, Verhalten Abschnitt 11 dort). `MapPanZoom` ist umgesetzt (2026-10-18: Mausrad-Zoom zur Maus, Ziehen links/mitte, Buttons, Zurücksetzen, Grenzen, Fokus-Tween, Texturwechsel, `SourceToView`; Build grün, im Editor vom Entwickler geprüft). Übrige Gerüste liegen seit 2026-10-17 vor (Namespace `TiefBerg.UI.Scenario`, Exports in Gruppen, Signale, Prüfung fehlender Exports über `TiefBerg.UI.ExportCheck`, Verhalten als `TODO: T-033`/`T-037`); `.cs.uid` erzeugt der Editor beim ersten Öffnen. Inhalt (Abschnitt 12): Karte mit Pan (Ziehen) und Zoom (Mausrad, Buttons, Zurücksetzen), Punkte mit Icon aus der Konfiguration, Szenarioliste und Details links, Jahresanzeige und Kartenmodi oben, neueste Szenarien unten, „Zoom zum Punkt“ bei Auswahl (abschaltbar), gesperrte Szenarien nicht startbar, Doppelklick oder Weiter startet, Zurück ins Hauptmenü, Tastatur (Pfeil hoch/runter, Enter, Esc), Tooltip am Punkt. `ScenePaths` ergänzen ← T-030, T-031, T-032, T-036.
+- [ ] **T-037** Kartenmodi für die Szenarioauswahl: Konfiguration (Id, Namensschlüssel, Icon, Textur), Start mit Terrain (`weltkarte.png`), Klima (`02-climate_zones-raw.png`), Vegetation (`03-vegetation-raw.png`), Völker (`voelkerkarte.png`). Größen prüfen und angleichen: `voelkerkarte.png` ist 4320×2560 statt 4320×2160 (Ausrichtung klären). Import wie T-032 (Abschnitt 4, Liste der Bitmap-Layer ist offen) ← T-030.
+- [ ] **T-034** Ablauf verdrahten: Start im Hauptmenü öffnet die Szenarioauswahl (TODO in `MainMenu.OnStartPressed`), `GameManager.StartNewGame(scenarioId)` übernimmt die gewählte Szenario-Id in den `ScenarioState` (und in den Spielstand). `-- --new-game` ohne Id startet Szenario 1 ← T-033.
+- [ ] **T-035** Texte über Schlüssel: Grundgerüst Übersetzung (Godot `TranslationServer`, Englisch als einzige Sprache), zuerst für Hauptmenü und Szenarioauswahl (Abschnitt 12) ← T-031.
 
 ## Als Nächstes – Meilenstein 1: Fundament (Abschnitt 13)
 
@@ -21,6 +33,9 @@ _(nichts)_
 - [ ] **T-025** Startzeit der Simulation aus Welt-/Szenariodaten statt Weltzeit 0 (`WorldClock`-Start im `GameManager`); konkreter Wert und Abstand zu Weltzeit 0 noch offen (Abschnitt 3, 11) ← T-024.
 
 ## Danach / Ideen
+
+- [ ] **T-039** Seewind: Windrichtung neu erzeugen. Die heutigen `wind_mXX.bin` leiten die Richtung aus dem Wandern der Starkwindflecken in der WCL-Animation ab; Prüfung am 2026-10-20: zwischen 0° und 30° wehen 88 % der Wasserzellen nach Osten (Passate fehlen), keine Windgürtel erkennbar, das erzeugende Skript („flow“) liegt nicht im Projekt. Vorschlag: reproduzierbarer Generator in `tools/` (Windgürtel nach Breitengrad, Jet-Breiten aus `wind.yaml`, Stärke aus WCL), Format bleibt. Vorher klären: Drehrichtung des Planeten (`Klima-und-Handel.md`, offen) (Abschnitt 4, 9) ← T-038.
+- [ ] **T-040** `tools/seeroute.py`: Beim Rösselsprung (2,1) werden die Zwischenzellen (i+1, j) und (i, j+1) geprüft statt (i+1, j) und (i+1, j+1); Routen können dadurch an Landzipfeln abkürzen ← T-038.
 
 - [ ] **T-014** `scenes/ui/Map.tscn` ist eine leere 3D-Szene → durch 2D-Szene ersetzen (Spiel ist 2D).
 - [ ] **T-018** Frame-Überwachung auf Godot-Seite: Frames über 8,33 ms (unter 120 FPS) zählen bzw. in die Aufwandsübersicht aufnehmen ← T-017.
@@ -34,6 +49,8 @@ Meilenstein 2 (Prototyp Expedition) wird aufgeschlüsselt, wenn Meilenstein 1 st
 
 ## Erledigt
 
+- [x] **T-038** 2026-10-20 `data/world` aufgeräumt: WCL-Rohmaterial (`all-layers`, `climate-data`, Wind- und Meeresströmungs-Aufnahmen mit GIFs) nach `lore/world/` mit `.gdignore` verschoben, nichts gelöscht; `.import`-Dateien und 698 verwaiste Cache-Dateien entfernt (`.godot/imported` 340 → 66 MB). In `data/world` bleiben `sea/navgrid.bin` und `wind/` (28 MB). `.bin`-Format geprüft und korrekt, Windrichtung fraglich. Hinweis: Die Ebenen im Wurzelordner von `lore/` sind identische Kopien aus `lore/world/all-layers` → T-039, T-040
+- [x] **T-030** 2026-10-17 UI der Szenarioauswahl entworfen (Mockup im Chat): Karte mit Pan/Zoom, Punkte mit Icons aus `resources/MapIcons/`, Szenario-Leiste, Panel fest rechts, „Zoom zum Punkt“ abschaltbar, gesperrte Szenarien sichtbar, Start per Doppelklick oder Button. Danach auf Layout nach EU4 umgestellt (Szenarioliste und Details links, Jahr und Kartenmodi oben, neueste Szenarien unten, Zurück unten links, Weiter unten rechts). Entscheidungen in Abschnitt 12, Godot-Bauplan in `defines/UI Szenarioauswahl.md` → T-031, T-032, T-033, T-034, T-036, T-037
 - [x] **T-001** Repo und Godot-Projekt aufgesetzt.
 - [x] **T-002** Logging für Godot-Seite (`LogManager`, `GameLogger`).
 - [x] **T-003** 2026-10-17 CLAUDE.md, `.claude/rules/`, `.editorconfig` angelegt → T-004

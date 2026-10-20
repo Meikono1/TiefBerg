@@ -1,0 +1,31 @@
+{
+  "format": "wcl-climate-data",
+  "format_version": 1,
+  "file": "land_mask.png",
+  "quantity": "Land and sea",
+  "description": "255 = land, 0 = sea, as the map draws the coastline.",
+  "grid": {
+    "projection": "equirectangular (plate carree), longitude and latitude in degrees",
+    "width": 2048,
+    "height": 1024,
+    "longitude_left_edge": -180.0,
+    "longitude_right_edge": 180.0,
+    "latitude_top_edge": 90.0,
+    "latitude_bottom_edge": -90.0,
+    "first_row": "north",
+    "pixel_registration": "area: pixel (i, j) covers the cell whose centre is at longitude -180 + (i + 0.5) * 360 / width, latitude 90 - (j + 0.5) * 180 / height",
+    "seam_longitude": 180.0
+  },
+  "period": {
+    "type": "climatology",
+    "description": "Long-term means of the settled climate, averaged over several simulated years. Annual amounts are the average year, not one particular year.",
+    "year_length_days": 365.256,
+    "months": "Twelve equal parts of this world's year.",
+    "month_1_start": "The point of the orbit that corresponds to 1 January on Earth."
+  },
+  "encoding": {
+    "type": "mask",
+    "bits": 8
+  },
+  "valid": "all"
+}
