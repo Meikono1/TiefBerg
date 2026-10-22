@@ -1,6 +1,6 @@
 namespace TiefBerg.Simulation.Dice;
 
-// Erfolgsgrade wie PF2e (Abschnitt 7); Reihenfolge = schlecht nach gut, Vergleiche wie >= Success sind gewollt
+// Vier Erfolgsgrade (Abschnitt 7); Reihenfolge = schlecht nach gut, Vergleiche wie >= Success sind gewollt
 public enum CheckDegree
 {
     CriticalFailure,
@@ -15,14 +15,34 @@ public readonly record struct CheckResult(int Die, int Bonus, int Difficulty)
     // Abstand für kritische Erfolge/Fehlschläge
     public const int CriticalMargin = 10;
 
+    // Würfel der Probe; seine höchste und niedrigste Augenzahl verschieben den Erfolgsgrad
+    public const int Sides = 20;
+
     public int Total => Die + Bonus;
 
-    // TODO: Natürliche 20/1 als Stufe besser/schlechter (PF2e) – offen (Abschnitt 7)
-    public CheckDegree Degree => DegreeOf(Total, Difficulty);
+    public CheckDegree Degree => DegreeOf(Die, Total, Difficulty);
 
     public bool Success => Degree >= CheckDegree.Success;
 
-    public static CheckDegree DegreeOf(int total, int difficulty)
+    // Grad aus dem Abstand zum SG, dann natürliche 20 eine Stufe besser, natürliche 1 eine schlechter (Abschnitt 7)
+    public static CheckDegree DegreeOf(int die, int total, int difficulty)
+    {
+        CheckDegree degree = DegreeOf(total, difficulty);
+
+        if (die == Sides && degree < CheckDegree.CriticalSuccess)
+        {
+            return degree + 1;
+        }
+
+        if (die == 1 && degree > CheckDegree.CriticalFailure)
+        {
+            return degree - 1;
+        }
+
+        return degree;
+    }
+
+    private static CheckDegree DegreeOf(int total, int difficulty)
     {
         if (total >= difficulty + CriticalMargin)
         {

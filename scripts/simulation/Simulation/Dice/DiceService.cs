@@ -71,7 +71,7 @@ public sealed class DiceService
     {
         CheckLevel(level);
         // TODO: SG aus einem Level ableiten, sobald die Formel feststeht (Abschnitt 7)
-        var result = new CheckResult(RollOne(20), level + modifier, difficulty);
+        var result = new CheckResult(RollOne(CheckResult.Sides), level + modifier, difficulty);
 
         if (_log.IsEnabled(LogLevel.Debug))
         {
@@ -86,28 +86,38 @@ public sealed class DiceService
     public static DegreeChances Chances(int level, int modifier, int difficulty)
     {
         CheckLevelStatic(level);
-        // Alle 20 Augenzahlen durchgehen: exakt und folgt automatisch jeder Änderung an CheckResult.DegreeOf
+        // Alle Augenzahlen durchgehen: exakt, inkl. natürlicher 20/1, und folgt jeder Änderung an CheckResult.DegreeOf
         var counts = new int[4];
-        for (int die = 1; die <= 20; die++)
+        for (int die = 1; die <= CheckResult.Sides; die++)
         {
-            counts[(int)CheckResult.DegreeOf(die + level + modifier, difficulty)]++;
+            counts[(int)CheckResult.DegreeOf(die, die + level + modifier, difficulty)]++;
         }
 
-        return new DegreeChances(counts[0] / 20.0, counts[1] / 20.0, counts[2] / 20.0, counts[3] / 20.0);
+        const double sides = CheckResult.Sides;
+        return new DegreeChances(counts[0] / sides, counts[1] / sides, counts[2] / sides, counts[3] / sides);
     }
 
     public static double SuccessChance(int level, int modifier, int difficulty) =>
         Chances(level, modifier, difficulty).SuccessOrBetter;
 
-    // Rettungswurf gegen Schaden (Abschnitt 7). Annahme: halber Schaden wird abgerundet (PF2e), Rundung ist offen.
-    public static int DamageAfterSave(int damage, CheckDegree degree) => degree switch
+    // Rettungswurf gegen Schaden (Abschnitt 7). Halber Schaden wird abgerundet; damage / 2 tut das nur für damage >= 0,
+    // daher ist negativer Schaden ausgeschlossen.
+    public static int DamageAfterSave(int damage, CheckDegree degree)
     {
-        CheckDegree.CriticalSuccess => 0,
-        CheckDegree.Success => damage / 2,
-        CheckDegree.Failure => damage,
-        CheckDegree.CriticalFailure => checked(damage * 2),
-        _ => throw new ArgumentOutOfRangeException(nameof(degree), degree, "Unbekannter Erfolgsgrad.")
-    };
+        if (damage < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(damage), damage, "Schaden darf nicht negativ sein.");
+        }
+
+        return degree switch
+        {
+            CheckDegree.CriticalSuccess => 0,
+            CheckDegree.Success => damage / 2,
+            CheckDegree.Failure => damage,
+            CheckDegree.CriticalFailure => checked(damage * 2),
+            _ => throw new ArgumentOutOfRangeException(nameof(degree), degree, "Unbekannter Erfolgsgrad.")
+        };
+    }
 
     private int RollOne(int sides) => (int)_random.NextUInt((uint)sides) + 1;
 
