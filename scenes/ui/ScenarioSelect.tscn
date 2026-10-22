@@ -1,10 +1,15 @@
 [gd_scene format=3 uid="uid://bdsi0rj2hbcf0"]
 
-[ext_resource type="Texture2D" uid="uid://mrlvs4q8sh70" path="res://lore/weltkarte.png" id="1_ftcy0"]
+[ext_resource type="Texture2D" uid="uid://mrlvs4q8sh70" path="res://resources/maps/weltkarte.png" id="1_ftcy0"]
 [ext_resource type="Script" uid="uid://bhlwxdpp2v4lm" path="res://scripts/ui/scenario/ScenarioSelect.cs" id="1_vmjwq"]
 [ext_resource type="Script" uid="uid://d17o7mdkbykmu" path="res://scripts/ui/scenario/MapPanZoom.cs" id="2_503t2"]
+[ext_resource type="PackedScene" uid="uid://cgjmnf6frcq7k" path="res://scenes/ui/scenario/ScenarioMarker.tscn" id="3_marker"]
+[ext_resource type="PackedScene" uid="uid://c8ofv8ku0muhl" path="res://scenes/ui/scenario/ScenarioListEntry.tscn" id="4_entry"]
+[ext_resource type="PackedScene" uid="uid://b1c16r05mses0" path="res://scenes/ui/scenario/NewsCard.tscn" id="5_news"]
+[ext_resource type="PackedScene" path="res://scenes/ui/scenario/TagChip.tscn" id="6_chip"]
+[ext_resource type="Texture2D" uid="uid://dm1cfqn31ea3u" path="res://resources/logo.png" id="7_placeholder"]
 
-[node name="ScenarioSelect" type="Control" unique_id=184553995]
+[node name="ScenarioSelect" type="Control" unique_id=184553995 node_paths=PackedStringArray("_yearLabel", "_zoomToPointCheck", "_mapModeBar", "_scenarioList", "_previewImage", "_scenarioTitle", "_scenarioTags", "_scenarioDescription", "_lockedHint", "_mapView", "_markerLayer", "_mapModeLabel", "_newsList", "_backButton", "_continueButton")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -12,6 +17,26 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_vmjwq")
+_yearLabel = NodePath("Layout/TopBar/TopBarBox/YearDisplay/YearBox/YearLabel")
+_zoomToPointCheck = NodePath("Layout/TopBar/TopBarBox/ZoomToPointCheck")
+_mapModeBar = NodePath("Layout/TopBar/TopBarBox/MapModeBar")
+_scenarioList = NodePath("Layout/Main/LeftColumn/ScenarioListPanel/ScenarioListBox/ListScroll/ScenarioList")
+_previewImage = NodePath("Layout/Main/LeftColumn/DetailPanel/DetailMargin/DetailBox/PreviewImage")
+_scenarioTitle = NodePath("Layout/Main/LeftColumn/DetailPanel/DetailMargin/DetailBox/ScenarioTitle")
+_scenarioTags = NodePath("Layout/Main/LeftColumn/DetailPanel/DetailMargin/DetailBox/ScenarioTags")
+_scenarioDescription = NodePath("Layout/Main/LeftColumn/DetailPanel/DetailMargin/DetailBox/ScenarioDescription")
+_lockedHint = NodePath("Layout/Main/LeftColumn/DetailPanel/DetailMargin/DetailBox/LockedHint")
+_mapView = NodePath("Layout/Main/MapView")
+_markerLayer = NodePath("Layout/Main/MapView/MarkerLayer")
+_mapModeLabel = NodePath("Layout/Main/MapView/MapModeLabel")
+_newsList = NodePath("Layout/BottomBar/BottomBox/NewsScroll/NewsList")
+_backButton = NodePath("Layout/BottomBar/BottomBox/BackButton")
+_continueButton = NodePath("Layout/BottomBar/BottomBox/ContinueButton")
+_markerScene = ExtResource("3_marker")
+_listEntryScene = ExtResource("4_entry")
+_newsCardScene = ExtResource("5_news")
+_tagChipScene = ExtResource("6_chip")
+_placeholderPreview = ExtResource("7_placeholder")
 
 [node name="Background" type="ColorRect" parent="." unique_id=1610891406]
 layout_mode = 1
@@ -109,7 +134,7 @@ layout_mode = 2
 [node name="PreviewImage" type="TextureRect" parent="Layout/Main/LeftColumn/DetailPanel/DetailMargin/DetailBox" unique_id=1002104172]
 custom_minimum_size = Vector2(0, 180)
 layout_mode = 2
-expand_mode = 1
+expand_mode = 4
 stretch_mode = 6
 
 [node name="ScenarioTitle" type="Label" parent="Layout/Main/LeftColumn/DetailPanel/DetailMargin/DetailBox" unique_id=1506524019]
@@ -122,9 +147,9 @@ layout_mode = 2
 
 [node name="ScenarioDescription" type="RichTextLabel" parent="Layout/Main/LeftColumn/DetailPanel/DetailMargin/DetailBox" unique_id=149274515]
 layout_mode = 2
+size_flags_vertical = 3
 theme_type_variation = &"DescriptionText"
 bbcode_enabled = true
-size_flags_vertical = 3
 
 [node name="LockedHint" type="Label" parent="Layout/Main/LeftColumn/DetailPanel/DetailMargin/DetailBox" unique_id=2037356601]
 visible = false
@@ -132,17 +157,16 @@ layout_mode = 2
 theme_type_variation = &"HintWarning"
 autowrap_mode = 3
 
-[node name="MapView" type="Control" parent="Layout/Main" unique_id=366247578]
+[node name="MapView" type="Control" parent="Layout/Main" unique_id=366247578 node_paths=PackedStringArray("_content", "_map", "_zoomInButton", "_zoomOutButton", "_resetViewButton")]
 clip_contents = true
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("2_503t2")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Layout/Main/MapView" unique_id=883543325]
-layout_mode = 0
-offset_left = 1536.0
-offset_right = 1536.0
-offset_bottom = 938.0
+_content = NodePath("MapContent")
+_map = NodePath("MapContent/WorldMap")
+_zoomInButton = NodePath("MapControls/ZoomInButton")
+_zoomOutButton = NodePath("MapControls/ZoomOutButton")
+_resetViewButton = NodePath("MapControls/ResetViewButton")
 
 [node name="MapContent" type="Control" parent="Layout/Main/MapView" unique_id=998230136]
 layout_mode = 1

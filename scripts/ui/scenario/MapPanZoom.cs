@@ -46,12 +46,6 @@ public partial class MapPanZoom : Control
 
     public override void _Ready()
     {
-        _content = ExportCheck.OrPath(Log, this, _content, "MapContent");
-        _map = ExportCheck.OrPath(Log, this, _map, "MapContent/WorldMap");
-        _zoomInButton = ExportCheck.OrPath(Log, this, _zoomInButton, "MapControls/ZoomInButton");
-        _zoomOutButton = ExportCheck.OrPath(Log, this, _zoomOutButton, "MapControls/ZoomOutButton");
-        _resetViewButton = ExportCheck.OrPath(Log, this, _resetViewButton, "MapControls/ResetViewButton");
-
         var complete = ExportCheck.AllAssigned(Log, this,
             [("Content", _content), ("Map", _map),
             ("ZoomInButton", _zoomInButton), ("ZoomOutButton", _zoomOutButton), ("ResetViewButton", _resetViewButton)]);

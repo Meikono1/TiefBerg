@@ -2,10 +2,12 @@
 
 [ext_resource type="Script" uid="uid://cu10vpbp1e5wv" path="res://scripts/ui/MainMenu.cs" id="1_vjtqc"]
 
-[node name="MainMenu" type="Control" unique_id=669804528]
+[node name="MainMenu" type="Control" unique_id=669804528 node_paths=PackedStringArray("_startButton", "_quitButton")]
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_vjtqc")
+_startButton = NodePath("CenterContainer/VBoxContainer/StartButton")
+_quitButton = NodePath("CenterContainer/VBoxContainer/QuitButton")
 
 [node name="CenterContainer" type="CenterContainer" parent="." unique_id=1545067656]
 layout_mode = 0

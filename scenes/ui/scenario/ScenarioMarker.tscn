@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://sdyl3s6urgx4" path="res://scripts/ui/scenario/ScenarioMarker.cs" id="1_1ddlt"]
 [ext_resource type="Texture2D" uid="uid://l8yxaowrqg1q" path="res://resources/MapIcons/lock.png" id="3_lock"]
 
-[node name="ScenarioMarker" type="Control" unique_id=808301073]
+[node name="ScenarioMarker" type="Control" unique_id=808301073 node_paths=PackedStringArray("_ring", "_icon", "_lockIcon", "_nameLabel")]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 3
 anchors_preset = 0
@@ -12,6 +12,10 @@ offset_bottom = 40.0
 pivot_offset = Vector2(20, 20)
 offset_transform_enabled = true
 script = ExtResource("1_1ddlt")
+_ring = NodePath("Ring")
+_icon = NodePath("Icon")
+_lockIcon = NodePath("LockIcon")
+_nameLabel = NodePath("NameLabel")
 
 [node name="Ring" type="Panel" parent="." unique_id=685325236]
 layout_mode = 1
@@ -24,6 +28,7 @@ mouse_filter = 2
 theme_type_variation = &"MarkerRingNormal"
 
 [node name="Icon" type="TextureRect" parent="." unique_id=1522286056]
+texture_filter = 4
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -41,6 +46,7 @@ expand_mode = 1
 stretch_mode = 5
 
 [node name="LockIcon" type="TextureRect" parent="." unique_id=1036559976]
+texture_filter = 4
 visible = false
 layout_mode = 1
 anchors_preset = 3

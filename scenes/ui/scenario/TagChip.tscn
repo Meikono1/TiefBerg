@@ -1,0 +1,14 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/scenario/TagChip.cs" id="1_chip"]
+
+[node name="TagChip" type="PanelContainer" node_paths=PackedStringArray("_label")]
+mouse_filter = 2
+theme_type_variation = &"TagChip"
+script = ExtResource("1_chip")
+_label = NodePath("Label")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"TagChipLabel"

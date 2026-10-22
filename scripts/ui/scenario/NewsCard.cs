@@ -7,8 +7,6 @@ namespace TiefBerg.UI.Scenario;
 // Karte „neueste Szenarien“ in der Fußzeile mit Änderungen und Features
 public partial class NewsCard : Button
 {
-    private const string NewsBasePath = "NewsMargin/NewsBox/";
-
     private static readonly GameLogger Log = LogManager.GetLogger<NewsCard>();
 
     [Signal] public delegate void SelectedEventHandler(string scenarioId);
@@ -26,10 +24,6 @@ public partial class NewsCard : Button
 
     public override void _Ready()
     {
-        _newsBadge = ExportCheck.OrPath(Log, this, _newsBadge, NewsBasePath + "NewsHeader/NewsBadge");
-        _newsTitle = ExportCheck.OrPath(Log, this, _newsTitle, NewsBasePath + "NewsHeader/NewsTitle");
-        _newsVersion = ExportCheck.OrPath(Log, this, _newsVersion, NewsBasePath + "NewsHeader/NewsVersion");
-        _newsText = ExportCheck.OrPath(Log, this, _newsText, NewsBasePath + "NewsText");
         if (!ExportCheck.AllAssigned(Log, this,
                 [("NewsBadge", _newsBadge), ("NewsTitle", _newsTitle), ("NewsVersion", _newsVersion), ("NewsText", _newsText)]))
         {

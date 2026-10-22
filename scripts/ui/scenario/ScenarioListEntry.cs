@@ -26,10 +26,6 @@ public partial class ScenarioListEntry : Button
 
     public override void _Ready()
     {
-        _entryBox = ExportCheck.OrPath(Log, this, _entryBox, "EntryBox");
-        _icon = ExportCheck.OrPath(Log, this, _icon, "EntryBox/Icon");
-        _nameLabel = ExportCheck.OrPath(Log, this, _nameLabel, "EntryBox/NameLabel");
-        _lockIcon = ExportCheck.OrPath(Log, this, _lockIcon, "EntryBox/LockIcon");
         if (!ExportCheck.AllAssigned(Log, this,
                 [("Icon", _icon), ("NameLabel", _nameLabel), ("LockIcon", _lockIcon), ("EntryBox", _entryBox)]))
         {

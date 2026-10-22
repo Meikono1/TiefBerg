@@ -8,7 +8,8 @@ paths:
 # Godot-Regeln
 
 - Klassen, die von Godot-Typen erben, sind `partial` (Source Generator). Dateiname = Klassenname.
-- Node-Referenzen bevorzugt über `[Export]` setzen. `GetNode`-Pfade nur als Fallback, und das Fehlen immer loggen.
+- Node- und Szenen-Referenzen ausschließlich über `[Export]`, im Inspector zugewiesen. Keine `GetNode`-Pfade und keine Ersatzpfade für fehlende Zuweisungen: `_Ready` prüft alle Exports mit `ExportCheck.AllAssigned`, loggt Fehlendes als Error und bricht ab.
+- Module (zur Laufzeit instanzierte Szenen) haben ein eigenes Script mit `Setup(...)`; Daten nicht über Kind-Suche (`FindChild`) in fremde Szenen schreiben.
 - Szenenwechsel ausschließlich über `GameManager.Instance.ChangeScene(path)`, nicht direkt über `GetTree().ChangeSceneToFile`.
 - Signale in `_Ready` verbinden. Bei Nodes, die vor ihrem Sender freigegeben werden, in `_ExitTree` wieder trennen.
 - `.tscn`, `.tres` und `project.godot` möglichst im Editor ändern. Bei Handbearbeitung keine `uid`/`unique_id` erfinden.

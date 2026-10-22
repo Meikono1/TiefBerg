@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Extensions.Logging;
 using TiefBerg.Diagnostics;
 using TiefBerg.Simulation.Scheduling;
@@ -5,14 +6,19 @@ using TiefBerg.Simulation.Time;
 
 namespace TiefBerg.Simulation;
 
-// Einstieg in die tick-basierte Simulation (Abschnitt 2/3). Godot ruft nur Start/Tick/Stop auf.
+// Rechnet die Welt bis zu einer Zielzeit weiter (Abschnitt 2/3). Springt von Fälligkeit zu Fälligkeit statt Sekunde für Sekunde,
+// Sekunden ohne fälliges System kosten nichts. Ein Aufruf endet nach einem Zeitbudget und setzt beim nächsten fort,
+// damit auch Sprünge über Jahre Befehle und Snapshots nicht blockieren. Das Ergebnis hängt nicht vom Budget ab.
+// Nicht thread-sicher; läuft im Simulations-Thread (SimulationThread).
 public sealed class SimulationRunner
 {
     private readonly ILogger<SimulationRunner> _log;
+    private readonly TimeProvider _time;
 
-    public SimulationRunner(ILogger<SimulationRunner> log, World world)
+    public SimulationRunner(ILogger<SimulationRunner> log, World world, TimeProvider time)
     {
         _log = log;
+        _time = time;
         World = world;
     }
 
@@ -22,51 +28,45 @@ public sealed class SimulationRunner
 
     public Scheduler Scheduler => World.Scheduler;
 
-    // Ein Tick = 1 Sekunde Weltzeit (Abschnitt 3); eine Kampfrunde sind 6 Ticks (Abschnitt 7)
+    // Ein Tick = 1 Sekunde Weltzeit, die feinste Auflösung (Abschnitt 3); eine Kampfrunde sind 6 Ticks (Abschnitt 7)
     public const ulong SecondsPerTick = 1;
 
-    // TODO: Zeit in Tagen/Monaten/Jahren laufen lassen, per Sprung zur nächsten Fälligkeit statt Sekunde für Sekunde (T-022, Abschnitt 3)
-
-    public bool IsRunning { get; private set; }
-
-    public ulong TickCount { get; private set; }
-
-    public void Start()
+    // true: Zielzeit erreicht. false: Budget vorher aufgebraucht, der nächste Aufruf macht weiter.
+    public bool AdvanceTo(ulong targetSeconds, double budgetMs)
     {
-        if (IsRunning)
+        ulong now = Clock.Now;
+        if (targetSeconds < now)
         {
-            _log.Warn("Simulation läuft bereits.");
-            return;
+            // Die Weltzeit läuft nie zurück; TimeControl liefert nie ein Ziel in der Vergangenheit
+            _log.Error($"Zielzeit {WorldCalendar.Format(targetSeconds)} liegt vor der Weltzeit {WorldCalendar.Format(now)}, ignoriert.");
+            return true;
         }
 
-        TickCount = 0;
-        IsRunning = true;
-        _log.Info("Simulation gestartet.");
-    }
-
-    public void Tick()
-    {
-        if (!IsRunning)
-        {
-            return;
-        }
-
+        long start = _time.GetTimestamp();
         using (Perf.Measure(PerfBudgets.TickMs))
         {
-            TickCount++;
-            Clock.Advance(SecondsPerTick);
-            Scheduler.RunDue(Clock.Now);
-        }
-    }
+            while (Scheduler.NextDue is ulong due && due <= targetSeconds)
+            {
+                // Nach dem Laden können Fälligkeiten vor der Weltzeit liegen; sie werden ohne Zeitsprung nachgeholt
+                if (due > Clock.Now)
+                {
+                    Clock.Advance(due - Clock.Now);
+                }
 
-    public void Stop()
-    {
-        if (!IsRunning)
-        {
-            return;
+                Scheduler.RunDue(Clock.Now);
+
+                if (_time.GetElapsedTime(start).TotalMilliseconds >= budgetMs)
+                {
+                    return false;
+                }
+            }
+
+            if (Clock.Now < targetSeconds)
+            {
+                Clock.Advance(targetSeconds - Clock.Now);
+            }
         }
 
-        IsRunning = false;
-        _log.Info($"Simulation beendet nach {TickCount} Ticks.");
+        return true;
     }
 }

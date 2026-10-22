@@ -2,10 +2,14 @@
 
 [ext_resource type="Script" uid="uid://drcy7e476x1io" path="res://scripts/ui/scenario/NewsCard.cs" id="1_news"]
 
-[node name="NewsCard" type="Button" unique_id=600202441]
+[node name="NewsCard" type="Button" unique_id=600202441 node_paths=PackedStringArray("_newsBadge", "_newsTitle", "_newsVersion", "_newsText")]
 custom_minimum_size = Vector2(300, 90)
 theme_type_variation = &"NewsCardButton"
 script = ExtResource("1_news")
+_newsBadge = NodePath("NewsMargin/NewsBox/NewsHeader/NewsBadge")
+_newsTitle = NodePath("NewsMargin/NewsBox/NewsHeader/NewsTitle")
+_newsVersion = NodePath("NewsMargin/NewsBox/NewsHeader/NewsVersion")
+_newsText = NodePath("NewsMargin/NewsBox/NewsText")
 
 [node name="NewsMargin" type="MarginContainer" parent="." unique_id=324648664]
 layout_mode = 1

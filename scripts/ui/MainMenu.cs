@@ -13,12 +13,8 @@ public partial class MainMenu : Control
 
     public override void _Ready()
     {
-        _startButton ??= GetNodeOrNull<Button>("CenterContainer/VBoxContainer/StartButton");
-        _quitButton ??= GetNodeOrNull<Button>("CenterContainer/VBoxContainer/QuitButton");
-
-        if (_startButton == null || _quitButton == null)
+        if (!ExportCheck.AllAssigned(Log, this, [("StartButton", _startButton), ("QuitButton", _quitButton)]))
         {
-            Log.Error($"Buttons nicht gefunden (start={_startButton != null}, quit={_quitButton != null})");
             return;
         }
 

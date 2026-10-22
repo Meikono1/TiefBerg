@@ -11,13 +11,6 @@ namespace TiefBerg.UI.Scenario;
 // Punkt, Listeneintrag und News-Karte melden nur Ids; die Auswahl hält allein diese Klasse und verteilt sie.
 public partial class ScenarioSelect : Control
 {
-    private const string LeftPath = "Layout/Main/LeftColumn/";
-    private const string DetailPath = LeftPath + "DetailPanel/DetailMargin/DetailBox/";
-    private const string TopPath = "Layout/TopBar/TopBarBox/";
-    private const string BottomPath = "Layout/BottomBar/BottomBox/";
-    private const string MapPath = "Layout/Main/MapView";
-    private const string ModulePath = "res://scenes/ui/scenario/";
-
     private static readonly GameLogger Log = LogManager.GetLogger<ScenarioSelect>();
 
     [ExportGroup("Kopfzeile")]
@@ -61,13 +54,7 @@ public partial class ScenarioSelect : Control
 
     public override void _Ready()
     {
-        ResolveFallbackPaths();
-        // TagChipScene ist optional; ohne Platzhalter bleibt nur das Vorschaubild leer, das blockiert die Auswahl nicht
-        if (_placeholderPreview == null)
-        {
-            Log.Warn("PlaceholderPreview nicht zugewiesen, Szenarien ohne Bild zeigen keine Vorschau (T-032).");
-        }
-
+        // MapModeButtonScene fehlt hier, weil die Kartenmodi erst mit T-037 kommen
         var complete = ExportCheck.AllAssigned(Log, this,
             [("YearLabel", _yearLabel), ("ZoomToPointCheck", _zoomToPointCheck), ("MapModeBar", _mapModeBar),
             ("ScenarioList", _scenarioList), ("PreviewImage", _previewImage), ("ScenarioTitle", _scenarioTitle),
@@ -75,7 +62,7 @@ public partial class ScenarioSelect : Control
             ("MapView", _mapView), ("MarkerLayer", _markerLayer), ("MapModeLabel", _mapModeLabel),
             ("NewsList", _newsList), ("BackButton", _backButton), ("ContinueButton", _continueButton),
             ("MarkerScene", _markerScene), ("ListEntryScene", _listEntryScene), ("NewsCardScene", _newsCardScene),
-            ("MapModeButtonScene", _mapModeButtonScene)]);
+            ("TagChipScene", _tagChipScene), ("PlaceholderPreview", _placeholderPreview)]);
         if (!complete)
         {
             return;
@@ -134,31 +121,6 @@ public partial class ScenarioSelect : Control
         }
 
         GetViewport().SetInputAsHandled();
-    }
-
-    private void ResolveFallbackPaths()
-    {
-        _yearLabel = ExportCheck.OrPath(Log, this, _yearLabel, TopPath + "YearDisplay/YearBox/YearLabel");
-        _zoomToPointCheck = ExportCheck.OrPath(Log, this, _zoomToPointCheck, TopPath + "ZoomToPointCheck");
-        _mapModeBar = ExportCheck.OrPath(Log, this, _mapModeBar, TopPath + "MapModeBar");
-        _scenarioList = ExportCheck.OrPath(Log, this, _scenarioList,
-            LeftPath + "ScenarioListPanel/ScenarioListBox/ListScroll/ScenarioList");
-        _previewImage = ExportCheck.OrPath(Log, this, _previewImage, DetailPath + "PreviewImage");
-        _scenarioTitle = ExportCheck.OrPath(Log, this, _scenarioTitle, DetailPath + "ScenarioTitle");
-        _scenarioTags = ExportCheck.OrPath(Log, this, _scenarioTags, DetailPath + "ScenarioTags");
-        _scenarioDescription = ExportCheck.OrPath(Log, this, _scenarioDescription, DetailPath + "ScenarioDescription");
-        _lockedHint = ExportCheck.OrPath(Log, this, _lockedHint, DetailPath + "LockedHint");
-        _mapView = ExportCheck.OrPath(Log, this, _mapView, MapPath);
-        _markerLayer = ExportCheck.OrPath(Log, this, _markerLayer, MapPath + "/MarkerLayer");
-        _mapModeLabel = ExportCheck.OrPath(Log, this, _mapModeLabel, MapPath + "/MapModeLabel");
-        _newsList = ExportCheck.OrPath(Log, this, _newsList, BottomPath + "NewsScroll/NewsList");
-        _backButton = ExportCheck.OrPath(Log, this, _backButton, BottomPath + "BackButton");
-        _continueButton = ExportCheck.OrPath(Log, this, _continueButton, BottomPath + "ContinueButton");
-
-        _markerScene = ExportCheck.OrResource(Log, this, _markerScene, ModulePath + "ScenarioMarker.tscn");
-        _listEntryScene = ExportCheck.OrResource(Log, this, _listEntryScene, ModulePath + "ScenarioListEntry.tscn");
-        _newsCardScene = ExportCheck.OrResource(Log, this, _newsCardScene, ModulePath + "NewsCard.tscn");
-        _mapModeButtonScene = ExportCheck.OrResource(Log, this, _mapModeButtonScene, ModulePath + "MapModeButton.tscn");
     }
 
     private void BuildList()
@@ -296,29 +258,8 @@ public partial class ScenarioSelect : Control
         IEnumerable<string> keys = tags.SpeciesKeys.Append(tags.RegionKey).Append(tags.DifficultyKey);
         foreach (string key in keys.Where(k => k != null))
         {
-            _scenarioTags.AddChild(CreateTagChip(key));
+            Instantiate<TagChip>(_tagChipScene, _scenarioTags)?.Setup(key);
         }
-    }
-
-    // Mit TagChipScene: deren erstes Label bekommt den Text; ohne: schlichter Chip mit Theme-Variante TagChip
-    private Control CreateTagChip(string key)
-    {
-        if (_tagChipScene != null && _tagChipScene.Instantiate() is Control custom)
-        {
-            Label label = custom as Label ?? custom.FindChildren("*", nameof(Label)).OfType<Label>().FirstOrDefault();
-            if (label != null)
-            {
-                label.Text = key;
-                return custom;
-            }
-
-            Log.Warn($"'{_tagChipScene.ResourcePath}' enthält kein Label, nutze einfachen Chip.");
-            custom.Free();
-        }
-
-        var chip = new PanelContainer { ThemeTypeVariation = "TagChip", MouseFilter = MouseFilterEnum.Ignore };
-        chip.AddChild(new Label { Text = key, MouseFilter = MouseFilterEnum.Ignore });
-        return chip;
     }
 
     private void UpdateMarkerPositions()

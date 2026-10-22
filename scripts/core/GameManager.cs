@@ -2,10 +2,11 @@ using System;
 using System.Linq;
 using Godot;
 using TiefBerg.Core.Logging;
-using Microsoft.Extensions.Logging;
 using TiefBerg.Diagnostics;
 using TiefBerg.Scenario;
 using TiefBerg.Simulation;
+using TiefBerg.Simulation.Control;
+using TiefBerg.Simulation.Control.Commands;
 using CryptoRandom = System.Security.Cryptography.RandomNumberGenerator;
 
 namespace TiefBerg.Core;
@@ -23,7 +24,7 @@ public partial class GameManager : Node
     public static GameManager Instance { get; private set; }
 
     private double _perfSummaryTimer;
-    private SimulationRunner _simulation;
+    private SimulationThread _simulation;
     private ScenarioState _scenario;
 
     public override void _EnterTree()
@@ -60,11 +61,24 @@ public partial class GameManager : Node
         }
     }
 
+    // Stand der laufenden Simulation für Ansichten; null ohne Spiel. Ansichten lesen nur diesen (Abschnitt 2).
+    public SimulationSnapshot Snapshot => _simulation?.Snapshot;
+
+    // Befehle der Ansichten an die Simulation (Pause, Echtzeit, Abschnitt laufen lassen …)
+    public void Send(ISimulationCommand command)
+    {
+        if (_simulation == null)
+        {
+            Log.Warn($"Befehl {command.GetType().Name} verworfen: Es läuft kein Spiel.");
+            return;
+        }
+
+        _simulation.Send(command);
+    }
+
     public override void _Process(double delta)
     {
-        // TODO: Tick vom Frame entkoppeln (eigener Takt/Thread, Godot liest Snapshots) (Abschnitt 2, T-027)
-        _simulation?.Tick();
-
+        // Die Simulation läuft im eigenen Thread; hier nur noch die Aufwandsübersicht
         _perfSummaryTimer += delta;
         if (_perfSummaryTimer < PerfSummaryIntervalSeconds)
         {
@@ -85,7 +99,13 @@ public partial class GameManager : Node
         Log.Info("Spiel wird beendet.");
         if (_simulation != null)
         {
-            SaveService.Autosave(_simulation.World.CaptureState(), _scenario);
+            // Erst anhalten, dann lesen: so wird garantiert kein halb gerechneter Stand gespeichert
+            _simulation.Stop();
+            WorldState state = _simulation.CaptureState();
+            if (state != null)
+            {
+                SaveService.Autosave(state, _scenario);
+            }
         }
 
         StopSimulation();
@@ -128,7 +148,8 @@ public partial class GameManager : Node
             return false;
         }
 
-        return SaveService.Save(slotName, _simulation.World.CaptureState(), _scenario);
+        WorldState state = _simulation.CaptureState();
+        return state != null && SaveService.Save(slotName, state, _scenario);
     }
 
     public void QuitGame()
@@ -157,8 +178,9 @@ public partial class GameManager : Node
     {
         StopSimulation();
         _scenario = scenario;
-        _simulation = new SimulationRunner(LogManager.SimulationLoggerFactory.CreateLogger<SimulationRunner>(), world);
+        _simulation = new SimulationThread(LogManager.SimulationLoggerFactory, world, TimeProvider.System);
         LogManager.WorldTimeSource = () => world.Clock.Now;
+        // Startet pausiert (Abschnitt 3); weiter geht es über Befehle der Spielszene (T-014)
         _simulation.Start();
     }
 

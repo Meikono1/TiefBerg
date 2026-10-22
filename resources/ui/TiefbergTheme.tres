@@ -7,18 +7,6 @@
 [ext_resource type="FontFile" uid="uid://bimclv5jquib8" path="res://resources/fonts/Cardo/Cardo-Bold.ttf" id="5_cardo_bold"]
 [ext_resource type="FontFile" uid="uid://0fps456ow0lc" path="res://resources/fonts/Cardo/Cardo-Italic.ttf" id="6_cardo_italic"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ring_normal"]
-bg_color = Color(0.94, 0.9, 0.8, 0.9)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.25, 0.2, 0.15, 1)
-corner_radius_top_left = 20
-corner_radius_top_right = 20
-corner_radius_bottom_right = 20
-corner_radius_bottom_left = 20
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ring_hover"]
 bg_color = Color(1, 0.97, 0.88, 1)
 border_width_left = 3
@@ -26,18 +14,6 @@ border_width_top = 3
 border_width_right = 3
 border_width_bottom = 3
 border_color = Color(0.85, 0.65, 0.2, 1)
-corner_radius_top_left = 20
-corner_radius_top_right = 20
-corner_radius_bottom_right = 20
-corner_radius_bottom_left = 20
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ring_selected"]
-bg_color = Color(1, 0.93, 0.6, 1)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(0.9, 0.5, 0.1, 1)
 corner_radius_top_left = 20
 corner_radius_top_right = 20
 corner_radius_bottom_right = 20
@@ -55,36 +31,71 @@ corner_radius_top_right = 20
 corner_radius_bottom_right = 20
 corner_radius_bottom_left = 20
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ring_normal"]
+bg_color = Color(0.94, 0.9, 0.8, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.25, 0.2, 0.15, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ring_selected"]
+bg_color = Color(1, 0.93, 0.6, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.9, 0.5, 0.1, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tag_chip"]
+content_margin_left = 8.0
+content_margin_top = 2.0
+content_margin_right = 8.0
+content_margin_bottom = 2.0
+bg_color = Color(0.2, 0.26, 0.3, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
 [resource]
 default_font = ExtResource("1_eczar_regular")
 default_font_size = 17
 DescriptionLabel/base_type = &"Label"
 DescriptionLabel/colors/font_color = Color(0.82, 0.82, 0.78, 1)
-DescriptionLabel/fonts/font = ExtResource("4_cardo_regular")
 DescriptionLabel/font_sizes/font_size = 16
+DescriptionLabel/fonts/font = ExtResource("4_cardo_regular")
 DescriptionText/base_type = &"RichTextLabel"
-DescriptionText/font_sizes/normal_font_size = 18
 DescriptionText/font_sizes/bold_font_size = 18
 DescriptionText/font_sizes/italics_font_size = 18
+DescriptionText/font_sizes/normal_font_size = 18
 DescriptionText/fonts/bold_font = ExtResource("5_cardo_bold")
 DescriptionText/fonts/italics_font = ExtResource("6_cardo_italic")
 DescriptionText/fonts/normal_font = ExtResource("4_cardo_regular")
 HeaderLarge/base_type = &"Label"
-HeaderLarge/fonts/font = ExtResource("3_eczar_semibold")
 HeaderLarge/font_sizes/font_size = 26
+HeaderLarge/fonts/font = ExtResource("3_eczar_semibold")
 HeaderSmall/base_type = &"Label"
-HeaderSmall/fonts/font = ExtResource("3_eczar_semibold")
 HeaderSmall/font_sizes/font_size = 19
+HeaderSmall/fonts/font = ExtResource("3_eczar_semibold")
 HintWarning/base_type = &"Label"
 HintWarning/colors/font_color = Color(0.95, 0.65, 0.3, 1)
 LabelMuted/base_type = &"Label"
 LabelMuted/colors/font_color = Color(0.7, 0.7, 0.66, 1)
 MarkerLabel/base_type = &"Label"
-MarkerLabel/fonts/font = ExtResource("2_eczar_medium")
 MarkerLabel/colors/font_color = Color(1, 1, 1, 1)
 MarkerLabel/colors/font_outline_color = Color(0, 0, 0, 1)
 MarkerLabel/constants/outline_size = 6
 MarkerLabel/font_sizes/font_size = 14
+MarkerLabel/fonts/font = ExtResource("2_eczar_medium")
 MarkerRingHover/base_type = &"Panel"
 MarkerRingHover/styles/panel = SubResource("StyleBoxFlat_ring_hover")
 MarkerRingLocked/base_type = &"Panel"
@@ -93,3 +104,8 @@ MarkerRingNormal/base_type = &"Panel"
 MarkerRingNormal/styles/panel = SubResource("StyleBoxFlat_ring_normal")
 MarkerRingSelected/base_type = &"Panel"
 MarkerRingSelected/styles/panel = SubResource("StyleBoxFlat_ring_selected")
+TagChip/base_type = &"PanelContainer"
+TagChip/styles/panel = SubResource("StyleBoxFlat_tag_chip")
+TagChipLabel/base_type = &"Label"
+TagChipLabel/font_sizes/font_size = 14
+TagChipLabel/fonts/font = ExtResource("2_eczar_medium")

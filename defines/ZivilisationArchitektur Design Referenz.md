@@ -62,10 +62,15 @@ Die Weltzeit ist ein `ulong`-Zähler in Sekunden seit Weltstart; Kalender und An
 - E - Zeitraffer über Monate, Jahre und Jahrzehnte sowie "bis zum nächsten Ereignis".
 - E - Ein Simulations-Tick entspricht 1 Sekunde Weltzeit. Eine Kampfrunde dauert 6 Sekunden (Abschnitt 7).
 - E - Der Spieler kann Zeit in Abschnitten von Tagen, Monaten und Jahren laufen lassen. Eine Partie kann 500 Jahre und länger dauern (Stammbaum, Abschnitt 6; Drachen werden rund 200 Jahre alt und wachsen entsprechend). Lange Abschnitte springen daher von Fälligkeit zu Fälligkeit, statt jede Sekunde einzeln zu rechnen.
-- E - Weltzeit 0 ist ein fester Punkt weit in der Urzeit, nicht der Simulationsstart. Die Simulation beginnt bei einer Startzeit aus Welt- bzw. Szenariodaten; so bleibt auch Vergangenheit (z. B. Geburt eines Drachen, der zum Start 150 Jahre alt ist) als positive `ulong`-Weltzeit darstellbar, und Szenarien können zu verschiedenen Zeiten in dieselbe Welt einsteigen (Abschnitt 11).
+- E - Die Vorsimulation beginnt bei Weltzeit 0. Das Spiel beginnt rund 1000 Jahre später in der fertigen Welt mit Städten, Charakteren und Geschichten (Abschnitt 4, 11); das genaue Startjahr kommt aus dem Szenario. So ist auch Vergangenheit (z. B. Geburt eines Drachen, der zum Start 150 Jahre alt ist) als positive `ulong`-Weltzeit darstellbar, und Szenarien können zu verschiedenen Zeiten in dieselbe Welt einsteigen.
 - E - Jede Spezies hat einen eigenen Kalender mit eigener Epoche: der Weltzeit, zu der dessen Jahr 1 beginnt. Aufbau (Tage, Monate, Jahre) ist für alle gleich.
 - E - Kalender kennen Daten vor ihrem Jahr 1 (wie "vor Christus"): Jahr 1 davor folgt direkt auf Jahr 1 danach, ein Jahr 0 gibt es nicht.
-- O - Konkreter Wert der Startzeit und wie weit Weltzeit 0 zurückliegt.
+- E - Geschwindigkeit 1 ist Echtzeit: 1 Weltsekunde pro Echtzeitsekunde. Das Spiel startet pausiert und läuft danach mit Normalgeschwindigkeit.
+- E - Zeitraffer vorerst nur als Sprung: einen Abschnitt (fester Dauer ab jetzt: 1 Tag = 20 Stunden, 1 Monat = 23 Tage, 1 Jahr = 276 Tage) oder bis zum nächsten Ereignis, jeweils auf Anfrage. Danach gilt Pause. Gleichmäßige Stufen schneller als Echtzeit gibt es vorerst nicht.
+- O - Vorschlag: Bis ein Weltereignislog existiert, ist „nächstes Ereignis“ die nächste Fälligkeit im Scheduler. Was später als Ereignis für den Spieler zählt (und Sprünge unterbricht), ist offen.
+- E - Im Kampf läuft die Zeit in Runden (6 Sekunden) und steht, bis der eigene Charakter gehandelt hat (Abschnitt 7).
+- E - Personen haben Start, Ziel und Aufbruchszeit statt einer laufend berechneten Position. Wo sie gerade sind, wird nur berechnet, wenn der Spieler sie anspricht oder sucht; die genaue Position ist für das Spiel kaum relevant.
+- E - Reisen (z. B. zu Gebäuden der eigenen Stadt): Die Zeit läuft schnell bis zur Ankunft oder bis unterwegs etwas passiert. Wege von Minuten bis zu einer halben Stunde beeinflussen das Spielgefühl nicht, eine Partie dauert Monate.
 - E - Systeme laufen in eigenen Takten (z. B. Bedürfnisse stündlich, Wirtschaft täglich, Diplomatie wöchentlich).
 - E - Abarbeitung über eine nach Fälligkeit sortierte Liste, statt jedes Mal zu prüfen, was berechnet werden muss.
 - E - Freie Kapazität wird genutzt, um Berechnungen vorzuziehen. Beispiel: Pro Tick werden 100 Personen berechnet; an einem Feiertag ist Kapazität frei, also rechnet das System Nachbardörfer vor. Vorgezogenes wird nicht unnötig neu berechnet.
@@ -75,7 +80,12 @@ Die Weltzeit ist ein `ulong`-Zähler in Sekunden seit Weltstart; Kalender und An
 
 Die Welt ist fest und wird über mehrere Bitmaps beschrieben, aus denen Grenzen berechnet werden; es gibt keine Provinzen.
 
-- E - Handgestaltete Welt, Karte ist WIP. Vorerst startet jedes Spiel mit frischer Welt; Weiterführen kommt später.
+- E - Handgestaltete Welt, Karte ist WIP. Jedes Spiel beginnt in einer vorsimulierten Welt: Entweder wird sie beim Start neu vorsimuliert, oder man wählt die mitgelieferte, fertig vorsimulierte Welt. Weiterführen einer bestehenden Welt kommt später.
+- E - Vorsimulation: Die Völker beginnen in festen Startgebieten (grobe Völkerkarte). Innerhalb ihres Gebiets lassen sie sich zufällig nieder, ggf. mit mehreren Startstädten; das ist der Anfang der Zivilisation. Simuliert wird, wo genau Städte entstehen und wie stark sie ausgebaut werden, nicht wo welches Volk lebt.
+- E - Völker-Startgebiete sind eine eigene Ebene in der Größe der Weltkarte (4320×2160). Sie zeigt die Gebiete um das Startjahr des Spiels; da nicht simuliert wird, wo welches Volk lebt, sind das zugleich die Startgebiete der Vorsimulation. `voelkerkarte.png` ist ein Schaubild (Weltkarte plus 400 px Legende, mit Beschriftungen) und keine Datenebene.
+- E - Der Planet dreht sich wie die Erde. Die Windrichtung folgt Windgürteln nach Breitengrad (Passate aus Osten, Westwinde in mittleren Breiten, polare Ostwinde), die Windstärke kommt aus den 96 Monatsaufnahmen (12 Monate × 8) der Klimasimulation.
+- O - Vorschlag: Die Vorsimulation muss nicht reproduzierbar sein. Ein fester Seed entfällt, wenn sie dadurch auf mehreren Kernen schneller läuft; das Spielgefühl sichern die festen Startgebiete und die Startbedingungen der Szenarien (Abschnitt 11).
+- O - Dauer der Vorsimulation: Sie soll auf einem aktuellen System in Grenzen bleiben, konkretes Budget offen. Die mitgelieferte Welt trägt eine Version und wird bei Änderungen an Simulation oder Daten neu erzeugt.
 - E - Zwei Hauptkontinente (West, Ost), Inseln, offenes Meer, Polareis im Norden.
 - E - Mehrere Bitmaps sagen, was wo ist. Grenzen werden daraus berechnet.
 - E - Kulturen liegen auf einer eigenen Karte und sind fluide.
@@ -95,6 +105,9 @@ Rund 70 Spezies in 16 Kulturgruppen, von drachenartigen Riesen bis zu mausartige
 - E - Jede Person hat eine Spezies und eine Kultur. Kulturwandel über Generationen ist möglich und eine Konfliktquelle.
 - E - Jede Spezies hat eigene Präferenzen, die Siedlungen prägen und Konflikte auslösen (Abschnitt 9).
 - E - Größenklasse, Lebensdauer und Ernährung wirken auf Gebäude, Nahrungsbedarf, KCAL und Generationenfolge.
+- E - Mystische Wesen (z. B. Drachen) sind benannte Individuen mit Namen und Geschichte aus der Vorsimulation.
+- E - Eine Liste der Pflanzen und Tiere stattet die ganze Welt aus: Keine Klima- oder Vegetationszone bleibt ohne Leben, und jede Ressource (z. B. Leinen aus Flachs) hat eine Quelle, die irgendwo wächst bzw. lebt.
+- O - Regeln, damit Bestände in der Simulation nicht zusammenbrechen (Nachwachsen, Mindestbestände, Wanderung).
 - E - Fauna: prähistorische Tiere als Gegenstück zu den Anthro-Spezies. Sie liefern Rohstoffe wie Fleisch, Fell, Leder und Wolle (z. B. Wollmammut, Wollnashorn).
 - O - Konkrete Werte je Spezies (Größenklasse, Lebensdauer, Ernährung).
 - O - Aufteilung RUMINAN, Lebensraum von Cristasus.
@@ -138,15 +151,15 @@ Der Spieler steuert eine Party aus beliebigen Personen und pflegt einen lesbaren
 Alles hat ein Level von 0 bis 30 (30 = gottgleich); Proben sind W20 plus Level, angelehnt an D&D 3.5 und Pathfinder 1/2.
 
 - E - Level haben: Personen, Kreaturen, Gegenstände, Zauber, Städte.
-- E - Probe wie PF2e: W20 + Level + Modifikatoren ≥ SG. Der SG leitet sich ebenfalls aus einem Level ab.
+- E - Probe: W20 + Level + Modifikatoren ≥ SG. Der SG leitet sich ebenfalls aus einem Level ab.
 - E - Voller Level-Bonus. Ein Drache Stufe 15 überrennt Bauern Stufe 1. Schlachten können mehrere hundert Beteiligte haben; wer nicht weiß, wogegen er kämpft, riskiert ein Massaker.
-- E - Kampf in Runden zu 6 Sekunden (PF2e), auf einem Quadratraster. Hexagon wäre schöner, passt aber nicht zu rechteckigen Räumen und Gebäuden.
+- E - Kampf in Runden zu 6 Sekunden, auf einem Quadratraster. Hexagon wäre schöner, passt aber nicht zu rechteckigen Räumen und Gebäuden.
 - E - Charaktere ziehen als Party (Abschnitt 6) in Dungeons.
 - E - Ein zentraler, seedbarer Würfeldienst. Jeder Wurf wird auf Debug geloggt. Auf Statistik-Ebene (Abschnitt 10) wird mit Wahrscheinlichkeiten statt Würfen gerechnet.
 - O - Vorschlag: Schlachten mit hunderten Beteiligten statistisch abwickeln, Einzelwürfe nur für benannte Personen.
-- E - Vier Erfolgsgrade wie PF2e: Ergebnis ≥ SG + 10 kritischer Erfolg, ≥ SG Erfolg, ≤ SG − 10 kritischer Fehlschlag, sonst Fehlschlag.
+- E - Vier Erfolgsgrade: Ergebnis ≥ SG + 10 kritischer Erfolg, ≥ SG Erfolg, ≤ SG − 10 kritischer Fehlschlag, sonst Fehlschlag.
 - E - Rettungswurf gegen Schaden: kritischer Erfolg kein Schaden, Erfolg halber Schaden, Fehlschlag voller Schaden, kritischer Fehlschlag doppelter Schaden.
-- O - Natürliche 20 bzw. 1 verbessern bzw. verschlechtern den Erfolgsgrad um eine Stufe (PF2e)? Rundung bei halbem Schaden (Annahme im Code: abrunden). - Nat 20 und Nat 1 werden den GGrad entsprechend anpassen. Gerunded wird immer abwärts.
+- E - Eine natürliche 20 verbessert, eine natürliche 1 verschlechtert den Erfolgsgrad um eine Stufe. Gerundet wird immer abwärts (z. B. halber Schaden).
 - O - Attribute, Fertigkeiten.
 - O - Herkunft der Dungeons (handgebaut oder generiert), Darstellung des Rasterkampfs im Textadventure.
 
@@ -167,7 +180,7 @@ Magie kostet KCAL und verknüpft damit Magie, Ernährung, Spezies-Größe und Wi
 Der Herrscher vergibt Aufträge, die Einwohner arbeiten sie ab und bringen ihre Kultur ein; unterschiedliche Präferenzen erzeugen Konflikte, die er löst.
 
 - E - Aufträge für Gebäude und Pläne, ausgeführt von den Einwohnern.
-- E - Aufgabenlisten wie in Prison Architect: offene und laufende Aufgaben, filterbar nach Person, Dorf, Königreich.
+- E - Aufgabenlisten mit offenen und laufenden Aufgaben, filterbar nach Person, Dorf, Königreich.
 - E - Gebäude nach Baukastenprinzip. Offizielle Gebäude müssen die Vorlieben der Bewohner berücksichtigen. Sonst bauen Einwohner nach eigenen Vorlieben.
 - E - Jede Spezies hat eine Prioritäten- und Wunschliste, was sie im Dorf verändern will. Neubau und Erweiterung haben Vorrang vor Umbau und Abriss, damit Gruppen sich nicht gegenseitig abreißen.
 - E - Ressourcen werden gesammelt oder gehandelt.
@@ -205,6 +218,8 @@ Bei 100.000+ Einwohnern pro Reich und vielen parallelen Reichen wird nicht jeder
 
 - E - Drei Detailstufen. Lokal (Umfeld der Spielercharaktere): Einzelpersonen in voller Auflösung. Eigenes Reich außerhalb des Fokus: Bevölkerungsgruppen und Produktionsraten, stündlich bis täglich. Fremde Reiche: strategisch (Bevölkerung, Wirtschaft, Diplomatie, Krieg), täglich bis wöchentlich.
 - E - Benannte Personen (Spielercharaktere, Familie, Herrscher, Meister, alle mit Spielerkontakt) existieren dauerhaft als Objekte. Das übrige Volk ist Statistik je Siedlung.
+- E - Relevante Personen und Kreaturen werden auch außerhalb des Fokus und in der Vorsimulation einzeln simuliert, nicht jede Person. Relevanz ergibt sich aus dem Level: Ab einem Schwellwert wird eine Kreatur einzeln simuliert (z. B. Abenteurer Stufe 5 jagen einen Drachen; daraus entsteht die Geschichte des Drachen). Welche Kreatur auf welchem Level liegt, legt eine Liste fest.
+- O - Level-Schwellwert für die Einzelsimulation.
 - E - Betritt ein Spielercharakter einen Ort, entstehen aus der Statistik konkrete Personen (deterministisch aus Seed und Ort). Sie bleiben benannt, weil Spieler sich an Namen erinnern (z. B. Schmiede, Magier).
 - O - Vorschlag: Personen ohne Rolle und ohne Spielerkontakt über lange Zeit dürfen zurück in die Statistik, falls Speicher knapp wird.
 - E - Massendaten in Arrays oder Structs statt tiefer Objektgraphen. Vor allem Zeitstempel loggen.
@@ -214,7 +229,9 @@ Bei 100.000+ Einwohnern pro Reich und vielen parallelen Reichen wird nicht jeder
 
 ## 11. Szenarien
 
-Ein Szenario ist eine Startkonfiguration in der Welt: Person, Ort, Umstände, Ziele.
+Ein Szenario ist ein Einstiegspunkt in die fertig vorsimulierte Welt, kein absoluter Weltstart: Person, Ort, Umstände, Ziele.
+
+- E - Szenarien stellen Bedingungen an den Startort statt ihn nur fest vorzugeben. Erfüllt die Welt sie am Punkt nicht, verschiebt das Szenario den Start in die Nähe (z. B. bis etwa 50 km, um eine Stadt oder Burg zu erreichen).
 
 **Szenario 1: Expedition in die östlichen Lande**
 
@@ -222,12 +239,14 @@ Ein Szenario ist eine Startkonfiguration in der Welt: Person, Ort, Umstände, Zi
 - E - Durch Erkundung kommen weitere Charaktere dazu, die alle besonders sind.
 - E - Ein Kobold ist RPG-Begleiter und Tutorial; der Spieler redet mit ihm. Er gräbt selbstständig eine Höhle, danach kommen 3–4 Kobolde dazu und versorgen sich selbst. Mit ihrer Hilfe entsteht die erste Hütte.
 - E - Nur die Dialoge des Kobolds sind gescriptet, sein Verhalten läuft über die normale Simulation. Tutorial-Fortschritt ist Szenario-Zustand.
+- E - In 20–80 km Entfernung zum Start liegt immer eine Koboldkolonie.
 - O - Sind die besonderen Charaktere unsterblich?
 - O - Startort.
 
 **Spätere Szenarien**
 
 - E - Geboren bei den Naga. Gefangen bei den Hyrax, freihandeln oder freikämpfen.
+- E - Das Naga-Szenario startet immer im Naga-Gebiet; in welcher Stadt, ergibt die Vorsimulation.
 - O - Weiterführen einer bestehenden Welt in einem neuen Szenario.
 
 ## 12. UI, Logging, Speichern, Sprache
@@ -242,9 +261,11 @@ Logging ist Pflicht und dient zugleich als Chronik des Reiches im Spiel.
 - E - Gesperrte bzw. geplante Szenarien erscheinen als gesperrt, zeigen ihre Details und lassen sich nicht starten.
 - E - Szenarien werden über eine Konfigurationsdatei beschrieben (Position auf der Weltkarte, Icon, Vorschaubild, Startjahr, Texte über Schlüssel, Neuigkeiten mit Datum/Version). Icons liegen unter `resources/MapIcons/`.
 - O - Vorschlag: Zustand der Punkte (normal, Hover, ausgewählt, gesperrt) über einen Ring bzw. Hintergrundkreis hinter dem Icon, da die Icons schwarz sind und sich per `Modulate` nicht einfärben lassen.
-- O - Ob Weiter später einen Zwischenschritt öffnet (Charakter, Optionen) statt direkt zu starten; ob das Startjahr wählbar wird; welche Kartenmodi es gibt (Vorschlag: Terrain, Klima, Vegetation, Völker); ob „Zoom zum Punkt“ gespeichert wird.
+- E - Kartenmodi der Szenarioauswahl: Ressourcen, Bevölkerung, Politik, Flora/Fauna; Terrain liegt darunter. Sie zeigen Daten der vorsimulierten Welt und kommen daher mit der Weltsimulation (Meilenstein 5).
+- E - Im Spiel gibt es eine eigene Weltkarte, u. a. mit der bekannten Welt (was der Spielercharakter kennt). Weitere Modi offen.
+- O - Ob Weiter später einen Zwischenschritt öffnet (Charakter, Optionen) statt direkt zu starten; ob das Startjahr wählbar wird; welchen Stand der Welt die Kartenmodi der Szenarioauswahl zeigen (Vorschlag: vorsimulierte Welt im Startjahr des Szenarios); ob „Zoom zum Punkt“ gespeichert wird.
 - E - Schriften: Eczar für alle UI-Texte, Cardo für Beschreibungstexte.
-- E - Aufbau in Godot steht in den Szenen selbst (`scenes/ui/ScenarioSelect.tscn`, Module unter `scenes/ui/scenario/`, Theme `resources/ui/TiefbergTheme.tres`); die Scripts binden die Nodes über Exports mit Ersatzpfad. Szenen und Theme baut der Entwickler im Editor, Scripts kommen dazu passend.
+- E - Aufbau in Godot steht in den Szenen selbst (`scenes/ui/ScenarioSelect.tscn`, Module unter `scenes/ui/scenario/`, Theme `resources/ui/TiefbergTheme.tres`); die Scripts binden die Nodes ausschließlich über Exports, ohne Ersatzpfad; fehlt eine Zuweisung, wird das als Error geloggt und abgebrochen. Szenen und Theme baut der Entwickler im Editor, Scripts kommen dazu passend.
 - O - Vorschlag: Tooltip am Kartenpunkt, Tastatursteuerung (Pfeil hoch/runter, Enter, Esc), letzte Auswahl merken, Schwierigkeit/Tags im Panel, Freischalt-Hinweis bei gesperrten Szenarien.
 - E - Logging ist Pflicht, darf aber am Ende nicht viel Leistung kosten.
 - E - Technisches Log über `Microsoft.Extensions.Logging` oder Serilog im Simulationskern, unabhängig von `GD.Print`. Logger per Konstruktor. Jede Simulationsmeldung trägt die Weltzeit.
@@ -252,6 +273,7 @@ Logging ist Pflicht und dient zugleich als Chronik des Reiches im Spiel.
 - E - Jede Logzeile enthält Systemzeit und Klasse.Methode, damit Logs nach Abläufen und Laufzeit ausgewertet werden können.
 - E - Log-Level: Error für Invariantenverletzungen, Warning für Budgetüberschreitungen, Information für System- und Szenariostarts, Debug für Würfe und Entscheidungen.
 - E - Debug-Werkzeuge dürfen Spielern zugänglich sein, auch zum Cheaten. Spaß hat hohe Priorität.
+- E - Das Debugmenü öffnet sich, wenn der Spieler die Buchstabenfolge D E B U G N O W eintippt.
 - E - Weltereignislog (Geburten, Tode, Krönungen, Bauten, Kriege, Konflikte) als strukturierte Ereignisse. Daraus entsteht die Chronik.
 - E - Weltzustand und Szenariozustand werden getrennt gespeichert; der Weltzustand weiß nichts vom Szenario. So kann das Szenario gewechselt werden. Speicherformat versioniert, Seed und Weltzeit werden mitgespeichert.
 - E - Spielstände binär für schnelles Laden und Speichern.

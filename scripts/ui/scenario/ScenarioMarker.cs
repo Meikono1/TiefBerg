@@ -35,10 +35,6 @@ public partial class ScenarioMarker : Control
 
     public override void _Ready()
     {
-        _ring = ExportCheck.OrPath(Log, this, _ring, "Ring");
-        _icon = ExportCheck.OrPath(Log, this, _icon, "Icon");
-        _lockIcon = ExportCheck.OrPath(Log, this, _lockIcon, "LockIcon");
-        _nameLabel = ExportCheck.OrPath(Log, this, _nameLabel, "NameLabel");
         if (!ExportCheck.AllAssigned(Log, this,
                 [("Ring", _ring), ("Icon", _icon), ("LockIcon", _lockIcon), ("NameLabel", _nameLabel)]))
         {
