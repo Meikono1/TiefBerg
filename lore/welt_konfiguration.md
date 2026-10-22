@@ -263,7 +263,7 @@ Format: **Volk (Länge, Breite, Radius °, Profil, Bonus)**
 | 9 | KATARU | 250, 205, 40 | Pantherine (56, −3, 8, Dschungel + Savanne); Serval (66, −9, 7, Savanne, Fluss); Acinonyx (76, −13, 9, Savanne); Caracal (84, −18, 8, Steppe + Wüste) |
 | 10 | HYRAX | 205, 95, 40 | Gnoll (52, −21, 9, Steppe + Savanne); Jackal (43, −18, 8, Wüste, Fluss); Bat (60, −17, 6, Gebirge + Savanne); Cristasus *(Lebensraum offen)* (48, −27, 7, Steppe) |
 | 11 | GOBLIN | 125, 190, 40 | Goblin (110, −12, 9, Wald + Dschungel); Hobgoblin (121, −18, 7, Wald + Gebirge) |
-| 12 | KOBOLD | 235, 85, 25 | Dragonkin (58, 33, 6, Gebirge); Kobold (46, 30, 8, Gebirge + Steppe); Felbold (72, 29, 8, Gebirge + Steppe) |
+| 12 | DRACONIK | 235, 85, 25 | Dragonkin (58, 33, 6, Gebirge); Kobold (46, 30, 8, Gebirge + Steppe); Felbold (72, 29, 8, Gebirge + Steppe) |
 | 13 | TENGU | 110, 215, 225 | Gryphon (106, 36, 7, Gebirge); Owl (124, 35, 8, Wald + Gebirge); Harpy (140, 26, 6, Gebirge, Küste); Falcon (96, 42, 8, Steppe) |
 | 14 | BRUTAHK | 165, 165, 190 | Giant (46, −46, 8, Kälte + Gebirge); Goliath (78, −46, 8, Gebirge); Ursine (62, −49, 8, Wald + Kälte) |
 | 15 | CORALOR | 40, 205, 195 | Land: Crocodilian (162, 1, 6, Dschungel, Fluss); Axolotl (69, −12, 3, Gebirge + Savanne). Meer (nur Beschriftung): Hippocampus (158, −7), Cephalopod (172, 4), Carcharhini (149, 6), Cetacean (176, −13), Pinniped (−94, −56) |

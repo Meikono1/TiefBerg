@@ -7,7 +7,7 @@ Lebende Aufgabenliste. Claude aktualisiert sie nach jeder erledigten Aufgabe, du
 - Ergibt sich aus einer Aufgabe eine neue, steht bei der neuen `← T-###` (Herkunft).
 - Erledigte Aufgaben wandern nach **Erledigt**, mit Datum und ggf. `→ T-###` (Folgeaufgaben).
 - Verweise auf das Design-Dokument als `(Abschnitt N)`.
-- Nächste freie ID: **T-058**
+- Nächste freie ID: **T-067**
 
 ## In Arbeit
 
@@ -18,6 +18,18 @@ _(nichts)_
 Ablauf: Hauptmenü → Start → Szenarioauswahl → Szenario wählen → Weiter bzw. Doppelklick.
 
 - [ ] **T-036** (Entwickler) Szenen und Theme der Szenarioauswahl im Godot-Editor fertigstellen. Stand 2026-10-20: Hauptszene und die Module Marker, Listeneintrag und NewsCard laufen. Claude hat Größen und Layout der Module, `ScenarioButtonGroup.tres` und im Theme die Ring-Varianten sowie `MarkerLabel` gesetzt (Marker 40×40, Icon 24). Seit 2026-10-20 auch Schriften (Eczar Standard, Cardo für `DescriptionText`/`DescriptionLabel`), `HeaderLarge`, `HeaderSmall`, `LabelMuted`, `HintWarning` und das Lock-Icon in Marker und Listeneintrag. 2026-10-22 vom Entwickler in Godot getestet, läuft. 2026-10-22: Übergangslösungen entfernt (keine Ersatzpfade mehr, `ExportCheck` nur noch Prüfung); alle Exports in den Szenen zugewiesen, neues Modul `TagChip.tscn` + `TagChip.cs`, Theme-Varianten `TagChip`/`TagChipLabel`. Überzähligen `VBoxContainer` in `MapView` hat der Entwickler am 2026-10-22 entfernt. Offen: Button-Varianten, `MapModeButton.tscn` (T-037), Projekt-Grundeinstellungen prüfen ← T-030.
+
+## Als Nächstes – Völker (Abschnitt 5)
+
+Test, ob eine Kulturgruppe vollständig auf den Stand der Kataru kommt, bevor die übrigen weitergehen.
+
+- [ ] **T-062** (Entwickler) Gewichte von Kobold und Felbold in `lore/voelker/draconik.md` bestätigen (geschätzt: 12–35 kg, 10–30 kg; Abschnitt 5) ← T-059.
+- [ ] **T-063** (Entwickler) Reproduktionstabelle als eigene Datei: Kreuztabelle aller Spezies, wer mit wem Nachkommen haben kann (Abschnitt 5) ← T-059.
+- [ ] **T-064** `lore/welt_konfiguration.md`: Lebensraum der DRACONIK anpassen, Kobold und Felbold stehen auf Gebirge + Steppe, laut `draconik.md` leben alle an Bergen und Höhlensystemen (Abschnitt 4, 5) ← T-059.
+- [ ] **T-065** (Entwickler) Nagaji klären: Die Startkobolde handeln mit ihren Zähnen und Schuppen; eigene Spezies, Fauna oder eine NAGALITH-Rasse? (Abschnitt 5, 9) ← T-059.
+- [ ] **T-066** (Entwickler) Strafen der Verlorenen bei den Draconik im Einzelnen, bis zur Verbannung (`draconik.md`, Ordnung) ← T-059.
+- [ ] **T-060** (Entwickler) `lore/Races V3.odt` in eine Datei je Kulturgruppe unter `lore/voelker/` aufteilen, Gliederung wie `draconik.md`; Kataru und Veskral zuerst (Abschnitt 5) ← T-058.
+- [ ] **T-061** Personenmodell: Geschlecht veränderlich, Eltern ohne feste Mutter-/Vaterrolle (Draconik-Geschlechtswechsel, Abschnitt 5, 6); umsetzen mit Meilenstein 3 (Generationen) ← T-058.
 
 ## Als Nächstes – Meilenstein 1: Fundament (Abschnitt 13)
 
@@ -58,11 +70,15 @@ Karte im Spiel (eigene Weltkarte mit bekannter Welt, Abschnitt 12) kommt mit T-0
 - [ ] **T-026** Vor dem ersten Export prüfen: In `Tiefberg.sln` sind `ExportDebug`/`ExportRelease` für `Tiefberg.Simulation` auf `Debug` gemappt. Klären, ob Godot beim Export dieses Mapping nutzt; falls ja, Kern im Release-Export optimiert bauen (`Release`).
 - [ ] **T-016** Hauptmenü: Fortsetzen-Button bei vorhandenem Spielstand, Optionen (Auflösung, Sprache, Log-Level) ← T-012.
 
-- [ ] **T-020** Rassen-Daten umbauen: `lore/Races V3.doc` ist eine Zusammenfassung mit mehr Infos als nötig und erst ~40 % fertig. Auf spielrelevante Werte reduzieren (Größenklasse, Lebensdauer, Erwachsenenalter, Ernährung, Präferenzen, Reproduktionstabelle) und als YAML unter `data/` anlegen. Inhalt liefert der Entwickler (Abschnitt 5).
+- [ ] **T-020** Rassen-Daten umbauen: `lore/Races V3.odt` (wird nach `lore/voelker/` aufgeteilt, T-060) ist eine Zusammenfassung mit mehr Infos als nötig und erst ~40 % fertig. Auf spielrelevante Werte reduzieren (Größenklasse, Lebensdauer, Erwachsenenalter, Ernährung, Präferenzen, Reproduktionstabelle) und als YAML unter `data/` anlegen. Inhalt liefert der Entwickler (Abschnitt 5).
 
 Meilenstein 2 (Prototyp Expedition) wird aufgeschlüsselt, wenn Meilenstein 1 steht.
 
 ## Erledigt
+
+- [x] **T-059** 2026-10-23 DRACONIK ausgearbeitet in `lore/voelker/draconik.md`: Steckbriefe, Dragonkin als Zweibeiner, Felbold überarbeitet (Wärmemantel über Fel, Fell zwischen den Schuppen), Flügel ohne feste Anteile (ergeben sich aus der Stufe). Architektur (Häuser am Berg, Sonnenterrassen, Lastenzüge zur Evakuierung, Lichtschleusen, Labyrinth, Brutstätten, Lager auf Vertrauensbasis), Rassenbeitrag je Rasse, Ordnung nach dem Hort (Vertrauen vor Besitz; Zeichen Bänder und Gold; Stände Brutwächter, Horthalter, Hortlose, Verlorene; männlich als Machtzeichen, Gefolge wechselt). Test bestanden: eine Kulturgruppe kommt auf den Stand der Kataru ← T-058 → T-062, T-063, T-064, T-065, T-066
+
+- [x] **T-058** 2026-10-22 DRACONIK, gemeinsame Grundlage: Kulturgruppe KOBOLD in DRACONIK umbenannt (Design-Referenz Abschnitt 5, `lore/welt_konfiguration.md`, `lore/Magiesystem.md`). Neue Datei `lore/voelker/draconik.md` mit Grundlage (Drachenabstammung, magieberührt über Fel, Eiablage, Geschlechtswechsel über Hormone, Flügel ab Stufe 5, Flug ab Stufe 8) und den drei Rassen aus Races V3, Widersprüche als O markiert. `Magiesystem.md`: Arkan geschärft (Kosmos, Schleier), Traum = Feywelt, neue Tradition Fel (Drachen dieser Welt, Zauber wie Traum), Zugang über Tradition und Kosten über Erfahrung/Gegenstände, Magiebindung Draconik/Nagalith. Design-Referenz: Stufenschutz (Abschnitt 7), Ablage je Kulturgruppe und veränderliches Geschlecht (Abschnitt 5) → T-059, T-060, T-061
 
 - [x] **T-054** 2026-10-22 Würfeldienst nach Abschnitt 7: `CheckResult.DegreeOf(die, total, difficulty)` hebt bei natürlicher 20 und senkt bei natürlicher 1 den Grad um eine Stufe (an den Grenzen bleibt er), `CheckResult.Sides = 20`. `Chances` zählt die Augenzahlen samt 20/1 mit. Folge: Sicherer Erfolg nur noch, wenn schon die 1 kritisch trifft (Bonus + 1 ≥ SG + 10), sonst immer 5 % Risiko. `DamageAfterSave`: Abrunden entschieden, negativer Schaden → `ArgumentOutOfRangeException`. Fremdnamen aus den Kommentaren entfernt. 155 Tests grün ← T-011
 - [x] **T-027** 2026-10-22 Simulation im eigenen Thread, unabhängig von der Bildrate (zusammen mit T-022). Kern `TiefBerg.Simulation.Control`: `SimulationThread` (Befehle über Warteschlange, Rechenscheiben bis `PerfBudgets.SliceMs` = 6 ms, Snapshot per `Volatile`, schläft in Pause bzw. bis zur nächsten vollen Sekunde, Fehler → Error-Log, Halt, `Faulted` im Snapshot, kein Speichern), `TimeControl` (Pause, Echtzeit 1:1 über `TimeProvider`, Sprung danach Pause), `SimulationSnapshot`, Befehle `PauseCommand`, `ResumeCommand`, `RunForCommand` (`OneDay`/`OneMonth`/`OneYear`), `RunToNextEventCommand`, intern `CaptureStateCommand` fürs Speichern. `SimulationRunner.AdvanceTo` springt von Fälligkeit zu Fälligkeit, Ergebnis unabhängig vom Budget; `Tick`/`TickCount`/`Start`/`Stop` entfallen. `GameManager`: startet pausiert, `Snapshot` und `Send(...)` für Ansichten, Speichern über `CaptureState`, beim Beenden erst anhalten, dann Autosave. 144 Tests grün, headless geprüft (pausiert, sauberes Ende mit Autosave). Vorher lief das Spiel mit 1 Tick pro Frame, also 120-fach zu schnell ← T-010 → T-055, T-056

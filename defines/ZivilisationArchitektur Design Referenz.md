@@ -110,6 +110,8 @@ Rund 70 Spezies in 16 Kulturgruppen, von drachenartigen Riesen bis zu mausartige
 - O - Regeln, damit Bestände in der Simulation nicht zusammenbrechen (Nachwachsen, Mindestbestände, Wanderung).
 - E - Fauna: prähistorische Tiere als Gegenstück zu den Anthro-Spezies. Sie liefern Rohstoffe wie Fleisch, Fell, Leder und Wolle (z. B. Wollmammut, Wollnashorn).
 - O - Konkrete Werte je Spezies (Größenklasse, Lebensdauer, Ernährung).
+- E - Ausarbeitung je Kulturgruppe in `lore/voelker/<kulturgruppe>.md` (Gemeinsame Grundlage, Rassen, Zivilisation); bisher DRACONIK. Der Rest steht noch in `lore/Races V3.odt`.
+- E - Draconik wechseln ihr Geschlecht im Lauf des Lebens (`lore/voelker/draconik.md`). Das Geschlecht einer Person ist damit veränderlich, und eine Person kann bei verschiedenen Kindern Mutter und Vater sein (Abschnitt 6).
 - O - Aufteilung RUMINAN, Lebensraum von Cristasus.
 - O - Spezies außerhalb ihres Kulturgebiets auf der Karte (WIP): Jerboa, Euplerid, Axolotl, Kitsune, Husky, Pinniped.
 
@@ -128,7 +130,7 @@ O - Nagaji (Abschnitt 9, Währung) fehlen in der Tabelle: eigene Spezies, Fauna 
 | KATARU | Pantherine, Serval, Acinonyx, Caracal |
 | HYRAX | Gnoll, Jackal, Bat, Cristasus |
 | GOBLIN | Goblin, Hobgoblin |
-| KOBOLD | Dragonkin, Kobold, Felbold |
+| DRACONIK | Dragonkin, Kobold, Felbold |
 | TENGU | Gryphon, Owl, Harpy, Falcon |
 | BRUTAHK | Giant, Goliath, Ursine |
 | CORALOR | Hippocampus, Cephalopod, Carcharhini, Cetacean, Crocodilian, Axolotl, Pinniped |
@@ -153,6 +155,7 @@ Alles hat ein Level von 0 bis 30 (30 = gottgleich); Proben sind W20 plus Level, 
 - E - Level haben: Personen, Kreaturen, Gegenstände, Zauber, Städte.
 - E - Probe: W20 + Level + Modifikatoren ≥ SG. Der SG leitet sich ebenfalls aus einem Level ab.
 - E - Voller Level-Bonus. Ein Drache Stufe 15 überrennt Bauern Stufe 1. Schlachten können mehrere hundert Beteiligte haben; wer nicht weiß, wogegen er kämpft, riskiert ein Massaker.
+- E - Die Stufe ist die Verbindung zur mystischen Welt und gibt übernatürliche Fähigkeiten. Ein Schwert einer Person der Stufe 1 kann einer Person der Stufe 30 nichts anhaben, auch wenn diese sich treffen lassen will.
 - E - Kampf in Runden zu 6 Sekunden, auf einem Quadratraster. Hexagon wäre schöner, passt aber nicht zu rechteckigen Räumen und Gebäuden.
 - E - Charaktere ziehen als Party (Abschnitt 6) in Dungeons.
 - E - Ein zentraler, seedbarer Würfeldienst. Jeder Wurf wird auf Debug geloggt. Auf Statistik-Ebene (Abschnitt 10) wird mit Wahrscheinlichkeiten statt Würfen gerechnet.
