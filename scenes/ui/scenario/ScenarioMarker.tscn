@@ -1,3 +1,75 @@
 [gd_scene format=3 uid="uid://cgjmnf6frcq7k"]
 
-[node name="ScenarioMarker" type="Node2D" unique_id=927696196]
+[ext_resource type="Script" uid="uid://sdyl3s6urgx4" path="res://scripts/ui/scenario/ScenarioMarker.cs" id="1_1ddlt"]
+[ext_resource type="Texture2D" uid="uid://l8yxaowrqg1q" path="res://resources/MapIcons/lock.png" id="3_lock"]
+
+[node name="ScenarioMarker" type="Control" unique_id=808301073]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+pivot_offset = Vector2(20, 20)
+offset_transform_enabled = true
+script = ExtResource("1_1ddlt")
+
+[node name="Ring" type="Panel" parent="." unique_id=685325236]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"MarkerRingNormal"
+
+[node name="Icon" type="TextureRect" parent="." unique_id=1522286056]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -12.0
+offset_top = -12.0
+offset_right = 12.0
+offset_bottom = 12.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LockIcon" type="TextureRect" parent="." unique_id=1036559976]
+visible = false
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -14.0
+offset_top = -14.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+texture = ExtResource("3_lock")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="NameLabel" type="Label" parent="." unique_id=962618054]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -120.0
+offset_top = 2.0
+offset_right = 120.0
+offset_bottom = 22.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+theme_type_variation = &"MarkerLabel"
+horizontal_alignment = 1

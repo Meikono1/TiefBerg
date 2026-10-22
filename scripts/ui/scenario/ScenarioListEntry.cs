@@ -1,5 +1,6 @@
 using Godot;
 using TiefBerg.Core.Logging;
+using TiefBerg.Data.Scenarios;
 
 namespace TiefBerg.UI.Scenario;
 
@@ -7,6 +8,8 @@ namespace TiefBerg.UI.Scenario;
 public partial class ScenarioListEntry : Button
 {
     private static readonly GameLogger Log = LogManager.GetLogger<ScenarioListEntry>();
+    // Gesperrte Einträge bleiben anklickbar, wirken aber ausgegraut (Abschnitt 12)
+    private static readonly Color LockedTint = new(1f, 1f, 1f, 0.45f);
 
     [Signal] public delegate void SelectedEventHandler(string scenarioId);
     // Doppelklick, wirkt wie Weiter
@@ -17,14 +20,66 @@ public partial class ScenarioListEntry : Button
     [Export] private TextureRect _lockIcon;
     [Export] private HBoxContainer _entryBox;
 
+    private bool _ready;
+
+    public string ScenarioId { get; private set; }
+
     public override void _Ready()
     {
+        _entryBox = ExportCheck.OrPath(Log, this, _entryBox, "EntryBox");
+        _icon = ExportCheck.OrPath(Log, this, _icon, "EntryBox/Icon");
+        _nameLabel = ExportCheck.OrPath(Log, this, _nameLabel, "EntryBox/NameLabel");
+        _lockIcon = ExportCheck.OrPath(Log, this, _lockIcon, "EntryBox/LockIcon");
         if (!ExportCheck.AllAssigned(Log, this,
                 [("Icon", _icon), ("NameLabel", _nameLabel), ("LockIcon", _lockIcon), ("EntryBox", _entryBox)]))
         {
             return;
         }
 
-        // TODO: T-033 – Daten setzen (Id, Icon, Name, gesperrt → Modulate auf EntryBox), Toggled/Doppelklick
+        if (ButtonGroup == null)
+        {
+            Log.Warn($"Keine ButtonGroup an '{GetPath()}', mehrere Einträge können gleichzeitig gedrückt wirken.");
+        }
+
+        ToggleMode = true;
+        Pressed += OnPressed;
+        _ready = true;
+    }
+
+    // Erst nach AddChild aufrufen, damit die Exports aufgelöst sind
+    public void Setup(ScenarioDefinition scenario)
+    {
+        ScenarioId = scenario.Id;
+        if (!_ready)
+        {
+            Log.Warn($"Listeneintrag für '{scenario.Id}' ist unvollständig und zeigt keine Daten.");
+            return;
+        }
+
+        _icon.Texture = ScenarioTextures.Icon(scenario.Icon);
+        _nameLabel.Text = scenario.TitleKey;
+        _lockIcon.Visible = scenario.Locked;
+        _entryBox.Modulate = scenario.Locked ? LockedTint : Colors.White;
+    }
+
+    // Auswahl von außen (Punkt, News, Tastatur) ohne erneutes Selected-Signal
+    public void SetSelected(bool selected) => SetPressedNoSignal(selected);
+
+    public override void _GuiInput(InputEvent @event)
+    {
+        // Nur beobachten, nicht annehmen: Den Klick selbst verarbeitet der Button
+        if (ScenarioId != null
+            && @event is InputEventMouseButton { ButtonIndex: MouseButton.Left, Pressed: true, DoubleClick: true })
+        {
+            EmitSignal(SignalName.Activated, ScenarioId);
+        }
+    }
+
+    private void OnPressed()
+    {
+        if (ScenarioId != null)
+        {
+            EmitSignal(SignalName.Selected, ScenarioId);
+        }
     }
 }

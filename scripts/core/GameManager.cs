@@ -39,6 +39,8 @@ public partial class GameManager : Node
         LogManager.Initialize();
         Perf.Initialize(LogManager.SimulationLoggerFactory?.CreateLogger("Perf"));
         LogEnvironmentInfo();
+        // Vor der ersten Szene, damit schon das Hauptmenü übersetzt ist
+        Localization.Initialize();
     }
 
     public override void _Ready()
@@ -48,7 +50,8 @@ public partial class GameManager : Node
         if (args.Contains(NewGameArgument))
         {
             Log.Info($"{NewGameArgument} auf der Kommandozeile.");
-            Callable.From(StartNewGame).CallDeferred();
+            // Ohne Auswahl startet Szenario 1
+            Callable.From(() => StartNewGame(ScenarioState.ExpeditionId)).CallDeferred();
         }
         else if (args.Contains(ContinueArgument))
         {
@@ -91,16 +94,16 @@ public partial class GameManager : Node
         LogManager.Shutdown();
     }
 
-    public void StartNewGame()
+    // Id aus der Szenarioauswahl; Landet im ScenarioState und damit im Spielstand
+    public void StartNewGame(string scenarioId)
     {
         // Der Seed selbst darf zufällig sein; ab hier ist alles deterministisch und der Seed steht im Spielstand
         ulong seed = BitConverter.ToUInt64(CryptoRandom.GetBytes(sizeof(ulong)));
-        Log.Info($"Neues Spiel wird gestartet, Seed {seed}.");
+        Log.Info($"Neues Spiel wird gestartet: Szenario '{scenarioId}', Seed {seed}.");
 
         // TODO: Startzeit aus Welt-/Szenariodaten statt Weltzeit 0 (Abschnitt 3, 11; T-025)
         World world = World.Create(LogManager.SimulationLoggerFactory, seed, 0);
-        // TODO: Szenario-Auswahl statt fest Expedition (Abschnitt 11)
-        StartSimulation(world, new ScenarioState(ScenarioState.ExpeditionId));
+        StartSimulation(world, new ScenarioState(scenarioId));
         ChangeScene(ScenePaths.Map);
     }
 

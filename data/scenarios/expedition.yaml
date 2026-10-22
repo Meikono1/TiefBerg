@@ -1,0 +1,40 @@
+id:
+expedition
+title_key:
+SCENARIO_EXPEDITION_TITLE
+description_key:
+SCENARIO_EXPEDITION_DESCRIPTION
+map_position:
+{
+	x:
+	2950,
+	y:
+	765
+}
+icon:
+Flag
+# Optional; ohne Bild zeigt die Auswahl den Platzhalter (T-032)
+preview_image:
+tags:
+species:
+[TAG_SPECIES_HUMAN,
+TAG_SPECIES_KOBOLD]
+region:
+TAG_REGION_EAST
+difficulty:
+TAG_DIFFICULTY_NORMAL
+# Anzeigewert bis T-025. Annahme: Setting um das Jahr 1000 (Abschnitt 3)
+start_year:
+1000
+locked:
+false
+news:
+-
+date:
+2026-10-20
+version:
+0.1.0
+kind:
+new
+text_key:
+SCENARIO_EXPEDITION_NEWS_0_1_0

@@ -11,6 +11,10 @@ Tiefberg: 2D-Zivilisationssimulator mit RPG-Elementen (Textadventure mit GUI), S
 - `O -` offen → nicht erfinden, `// TODO:` mit Abschnittsverweis setzen (z. B. `// TODO: Abschnitt 8 – Regeneration offen`).
 - `O - Vorschlag:` darf umgesetzt werden, im Code als Annahme markieren.
 
+**Keine Fremdnamen:** In Code, Kommentaren, Doku, Tickets und Daten keine Namen anderer Spiele, Firmen oder Fremdprodukte als Vorbild oder Vergleich nennen. Vorbilder beschreiben, was übernommen wird (z. B. „Szenarioliste links, Karte rechts“), nicht woher. Ausgenommen sind der eigene Technik-Stack (Godot, .NET, Bibliotheken) und Werkzeuge als Quellenangabe für erzeugte Daten (z. B. World Climate Lab in `lore/klima/`, `wind.yaml`).
+
+**Keine Übergangslösungen:** Alles, was umgesetzt wird, ist so gebaut, als wäre es final. Keine Krücken „bis X fertig ist“, keine Ersatzwege für fehlende Zuweisungen oder Dateien, keine doppelten Pfade (mit/ohne). Fehlt eine Entscheidung oder ein Baustein, bleibt die Stelle bewusst leer: `// TODO:` mit Abschnitt bzw. Ticket und ein Eintrag in `ABLAUFPLAN.md`. Platzhalter sind nur als Inhalt erlaubt (Texte, Positionen, Bilder) und als solche markiert, nie als Code.
+
 **Aufgaben:** `ABLAUFPLAN.md` ist die lebende Aufgabenliste. Vor einer Aufgabe dort nachsehen. Nach jeder erledigten Aufgabe aktualisieren: nach „Erledigt“ verschieben (Datum), Folgeaufgaben mit `← T-###` anlegen und die nächste freie ID hochzählen. Änderungen des Entwicklers an der Datei haben Vorrang und werden nicht zurückgedreht.
 
 Detaillierte Regeln liegen in `.claude/rules/` (C#-Stil, Architektur, Godot) und werden je nach bearbeiteter Datei automatisch geladen.

@@ -1,0 +1,18 @@
+# Späteres Szenario: geboren bei den Naga, gefangen bei den Hyrax (Abschnitt 11). Noch gesperrt.
+id: naga
+title_key: SCENARIO_NAGA_TITLE
+description_key: SCENARIO_NAGA_DESCRIPTION
+# TODO: Platzhalter, Startort offen (Abschnitt 4, 11)
+map_position: { x: 2700, y: 1000 }
+icon: Snake
+tags:
+  species: [TAG_SPECIES_NAGA]
+  difficulty: TAG_DIFFICULTY_HARD
+start_year: 1000
+locked: true
+unlock_hint_key: SCENARIO_NAGA_UNLOCK_HINT
+news:
+  - date: 2026-10-20
+    version: 0.1.0
+    kind: planned
+    text_key: SCENARIO_NAGA_NEWS_0_1_0

@@ -33,14 +33,14 @@ public partial class MainMenu : Control
     private void OnStartPressed()
     {
         Log.Info("Start gedrückt.");
-        // TODO: Szenario-Auswahl vorschalten statt direkt auf die Map (Abschnitt 11)
         if (GameManager.Instance == null)
         {
             Log.Error("GameManager-Autoload fehlt, Szenenwechsel nicht möglich.");
             return;
         }
 
-        GameManager.Instance.StartNewGame();
+        // Gestartet wird erst in der Szenarioauswahl (Abschnitt 12)
+        GameManager.Instance.ChangeScene(ScenePaths.ScenarioSelect);
     }
 
     private void OnQuitPressed()

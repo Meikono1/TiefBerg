@@ -46,18 +46,24 @@ layout_mode = 2
 
 [node name="YearCaption" type="Label" parent="Layout/TopBar/TopBarBox/YearDisplay/YearBox" unique_id=748549925]
 layout_mode = 2
+theme_type_variation = &"LabelMuted"
+text = "UI_START_YEAR"
 
 [node name="YearLabel" type="Label" parent="Layout/TopBar/TopBarBox/YearDisplay/YearBox" unique_id=840991385]
 layout_mode = 2
+theme_type_variation = &"HeaderLarge"
 
 [node name="TopSpacer" type="Control" parent="Layout/TopBar/TopBarBox" unique_id=1146409070]
 layout_mode = 2
 
 [node name="ZoomToPointCheck" type="CheckButton" parent="Layout/TopBar/TopBarBox" unique_id=1254638017]
 layout_mode = 2
+text = "UI_ZOOM_TO_POINT"
 
 [node name="MapModeCaption" type="Label" parent="Layout/TopBar/TopBarBox" unique_id=1699638464]
 layout_mode = 2
+theme_type_variation = &"LabelMuted"
+text = "UI_MAP_MODE"
 
 [node name="MapModeBar" type="HBoxContainer" parent="Layout/TopBar/TopBarBox" unique_id=580021009]
 layout_mode = 2
@@ -78,13 +84,17 @@ layout_mode = 2
 
 [node name="ScenarioListCaption" type="Label" parent="Layout/Main/LeftColumn/ScenarioListPanel/ScenarioListBox" unique_id=1396077976]
 layout_mode = 2
+theme_type_variation = &"HeaderSmall"
+text = "UI_SCENARIOS"
 
 [node name="ListScroll" type="ScrollContainer" parent="Layout/Main/LeftColumn/ScenarioListPanel/ScenarioListBox" unique_id=711635113]
 custom_minimum_size = Vector2(0, 220)
 layout_mode = 2
+horizontal_scroll_mode = 0
 
 [node name="ScenarioList" type="VBoxContainer" parent="Layout/Main/LeftColumn/ScenarioListPanel/ScenarioListBox/ListScroll" unique_id=998654589]
 layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="DetailPanel" type="PanelContainer" parent="Layout/Main/LeftColumn" unique_id=110269762]
 layout_mode = 2
@@ -99,19 +109,28 @@ layout_mode = 2
 [node name="PreviewImage" type="TextureRect" parent="Layout/Main/LeftColumn/DetailPanel/DetailMargin/DetailBox" unique_id=1002104172]
 custom_minimum_size = Vector2(0, 180)
 layout_mode = 2
+expand_mode = 1
+stretch_mode = 6
 
 [node name="ScenarioTitle" type="Label" parent="Layout/Main/LeftColumn/DetailPanel/DetailMargin/DetailBox" unique_id=1506524019]
 layout_mode = 2
+theme_type_variation = &"HeaderLarge"
+autowrap_mode = 3
 
 [node name="ScenarioTags" type="HFlowContainer" parent="Layout/Main/LeftColumn/DetailPanel/DetailMargin/DetailBox" unique_id=1922862267]
 layout_mode = 2
 
 [node name="ScenarioDescription" type="RichTextLabel" parent="Layout/Main/LeftColumn/DetailPanel/DetailMargin/DetailBox" unique_id=149274515]
 layout_mode = 2
+theme_type_variation = &"DescriptionText"
+bbcode_enabled = true
 size_flags_vertical = 3
 
 [node name="LockedHint" type="Label" parent="Layout/Main/LeftColumn/DetailPanel/DetailMargin/DetailBox" unique_id=2037356601]
+visible = false
 layout_mode = 2
+theme_type_variation = &"HintWarning"
+autowrap_mode = 3
 
 [node name="MapView" type="Control" parent="Layout/Main" unique_id=366247578]
 clip_contents = true

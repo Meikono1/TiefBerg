@@ -1,3 +1,53 @@
 [gd_scene format=3 uid="uid://b1c16r05mses0"]
 
-[node name="NewsCard" type="Node2D" unique_id=1564079019]
+[ext_resource type="Script" uid="uid://drcy7e476x1io" path="res://scripts/ui/scenario/NewsCard.cs" id="1_news"]
+
+[node name="NewsCard" type="Button" unique_id=600202441]
+custom_minimum_size = Vector2(300, 90)
+theme_type_variation = &"NewsCardButton"
+script = ExtResource("1_news")
+
+[node name="NewsMargin" type="MarginContainer" parent="." unique_id=324648664]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="NewsBox" type="VBoxContainer" parent="NewsMargin" unique_id=1029909851]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="NewsHeader" type="HBoxContainer" parent="NewsMargin/NewsBox" unique_id=1275172691]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="NewsBadge" type="Label" parent="NewsMargin/NewsBox/NewsHeader" unique_id=1670506962]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"TagChipLabel"
+
+[node name="NewsTitle" type="Label" parent="NewsMargin/NewsBox/NewsHeader" unique_id=1021250870]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+text_overrun_behavior = 3
+
+[node name="NewsVersion" type="Label" parent="NewsMargin/NewsBox/NewsHeader" unique_id=877660036]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"LabelMuted"
+
+[node name="NewsText" type="Label" parent="NewsMargin/NewsBox" unique_id=1384296111]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"DescriptionLabel"
+autowrap_mode = 3
+max_lines_visible = 2
+text_overrun_behavior = 3

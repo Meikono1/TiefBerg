@@ -23,8 +23,8 @@ text = "Tiefberg"
 
 [node name="StartButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=115885575]
 layout_mode = 2
-text = "Start"
+text = "UI_MENU_START"
 
 [node name="QuitButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=386359049]
 layout_mode = 2
-text = "Quit"
+text = "UI_MENU_QUIT"

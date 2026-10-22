@@ -29,7 +29,7 @@ public static class ExportCheck
         return false;
     }
 
-    // Ersatz für einen nicht zugewiesenen Export über den Pfad aus dem Bauplan; die Lücke wird trotzdem gemeldet
+    // Ersatz für einen nicht zugewiesenen Export über den erwarteten Node-Pfad in der Szene; die Lücke wird trotzdem gemeldet
     public static T OrPath<T>(GameLogger log, Node owner, T assigned, string path,
         [CallerMemberName] string member = "") where T : class
     {
@@ -45,5 +45,28 @@ public static class ExportCheck
         }
 
         return node;
+    }
+
+    // Wie OrPath, aber für Ressourcen (z. B. Modul-Szenen) über ihren Standardpfad unter res://
+    public static T OrResource<T>(GameLogger log, Node owner, T assigned, string resourcePath,
+        [CallerMemberName] string member = "") where T : Resource
+    {
+        if (assigned != null)
+        {
+            return assigned;
+        }
+
+        if (!ResourceLoader.Exists(resourcePath))
+        {
+            return null;
+        }
+
+        var resource = GD.Load<T>(resourcePath);
+        if (resource != null)
+        {
+            log.Warn($"Export an '{owner.GetPath()}' nicht zugewiesen, nutze '{resourcePath}'.", member: member);
+        }
+
+        return resource;
     }
 }

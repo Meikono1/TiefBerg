@@ -1,3 +1,50 @@
 [gd_scene format=3 uid="uid://c8ofv8ku0muhl"]
 
-[node name="ScenarioListEntry" type="Node2D" unique_id=2043292707]
+[ext_resource type="Script" uid="uid://sl21prava23p" path="res://scripts/ui/scenario/ScenarioListEntry.cs" id="1_esqn8"]
+[ext_resource type="ButtonGroup" path="res://resources/ui/ScenarioButtonGroup.tres" id="2_group"]
+[ext_resource type="Texture2D" uid="uid://l8yxaowrqg1q" path="res://resources/MapIcons/lock.png" id="3_lock"]
+
+[node name="ScenarioListEntry" type="Button" unique_id=724754540]
+custom_minimum_size = Vector2(0, 40)
+size_flags_horizontal = 3
+theme_type_variation = &"ScenarioListButton"
+toggle_mode = true
+button_group = ExtResource("2_group")
+script = ExtResource("1_esqn8")
+
+[node name="EntryBox" type="HBoxContainer" parent="." unique_id=565111167]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_right = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="Icon" type="TextureRect" parent="EntryBox" unique_id=257128769]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="NameLabel" type="Label" parent="EntryBox" unique_id=667628168]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+vertical_alignment = 1
+text_overrun_behavior = 3
+
+[node name="LockIcon" type="TextureRect" parent="EntryBox" unique_id=1280741514]
+visible = false
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("3_lock")
+expand_mode = 1
+stretch_mode = 5

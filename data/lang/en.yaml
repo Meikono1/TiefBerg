@@ -1,0 +1,39 @@
+# Englische Spieltexte (Abschnitt 12). Dateiname = Sprachcode. Flach: SCHLÜSSEL: Text, keine Einrückung.
+# Platzhaltertexte für Szenarien stammen aus Abschnitt 11 und werden vom Entwickler ersetzt.
+
+# Hauptmenü
+UI_MENU_START: "Start"
+UI_MENU_QUIT: "Quit"
+
+# Szenarioauswahl
+UI_START_YEAR: "Start year"
+UI_ZOOM_TO_POINT: "Zoom to point"
+UI_MAP_MODE: "Map mode"
+UI_SCENARIOS: "Scenarios"
+UI_BACK: "Back"
+UI_CONTINUE: "Continue"
+UI_ZOOM_IN: "Zoom in"
+UI_ZOOM_OUT: "Zoom out"
+UI_RESET_VIEW: "Reset view"
+UI_NEWS_NEW: "New"
+UI_NEWS_UPDATED: "Updated"
+UI_NEWS_PLANNED: "Planned"
+
+# Tags
+TAG_SPECIES_HUMAN: "Human"
+TAG_SPECIES_KOBOLD: "Kobold"
+TAG_SPECIES_NAGA: "Naga"
+TAG_REGION_EAST: "Eastern Lands"
+TAG_DIFFICULTY_NORMAL: "Normal"
+TAG_DIFFICULTY_HARD: "Hard"
+
+# Szenario 1: Expedition
+SCENARIO_EXPEDITION_TITLE: "Expedition to the Eastern Lands"
+SCENARIO_EXPEDITION_DESCRIPTION: "You set out as a human on an expedition into the eastern lands, alone at first. A kobold becomes your companion and guide. Found a town and, over generations, a kingdom."
+SCENARIO_EXPEDITION_NEWS_0_1_0: "First playable scenario."
+
+# Szenario: Naga
+SCENARIO_NAGA_TITLE: "Born among the Naga"
+SCENARIO_NAGA_DESCRIPTION: "Born among the Naga and held captive by the Hyrax. Trade or fight your way to freedom."
+SCENARIO_NAGA_UNLOCK_HINT: "Not available yet."
+SCENARIO_NAGA_NEWS_0_1_0: "In planning."
