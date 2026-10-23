@@ -7,7 +7,7 @@ Lebende Aufgabenliste. Claude aktualisiert sie nach jeder erledigten Aufgabe, du
 - Ergibt sich aus einer Aufgabe eine neue, steht bei der neuen `← T-###` (Herkunft).
 - Erledigte Aufgaben wandern nach **Erledigt**, mit Datum und ggf. `→ T-###` (Folgeaufgaben).
 - Verweise auf das Design-Dokument als `(Abschnitt N)`.
-- Nächste freie ID: **T-073**
+- Nächste freie ID: **T-074**
 
 ## In Arbeit
 
@@ -24,10 +24,11 @@ Ablauf: Hauptmenü → Start → Szenarioauswahl → Szenario wählen → Weiter
 Test, ob eine Kulturgruppe vollständig auf den Stand der Kataru kommt, bevor die übrigen weitergehen.
 
 - [ ] **T-062** (Entwickler) Gewichte von Kobold und Felbold in `lore/voelker/draconik.md` bestätigen (geschätzt: 12–35 kg, 10–30 kg; Abschnitt 5) ← T-059.
+- [ ] **T-073** (Entwickler) Größen und Gewichte aller Rassen gesammelt prüfen, sobald alle Kulturgruppen unter `lore/voelker/` stehen (u. a. Serval vorläufig 1,5–1,7 m; Abschnitt 5) ← T-060.
 - [ ] **T-063** (Entwickler) Reproduktionstabelle als eigene Datei: Kreuztabelle aller Spezies, wer mit wem Nachkommen haben kann (Abschnitt 5) ← T-059.
 - [ ] **T-065** (Entwickler) Nagaji klären: Die Startkobolde handeln mit ihren Zähnen und Schuppen; eigene Spezies, Fauna oder eine NAGALITH-Rasse? (Abschnitt 5, 9) ← T-059.
 - [ ] **T-066** (Entwickler) Strafen der Verlorenen bei den Draconik im Einzelnen, bis zur Verbannung (`draconik.md`, Ordnung) ← T-059.
-- [ ] **T-060** (Entwickler) `lore/Races V3.odt` in eine Datei je Kulturgruppe unter `lore/voelker/` aufteilen, Gliederung wie `draconik.md`; Kataru und Veskral zuerst (Abschnitt 5) ← T-058.
+- [ ] **T-060** (Entwickler) `lore/Races V3.odt` in eine Datei je Kulturgruppe unter `lore/voelker/` aufteilen, Gliederung wie `draconik.md`; Kataru und Veskral zuerst (Abschnitt 5) ← T-058. Stand 2026-10-23: `kataru.md`, `veskral.md`, `hyrax.md`, `tarpan.md` angelegt, Widersprüche je Datei unter Offen (alle vier durchgegangen, Reste je Datei unter Offen; Konflikte Veskral ↔ HUMANIC, RUMINAN, TARPAN und Kataru ↔ NAGALITH, HYRAX in deren Dateien übernehmen, wenn sie entstehen; Cristasus heißt jetzt Cristatus, auch in `kulturen.yaml`/`en.yaml`, Profile savanna, steppe, jungle); `.odt` aufgeräumt (die vier sind raus). 2026-10-23: `nagalith.md` angelegt und durchgegangen: Zikkurat-Zivilisation in Sumpf und Regenwald, Stand = Nähe zur Gottheit, Götter als Stellen (Design-Referenz Abschnitt 1); Lebensräume in `kulturen.yaml` auf jungle, Lamia (44, 6) und Viper (48, −8) in den Regenwald verschoben (bitte prüfen); Stände und Rassenbeitrag bestätigt, lebenslanges Wachstum (Größe = Stufe), offen: Steckbriefe. 2026-10-23: `humanic.md` angelegt, Steckbriefe als Vorschlag, Zivilisation durchgegangen (Städte je Rasse, Feudalismus, Rat der Zivilisierten, Expeditionsstart durch einen Gott; offen: Stadtbau je Rasse, feudale Stände); dann die übrigen Kulturgruppen.
 - [ ] **T-061** Personenmodell: Geschlecht veränderlich, Eltern ohne feste Mutter-/Vaterrolle (Draconik-Geschlechtswechsel, Abschnitt 5, 6); umsetzen mit Meilenstein 3 (Generationen) ← T-058.
 
 ## Als Nächstes – Meilenstein 1: Fundament (Abschnitt 13)
@@ -38,7 +39,7 @@ Test, ob eine Kulturgruppe vollständig auf den Stand der Kataru kommt, bevor di
 ## Später – Meilenstein 5: Weltsimulation (Abschnitt 4, 5, 10, 11, 12)
 
 - [ ] **T-070** (Entwickler) Wasserfall als einmaliges Naturwunder: Ort, Höhe und Breite festlegen (Kandidat: Länge 71°, Breite 29°, Gebirge der Draconik); danach als Daten anlegen (Abschnitt 4) ← T-069.
-- [ ] **T-071** (Entwickler) Mittelpunkte von sechs Völkern liegen im Wasser, sie haben kein Heimatgebiet: Gnome, Husky, Squirrel, Girtablilu (Meer), Jackal, Axolotl (Binnengewässer). Neue Mittelpunkte in `data/peoples/kulturen.yaml` festlegen (Vorschläge = nächstes Land in `lore/voelker/verbreitung.md`, Offen) oder entscheiden, ob ein Volk am See vom Ufer aus rechnet (Abschnitt 4, 5) ← T-044.
+- [ ] **T-071** (Entwickler) Mittelpunkte von sechs Völkern liegen im Wasser, sie haben kein Heimatgebiet: Gnome, Husky, Squirrel, Girtablilu (Meer), Jackal, Axolotl (Binnengewässer). Neue Mittelpunkte in `data/peoples/kulturen.yaml` festlegen (Vorschläge = nächstes Land in `lore/voelker/verbreitung.md`, Offen) oder entscheiden, ob ein Volk am See vom Ufer aus rechnet (Abschnitt 4, 5). Girtablilu: in der Wüste nahe einem Waldrand, mit Fluss oder See für die Odonata-Larven in der Nähe (`lore/voelker/veskral.md`); Jackal: nah am Wasser, an Fluss oder See (`lore/voelker/hyrax.md`) ← T-044.
 - [ ] **T-043** (Entwickler) Gemalte Völker-Ebene als Verfeinerung der berechneten Heimatgebiete: PNG 4320×2160 deckungsgleich mit `resources/maps/weltkarte.png`, nur Farbflächen ohne Terrain, Schrift und Kantenglättung, unbemalt = berechnetes Gebiet gilt; dazu Zuordnung Farbe → Volk. Laden mit Prüfung (unbekannte Farben) und Vorrang vor der Berechnung. `voelkerkarte.png` ist nur Schaubild (Abschnitt 4) ← T-037, T-044.
 - [ ] **T-045** Vorsimulation: mehrere zufällige Startpunkte je Heimatgebiet, dort je eine erste Stadt (Anzahl und Verteilung offen; Siedlungen eines Volks, einer Kulturgruppe oder multikulturell, Abschnitt 5), dann Wachstum und Ausbau bis zum Startjahr; Multicore, Dauer messen. Grobe Ebene für Reiche und Bevölkerung, relevante Personen und Kreaturen einzeln (T-053). Reproduzierbarkeit nicht gefordert (Abschnitt 4, Vorschlag; Abschnitt 10) ← T-044, T-027.
 - [ ] **T-046** Mitgelieferte vorsimulierte Welt: erzeugen, mit Version ausliefern, bei Neues Spiel wählbar statt neu vorsimulieren; bei Änderungen an Simulation oder Daten neu erzeugen (Abschnitt 4) ← T-045.
@@ -70,7 +71,7 @@ Karte im Spiel (eigene Weltkarte mit bekannter Welt, Abschnitt 12) kommt mit T-0
 - [ ] **T-026** Vor dem ersten Export prüfen: In `Tiefberg.sln` sind `ExportDebug`/`ExportRelease` für `Tiefberg.Simulation` auf `Debug` gemappt. Klären, ob Godot beim Export dieses Mapping nutzt; falls ja, Kern im Release-Export optimiert bauen (`Release`).
 - [ ] **T-016** Hauptmenü: Fortsetzen-Button bei vorhandenem Spielstand, Optionen (Auflösung, Sprache, Log-Level) ← T-012.
 
-- [ ] **T-020** Rassen-Daten umbauen: `lore/Races V3.odt` (wird nach `lore/voelker/` aufgeteilt, T-060) ist eine Zusammenfassung mit mehr Infos als nötig und erst ~40 % fertig. Auf spielrelevante Werte reduzieren (Größenklasse, Lebensdauer, Erwachsenenalter, Ernährung, Präferenzen, Reproduktionstabelle) und als YAML unter `data/` anlegen. Inhalt liefert der Entwickler (Abschnitt 5).
+- [ ] **T-020** Rassen-Daten umbauen: `lore/Races V3.odt` (wird nach `lore/voelker/` aufgeteilt, T-060) ist eine Zusammenfassung mit mehr Infos als nötig und erst ~40 % fertig. Auf spielrelevante Werte reduzieren (Größenklasse, Lebensdauer, Erwachsenenalter, Ernährung, Aktivitätszeiten wie tag-, nacht- oder dämmerungsaktiv, Präferenzen, Reproduktionstabelle) und als YAML unter `data/` anlegen. Inhalt liefert der Entwickler (Abschnitt 5).
 
 Meilenstein 2 (Prototyp Expedition) wird aufgeschlüsselt, wenn Meilenstein 1 steht.
 

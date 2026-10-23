@@ -28,13 +28,16 @@ Verbindliche Referenz für Design und Architektur. Bei Widerspruch zwischen Code
 2D-Zivilisationssimulator mit RPG-Elementen als Textadventure mit GUI, Solo-Entwicklung. Der Spieler ist eine gottartige Seele, die in Personen einer lebendigen Welt eintritt.
 
 - E - Die Seele tritt in Personen ein. Über Generationen baut der Spieler mehrere Charaktere auf und wechselt zwischen ihnen. Sie müssen nicht verwandt sein.
-- E - Charaktere ziehen wie eine D&D-Party in Dungeons (Abschnitt 7).
+- E - Charaktere ziehen als Party, eine Gruppe von Abenteurern, in Dungeons (Abschnitt 7).
 - E - Eigener Stammbaum als Kernfeature (Abschnitt 6).
 - E - Spielercharaktere sind besonders, weil der Spieler ihre Geschichte erlebt: weniger Krankheit, keine zufälligen permanenten Verletzungen. Sonst gelten dieselben Regeln wie für NPCs.
 - E - Jede Kulturgruppe und Spezies hat eigene Königreiche und Dörfer, die passiv weiterlaufen und technologisch unterschiedlich weit sein können.
 - E - Technologie ist offen. Eisen, Kupfer oder Schwarzpulver sind ab Start möglich, wenn die Voraussetzungen erfüllt sind.
 - E - Reiche erreichen 100.000 Einwohner und mehr.
 - E - Szenarien sind verschiedene Einstiege in dieselbe Welt (Abschnitt 11).
+- E - Die Götter spielen mit der Welt. Für sie ist sie ein Spielplatz, auf dem sie spannende Geschichten erleben wollen, ohne den Planeten zu zerstören. Die Seele des Spielers ist eine solche göttliche Seele, auf die Welt geschleudert, um zu sehen, was geschieht.
+- E - Götter nehmen Stellen ein: Jede Gottheit, die die Sterblichen verehren, ist eine Stelle, die jeder Gott einnehmen kann, der vorbeikommt. Derselbe Gott ist daher nicht immer derselbe; er verkörpert nur, wofür die Stelle steht, und setzt Zeichen. Götter können jede Stimme nachahmen und bestimmen, was ein Sterblicher in welcher Stimme hört (Beispiel `lore/voelker/nagalith.md`).
+- O - Ob und wie die Seele des Spielers selbst eine solche Stelle einnehmen kann.
 
 * E - Das Spiel enthält NSFW-Elemente. Texte schreibt der Entwickler; der Code enthält Mechaniken, die darauf aufbauen.
 * E - NSFW-Mechaniken gelten nur für erwachsene, intelligente Personen. Jede Spezies definiert ihr Erwachsenenalter in den Speziesdaten. Die Prüfung erfolgt zentral im Code, nicht pro Text.
@@ -120,9 +123,10 @@ Rund 70 Spezies in 16 Kulturgruppen, von drachenartigen Riesen bis zu mausartige
 - O - Regeln, damit Bestände in der Simulation nicht zusammenbrechen (Nachwachsen, Mindestbestände, Wanderung).
 - E - Fauna: prähistorische Tiere als Gegenstück zu den Anthro-Spezies. Sie liefern Rohstoffe wie Fleisch, Fell, Leder und Wolle (z. B. Wollmammut, Wollnashorn).
 - O - Konkrete Werte je Spezies (Größenklasse, Lebensdauer, Ernährung).
-- E - Ausarbeitung je Kulturgruppe in `lore/voelker/<kulturgruppe>.md` (Gemeinsame Grundlage, Rassen, Zivilisation); bisher DRACONIK. Der Rest steht noch in `lore/Races V3.odt`.
+- E - Die Lebenserwartung im Steckbrief einer Rasse ist das Alter, das ihre Biologie gut erreicht, kein Durchschnitt. Viele sterben früher; bei den Odonata etwa überleben manche Erwachsene das erste Jahr nicht.
+- E - Ausarbeitung je Kulturgruppe in `lore/voelker/<kulturgruppe>.md` (Gemeinsame Grundlage, Rassen, Zivilisation); bisher DRACONIK, KATARU, VESKRAL, HYRAX, TARPAN, NAGALITH, HUMANIC (ohne Zivilisation). Der Rest steht noch in `lore/Races V3.odt`.
 - E - Draconik wechseln ihr Geschlecht im Lauf des Lebens (`lore/voelker/draconik.md`). Das Geschlecht einer Person ist damit veränderlich, und eine Person kann bei verschiedenen Kindern Mutter und Vater sein (Abschnitt 6).
-- O - Aufteilung RUMINAN, Lebensraum von Cristasus.
+- O - Aufteilung RUMINAN.
 - O - Spezies außerhalb ihres Kulturgebiets auf der Karte (WIP): Jerboa, Euplerid, Axolotl, Kitsune, Husky, Pinniped.
 
 O - Nagaji (Abschnitt 9, Währung) fehlen in der Tabelle: eigene Spezies, Fauna oder anderer Name für eine NAGALITH-Spezies?
@@ -138,7 +142,7 @@ O - Nagaji (Abschnitt 9, Währung) fehlen in der Tabelle: eigene Spezies, Fauna 
 | VESKRAL | Girtablilu, Araneae, Mantodea, Odonata |
 | NAGALITH | Reptilid, Serathi, DraconicNaga, Lamia, Viper |
 | KATARU | Pantherine, Serval, Acinonyx, Caracal |
-| HYRAX | Gnoll, Jackal, Bat, Cristasus |
+| HYRAX | Gnoll, Jackal, Bat, Cristatus |
 | GOBLIN | Goblin, Hobgoblin |
 | DRACONIK | Dragonkin, Kobold, Felbold |
 | TENGU | Gryphon, Owl, Harpy, Falcon |
@@ -165,7 +169,7 @@ Der Spieler steuert eine Party aus beliebigen Personen und pflegt einen lesbaren
 
 ## 7. RPG-Regeln, Party, Dungeons
 
-Alles hat ein Level von 0 bis 30 (30 = gottgleich); Proben sind W20 plus Level, angelehnt an D&D 3.5 und Pathfinder 1/2.
+Alles hat ein Level von 0 bis 30 (30 = gottgleich); Proben sind W20 plus Level, wie in klassischen Pen-and-Paper-Rollenspielen.
 
 - E - Level haben: Personen, Kreaturen, Gegenstände, Zauber, Städte.
 - E - Probe: W20 + Level + Modifikatoren ≥ SG. Der SG leitet sich ebenfalls aus einem Level ab.
@@ -189,6 +193,7 @@ Magie kostet KCAL und verknüpft damit Magie, Ernährung, Spezies-Größe und Wi
 - E - Große Spezies haben mehr Reserve, aber höheren Grundumsatz. Nahrung wird zur Magieressource. Zauber haben ein Level, Kosten skalieren damit.
 - E - Jeder hat eine KCAL-Reserve, relevant ist sie aber nur für Magier. Einzeln getrackt wird KCAL nur bei Magiern und anderweitig wichtigen Personen, nicht bei Bauern.
 - E - Für die Siedlung wirkt Magie wie Technologie: Personen, die sie gelernt haben, geben Boni.
+- E - Körpermagie: Eine Rasse kann selbst die Herkunft ihrer Magie sein. Sie wirkt angeboren im eigenen Körper, ist keine Tradition, muss nicht gelernt werden und kostet KCAL (`lore/Magiesystem.md`, z. B. Atmung der Veskral, Knochensinn der Gnolle).
 - O - Vorschlag: KCAL ganzzahlig speichern.
 - O - Reserve, Regeneration, Folgen von Überverbrauch (Erschöpfung, Abbau, Tod).
 - O - Weitere Kosten, externe Speicher (Tränke, Kristalle) und wer zaubern kann; hängt auch von der Spezies ab.
@@ -223,6 +228,7 @@ Der Herrscher vergibt Aufträge, die Einwohner arbeiten sie ab und bringen ihre 
 - E - NPCs mit viel Freizeit suchen sich Beschäftigung.
 - E - NPCs, die für ihr Überleben viel arbeiten müssen (Beeren sammeln, Holz hacken), tun wenig für den Herrscher.
 - O - Vorschlag: Konflikte systemisch. Bedürfnisse und Tabus je Spezies und Kultur plus eine Haltungsmatrix ergeben Spannungen. Über einem Schwellenwert entsteht ein Ereignis mit Optionen aus generischen Vorlagen.
+- O - Vorschlag: Startwerte der Haltungsmatrix kommen aus der Lore. Beispiel: Die übrigen Völker begegnen den NAGALITH mit Abscheu (`lore/voelker/nagalith.md`).
 
 **Offen**
 
@@ -254,6 +260,9 @@ Ein Szenario ist ein Einstiegspunkt in die fertig vorsimulierte Welt, kein absol
 **Szenario 1: Expedition in die östlichen Lande**
 
 - E - Start als Mensch einer Expedition in die östlichen Lande, zunächst allein. Ziel: Stadt und später Königreich über Generationen.
+- E - Ein Gott startet die Expedition: Er fordert einen Menschen der HUMANIC auf, in den Osten zu reisen, und lässt ihn unmenschlich schnell dorthin gelangen. Dort übernimmt die Seele des Spielers den Körper und tötet dabei die eigentliche Seele (`lore/voelker/humanic.md`).
+- O - Was der Körper von seinem früheren Leben behält (Sprache, Wissen, Erinnerungen, Fertigkeiten).
+- O - Tötet jeder Eintritt der Seele die eigentliche Seele, auch beim Charakterwechsel über Generationen (Abschnitt 1, 6), oder nur dieser erste?
 - E - Durch Erkundung kommen weitere Charaktere dazu, die alle besonders sind.
 - E - Ein Kobold ist RPG-Begleiter und Tutorial; der Spieler redet mit ihm. Er gräbt selbstständig eine Höhle, danach kommen 3–4 Kobolde dazu und versorgen sich selbst. Mit ihrer Hilfe entsteht die erste Hütte.
 - E - Nur die Dialoge des Kobolds sind gescriptet, sein Verhalten läuft über die normale Simulation. Tutorial-Fortschritt ist Szenario-Zustand.
