@@ -7,6 +7,7 @@ using TiefBerg.Scenario;
 using TiefBerg.Simulation;
 using TiefBerg.Simulation.Control;
 using TiefBerg.Simulation.Control.Commands;
+using TiefBerg.Simulation.Geography;
 using CryptoRandom = System.Security.Cryptography.RandomNumberGenerator;
 
 namespace TiefBerg.Core;
@@ -26,6 +27,7 @@ public partial class GameManager : Node
     private double _perfSummaryTimer;
     private SimulationThread _simulation;
     private ScenarioState _scenario;
+    private HomelandMap _homelands;
 
     public override void _EnterTree()
     {
@@ -63,6 +65,11 @@ public partial class GameManager : Node
 
     // Stand der laufenden Simulation für Ansichten; null ohne Spiel. Ansichten lesen nur diesen (Abschnitt 2).
     public SimulationSnapshot Snapshot => _simulation?.Snapshot;
+
+    // Heimatgebiete der Völker, beim Weltstart aus den Daten berechnet (Abschnitt 4); null ohne Spiel.
+    // Nicht im Spielstand: Sie ergeben sich immer gleich aus den Daten.
+    // TODO: Startpunkte der Vorsimulation daraus wählen (T-045)
+    public HomelandMap Homelands => _homelands;
 
     // Befehle der Ansichten an die Simulation (Pause, Echtzeit, Abschnitt laufen lassen …)
     public void Send(ISimulationCommand command)
@@ -120,10 +127,16 @@ public partial class GameManager : Node
         // Der Seed selbst darf zufällig sein; ab hier ist alles deterministisch und der Seed steht im Spielstand
         ulong seed = BitConverter.ToUInt64(CryptoRandom.GetBytes(sizeof(ulong)));
         Log.Info($"Neues Spiel wird gestartet: Szenario '{scenarioId}', Seed {seed}.");
+        HomelandMap homelands = WorldDataFiles.LoadHomelands();
+        if (homelands == null)
+        {
+            Log.Error("Neues Spiel abgebrochen: Weltdaten fehlen.");
+            return;
+        }
 
         // TODO: Startzeit aus Welt-/Szenariodaten statt Weltzeit 0 (Abschnitt 3, 11; T-025)
         World world = World.Create(LogManager.SimulationLoggerFactory, seed, 0);
-        StartSimulation(world, new ScenarioState(scenarioId));
+        StartSimulation(world, new ScenarioState(scenarioId), homelands);
         ChangeScene(ScenePaths.Map);
     }
 
@@ -135,8 +148,15 @@ public partial class GameManager : Node
             return;
         }
 
+        HomelandMap homelands = WorldDataFiles.LoadHomelands();
+        if (homelands == null)
+        {
+            Log.Error("Laden abgebrochen: Weltdaten fehlen.");
+            return;
+        }
+
         World world = World.Restore(LogManager.SimulationLoggerFactory, worldState);
-        StartSimulation(world, scenario);
+        StartSimulation(world, scenario, homelands);
         ChangeScene(ScenePaths.Map);
     }
 
@@ -174,10 +194,11 @@ public partial class GameManager : Node
         }
     }
 
-    private void StartSimulation(World world, ScenarioState scenario)
+    private void StartSimulation(World world, ScenarioState scenario, HomelandMap homelands)
     {
         StopSimulation();
         _scenario = scenario;
+        _homelands = homelands;
         _simulation = new SimulationThread(LogManager.SimulationLoggerFactory, world, TimeProvider.System);
         LogManager.WorldTimeSource = () => world.Clock.Now;
         // Startet pausiert (Abschnitt 3); weiter geht es über Befehle der Spielszene (T-014)
@@ -194,6 +215,7 @@ public partial class GameManager : Node
         _simulation.Stop();
         _simulation = null;
         _scenario = null;
+        _homelands = null;
         LogManager.WorldTimeSource = null;
     }
 

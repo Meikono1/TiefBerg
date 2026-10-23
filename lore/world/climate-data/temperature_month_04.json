@@ -32,7 +32,7 @@
     "encoding_max": 150.0,
     "formula": "value = encoding_min + pixel / 65535 * (encoding_max - encoding_min)"
   },
-  "observed_min": -36.899,
-  "observed_max": 35.69,
+  "observed_min": -19.439,
+  "observed_max": 36.706,
   "valid": "all"
 }

@@ -3,7 +3,7 @@
 Auswertung der World-Climate-Lab-Simulation (Version 0.1.10, Export vom 20.10.2026).
 Karten im selben Ordner: `tiefberg_siedlung.jpg` (Siedlungspotenzial), `tiefberg_handel.jpg` (Wohlstand und Handel), `tiefberg_segelkarte.jpg` (Prüfrouten), `wind_vorschau_mXX.jpg` (Wind je Monat).
 Spieldaten zur Seefahrt: `data/world/`, Format in `defines/Seewind Datenformat.md`.
-Rohdaten aus World Climate Lab (alle Ebenen, Klimadaten, Aufnahmen Wind- und Meeresströmung als Einzelbilder und GIF): `lore/world/`. Der Ordner hat eine `.gdignore`, Godot importiert ihn nicht.
+Rohdaten aus World Climate Lab (alle Ebenen, Klimadaten, Aufnahmen Wind- und Meeresströmung als Einzelbilder und GIF): `lore/world/`; welche Ebene aus welchem Lauf stammt, steht in `lore/welt_konfiguration.md` Abschnitt 6. Der Ordner hat eine `.gdignore`, Godot importiert ihn nicht.
 
 Status-Präfixe wie in der Design-Referenz: `E -` entschieden, `O -` offen, `O - Vorschlag:` darf übernommen werden.
 

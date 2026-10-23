@@ -177,7 +177,11 @@ Format: **Name: Polylinie (Länge, Breite) – Gipfelhöhe – Breite**
 
 ## 5. Vereinfachte Klimazonen
 
-**Quelle:** `02-climate_zones-raw.png`, auf 2160 × 1080 verkleinert. Land wird über die Meeresmaske bestimmt, jedes Pixel bekommt die nächstliegende Köppen-Legendenfarbe (Legendenfarben × 255/243).
+**Quelle:** `02-climate_zones-raw.png`, auf 2160 × 1080 verkleinert (nächster Nachbar). Das Bild enthält nur Legendenfarben (aus `02-climate_zones-framed.png`), jede Farbe ist genau eine Köppen-Klasse; eine unbekannte Farbe bricht ab. Land wird über die Meeresmaske (`Version5 Meermaske.png`) bestimmt; Pixel, deren Farbe nicht zur Maske passt, bekommen die nächste passende Zone. Höhe aus `Version 5 HM.png`: Grauwert × 8849 m (Abschnitt 4, Export), Mittelwert je Zielpixel.
+
+**Umsetzung:** `tools/klimazonen.py` erzeugt `data/world/klimazonen.bin` (Kennung `TBKZ`, uint32 Version, Breite, Höhe, dann ein Byte Zonen-ID je Pixel, Norden zuerst, ab 180° W) und `data/world/klimazonen.yaml` (Zonentabelle mit Namensschlüssel). Flächen werden in 4er-Nachbarschaft und über die Datumsgrenze hinweg verbunden.
+
+Welche Ebene aus welchem Lauf stammt, steht in Abschnitt 6.
 
 ### Zuordnung und IDs
 
@@ -212,63 +216,68 @@ Format: **Name: Polylinie (Länge, Breite) – Gipfelhöhe – Breite**
    - < 17,5° → Savanne (2)
 3. **Hochgebirge:** Höhe ≥ 2500 m → 13, außer Eisschild (Länge −52° bis −15°, Breite 58° bis 86°)
 4. **Kleinflächen < 40 px** auflösen (nicht 13; Zone 12 nur außerhalb des Eisschilds)
-5. **Meer:** Ordinalwerte geglättet (Gauß 3 × 5 px)
+5. **Meer:** Ordinalwerte (tropisch → gemäßigt → kalt → Packeis) geglättet (Gauß 3 × 5 px; umgesetzt als Sigma 3 px in der Breite, 5 px in der Länge, nur über Meer gewichtet)
 6. **Riff:** tropisches Meer oder gemäßigtes Meer mit |Breite| < 28°, höchstens 10 px (≈ 1,7°) vor der Küste
+7. **Binnengewässer:** Meerflächen ohne Verbindung zur größten Meeresfläche → 25
+
+Ergebnis (2026-10-23): Zone 12 (Eis) kommt nicht vor. Das EF im Bild liegt nur auf Gipfeln über 2500 m und wird Hochgebirge, der Eisschild ist Tundra.
 
 ---
 
-## 6. Völker und Kulturen (um das Jahr 1000)
+## 6. Läufe und Quellen
 
-### Prinzip
+Das World Climate Lab erzeugt eine Welt nicht exakt gleich neu: Mit denselben Einstellungen weicht jeder Lauf ab. Die Rohdaten stammen deshalb aus zwei Läufen. Sie liegen zusammengeführt unter `lore/world/` (mit `.gdignore`, Godot importiert sie nicht); welcher Ordner aus welchem Lauf kommt, steht unten. Nicht benötigte Exporte sind gelöscht, die Originale liegen beim Entwickler unter Dokumente/World Climate Lab.
 
-- **Einfluss je Volk:** `I = clip(Eignung · exp(−(d / R)²) · 1,25; 0; 1)`, wobei d die Distanz über Land ist (kein Weg übers Meer). Rechenraster 1440 × 720.
-- **Eignung:** aus dem Lebensraum-Profil, geglättet (Gauß 2), mit optionalem Bonus:
-  - Fluss: `× (0,55 + 0,6 · Flussnähe)`
-  - Küste: `× (0,55 + 0,6 · Küstennähe)`, Küstennähe innerhalb von 3°
-- **Kultur:** `1 − Π(1 − I)` über ihre Völker.
-- **Kerngebiet:** Einfluss > **0,50** (kräftige Farbe mit Umriss).
-- **Einflussgebiet:** Einfluss > **0,22** (blasse Farbe).
-- **Mischgebiet:** Die zweitstärkste Kultur liegt über 0,22 und über 45 % der stärksten → diagonale Streifen, Periode 14 px (auf 4320).
-- Alles darunter ist Wildnis (ca. 47 % des Landes).
+**Lauf 2026-10-10** ist der gültige Stand des Klimas. Von ihm gibt es nur die 13 Ebenen als Bilder: `lore/world/all-layers` (raw und framed); Zahlen und Aufnahmen über das Jahr gibt es von ihm nicht.
 
-### Lebensraum-Profile (Zonen-ID → Eignung)
+**Lauf 2026-10-23** ist ein späterer Lauf mit denselben Einstellungen. Aus ihm stammen in `lore/world/`: `climate-data` (Zahlen: Temperatur, Niederschlag, Luftfeuchte und Taupunkt je Monat, Schnee und Eis, Bodenfeuchte, Meeresströmung oben und in der Tiefe als u/v im Jahresmittel), `wind_circulation` und `surface_currents` (je 96 Aufnahmen über das Jahr) sowie die Einzelbilder `vegetation`, `ice_cover`, `soil_moisture`, `current_paths` und `energy_flow`. Wind als Zahlen lässt sich nicht exportieren. Nicht übernommen: seine 20 Ebenen (andere Zeichnung, nicht nach Farben auslesbar), Tiefenströmung, Temperatur- und Taupunkt-Aufnahmen (dieselben Werte stehen als Zahlen in `climate-data`).
 
-| Profil | Zonen |
+Ähnlichkeit der Bilder zum Lauf 2026-10-10 (Korrelation): Temperatur 0,996, Niederschlag 0,993, Wind 0,82, Meeresströmung 0,69. Die Klimazonen stimmen an Land nur zu 61 % überein, weil die Köppen-Einteilung an ihren Schwellen empfindlich ist.
+
+| Ebene | Quelle |
 |---|---|
-| ACKER | 6: 1, 7: 1, 8: 1, 9: 0,8, 5: 0,5, 2: 0,5, 1: 0,3, 10: 0,3, 3: 0,1, 13: 0,15 |
-| WALD | 8: 1, 7: 0,9, 9: 0,8, 10: 0,7, 1: 0,6, 6: 0,5, 2: 0,3, 5: 0,2, 13: 0,2 |
-| GEBIRGE | 13: 1, 9: 0,55, 10: 0,5, 8: 0,5, 5: 0,45, 6: 0,45, 7: 0,4, 11: 0,3, 2: 0,3, 3: 0,2 |
-| WÜSTE | 3: 1, 4: 0,9, 5: 0,8, 2: 0,4, 6: 0,3 |
-| STEPPE | 5: 1, 2: 0,9, 6: 0,6, 9: 0,6, 3: 0,45, 4: 0,45, 7: 0,3 |
-| SAVANNE | 2: 1, 5: 0,8, 1: 0,45, 7: 0,5, 3: 0,3 |
-| DSCHUNGEL | 1: 1, 2: 0,6, 7: 0,75 |
-| KÄLTE | 10: 1, 9: 0,8, 11: 0,9, 12: 0,2, 13: 0,4, 8: 0,5 |
+| Klimazonen | Lauf 2026-10-10 (Abschnitt 5) |
+| Temperatur, Niederschlag, Luftfeuchte als Zahlen | Lauf 2026-10-23. Annahme: Die Abweichung zum gültigen Lauf ist vernachlässigbar |
+| Wind | Lauf 2026-10-23, Aufnahmen über das Jahr (Stärke); Richtung aus Windgürteln nach Breitengrad (T-039) |
+| Meeresströmung | Lauf 2026-10-23, Zahlen (Jahresmittel) und Aufnahmen über das Jahr |
 
-Kombinationen wie „Wald + Gebirge“ nehmen je Zone den höheren Wert.
+Die Aufnahmen aus einem Lauf vom 2026-10-20 (Wind, Meeresströmung) sind durch Lauf 2026-10-23 ersetzt, weil dieser näher am gültigen Lauf liegt.
 
-### Kulturen und Völker
+---
 
-Format: **Volk (Länge, Breite, Radius °, Profil, Bonus)**
+## 7. Hauptflüsse
 
-| ID | Kultur | Farbe (RGB) | Völker |
-|---|---|---|---|
-| 1 | HUMANIC | 225, 60, 60 | Human (−102, 45, 13, Acker, Fluss); Elf (−84, 42, 9, Wald); Dwarf (−139, 41, 8, Gebirge); Gnome (−126, 45, 8, Wald + Acker + Gebirge) |
-| 2 | FEYLIN | 245, 130, 200 | Halfling (8, 45, 7, Acker, Fluss); Changeling (15, 50, 7, Wald); Pixie (−12, 60, 4, Wald) |
-| 3 | FENNARI | 80, 150, 235 | Wolfkin (12, 63, 9, Kälte); Husky (−112, 67, 8, Kälte, Küste); Shepherd (32, 52, 7, Steppe + Acker); Kitsune (155, 36, 5, Wald); Fennec (4, 22, 7, Wüste) |
-| 4 | TARPAN | 235, 165, 50 | Equus (−95, 10, 12, Steppe); Asinus (−108, −14, 9, Wüste + Steppe); Hippotigris (−100, −3, 9, Savanne) |
-| 5 | RUMINAN *(vorläufig)* | 200, 205, 90 | Bovinea (−88, 24, 10, Steppe + Acker, Fluss); Cervinae (−98, 32, 9, Wald); Capreolinae (−82, 32, 8, Wald); Saola (−130, 0, 5, Dschungel + Gebirge) |
-| 6 | RODINI | 160, 105, 60 | Chinchilla (−114, −34, 6, Gebirge); Caviid (−102, −30, 8, Acker + Savanne, Fluss); Leporid (−104, −42, 7, Steppe); Squirrel (−98, −40, 6, Wald); Mustelid (−101, −50, 5, Kälte + Wald, Küste); Murid (−110, −25, 12, Acker, Fluss); Jerboa (−120, 34, 6, Wüste); Euplerid (140, −22, 6, Dschungel + Wald) |
-| 7 | VESKRAL | 140, 70, 175 | Girtablilu (−126, 32, 8, Wüste); Araneae (−120, 14, 8, Dschungel + Wald); Mantodea (−112, 22, 8, Savanne + Steppe); Odonata (−122, 6, 7, Dschungel, Fluss) |
-| 8 | NAGALITH | 30, 165, 105 | Reptilid (34, 0, 9, Dschungel, Fluss); Serathi (42, −6, 8, Dschungel); DraconicNaga (50, 13, 7, Gebirge); Lamia (60, 14, 8, Wüste + Steppe); Viper (66, 6, 8, Savanne + Wüste) |
-| 9 | KATARU | 250, 205, 40 | Pantherine (56, −3, 8, Dschungel + Savanne); Serval (66, −9, 7, Savanne, Fluss); Acinonyx (76, −13, 9, Savanne); Caracal (84, −18, 8, Steppe + Wüste) |
-| 10 | HYRAX | 205, 95, 40 | Gnoll (52, −21, 9, Steppe + Savanne); Jackal (43, −18, 8, Wüste, Fluss); Bat (60, −17, 6, Gebirge + Savanne); Cristasus *(Lebensraum offen)* (48, −27, 7, Steppe) |
-| 11 | GOBLIN | 125, 190, 40 | Goblin (110, −12, 9, Wald + Dschungel); Hobgoblin (121, −18, 7, Wald + Gebirge) |
-| 12 | DRACONIK | 235, 85, 25 | Dragonkin (58, 33, 6, Gebirge); Kobold (46, 30, 8, Gebirge + Steppe); Felbold (72, 29, 8, Gebirge + Steppe) |
-| 13 | TENGU | 110, 215, 225 | Gryphon (106, 36, 7, Gebirge); Owl (124, 35, 8, Wald + Gebirge); Harpy (140, 26, 6, Gebirge, Küste); Falcon (96, 42, 8, Steppe) |
-| 14 | BRUTAHK | 165, 165, 190 | Giant (46, −46, 8, Kälte + Gebirge); Goliath (78, −46, 8, Gebirge); Ursine (62, −49, 8, Wald + Kälte) |
-| 15 | CORALOR | 40, 205, 195 | Land: Crocodilian (162, 1, 6, Dschungel, Fluss); Axolotl (69, −12, 3, Gebirge + Savanne). Meer (nur Beschriftung): Hippocampus (158, −7), Cephalopod (172, 4), Carcharhini (149, 6), Cetacean (176, −13), Pinniped (−94, −56) |
-| – | MERMAN | 120, 160, 255 | Nur Beschriftung im offenen Meer: Merman (−35, 21), Leviathan (−160, −28), Siren (−58, 17), Delphinoid (−28, −12) |
+Die Karte zeigt nur Hauptflüsse (Design-Referenz Abschnitt 4). Ein Fluss ist schmaler als eine Zelle; die Ebene speichert, durch welche Zellen er fließt und wie groß er ist, nicht wie breit er gezeichnet wäre.
 
-**CORALOR-Flachmeer:** 2,5° breiter Streifen um den Tropen-Archipel (Länge > 145°, Breite −14° bis 15°) und die Großinsel.
+Das Flussbild der Klimasimulation (`06-rivers-raw.png`, Lauf 2026-10-10) taugt nicht als Quelle: Es ist auf 1024 × 512 Zellen mit weichem Saum gezeichnet, ausgewertet ergibt es Ringe, Lücken und Sterne in Seen. Die Flüsse werden deshalb aus Höhe und Niederschlag berechnet; das Bild dient nur zum Vergleich.
 
-**Freies Land** (bewusst unbesiedelt): Südland, Doppelinsel, Eisschild, Vulkaninsel, Hotspot- und Karibik-Inseln.
+**Quellen:** Höhe aus `Version 5 HM.png` (Abschnitt 4), von Hand vorgegebene Verläufe aus `lore/flussvorgaben.yaml`, Land, Meer und Binnengewässer aus `data/world/klimazonen.bin` (Abschnitt 5), Niederschlag und Jahresmitteltemperatur als Zahlen aus Lauf 2026-10-23 (Abschnitt 6). Raster wie die Klimazonen, 2160 × 1080.
+
+**Verfahren** (`tools/fluesse.py`):
+
+1. **Abfluss je Zelle:** Niederschlag minus Verdunstung nach Turc, `ET = P / √(0,9 + P²/L²)`, `L = 300 + 25 T + 0,05 T³` (P in mm/Jahr, T in °C; L mindestens 50). Mal Zellfläche (Planetenradius 6371 km) ergibt m³/s.
+2. **Unruhe im Gelände:** Die Heightmap ist auf rund 60 % des Landes nahezu flach, dazu kommen gleichmäßige Hänge; dort liefen Flüsse als gerade, parallele Linien. Annahme: Rauschen mit Standardabweichung 100 m (Strukturen von 1–8 Zellen) und zufällige Reihenfolge auf gleicher Höhe, fester Startwert. 40 m ließ an steilen Küsten parallele Linien, 200 m überdeckt das Relief.
+3. **Vorgegebene Verläufe:** Jeder Verlauf aus `lore/flussvorgaben.yaml` wird als Korridor (Radius 2 Zellen) 1000 m tief eingeschnitten, mit 2 m Gefälle je Zelle zur Mündung und dem Rauschen aus Schritt 2, damit er darin mäandert. Das Wasser folgt ihm; wie viel er führt, ergibt sich aus dem Einzugsgebiet. Der letzte Punkt muss im Meer oder in einem Binnengewässer liegen.
+4. **Fließnetz:** Senken werden von der Küste aus aufgefüllt (Prioritätsflutung); jede Landzelle fließt in genau eine Nachbarzelle, die näher an der Mündung liegt. Kreise sind damit ausgeschlossen, jeder Fluss erreicht das Meer. Binnengewässer werden bis zum Überlauf gefüllt und fließen weiter ab.
+5. **Sammeln:** Jede Zelle gibt ihren Abfluss flussabwärts weiter, einmal mit und einmal ohne Verdunstung.
+6. **Hauptfluss:** Zelle mit mittlerem Abfluss ab 150 m³/s und einem Einzugsgebiet ab 20.000 km² (etwa 60 Zellen), nicht auf Meer oder Binnengewässer. Ohne Mindesteinzugsgebiet werden an sehr nassen Küsten schon kurze Küstenbäche zum Fluss, weil eine Zelle dort über 20 m³/s liefert (Annahme).
+7. **Trockenfluss:** Ein Lauf, der ohne Verdunstung ein Hauptfluss wäre, mit Verdunstung aber unter 150 m³/s bleibt, ist ein Flussbett, das nur in der Regenzeit Wasser führt (Annahme). So bekommen Steppe und Wüste ihre Flussbetten.
+
+**Größenklassen** (Annahme, eingestellt nach der Dichte im Vergleichsbild):
+
+| ID | Klasse | Abfluss ab |
+|---|---|---|
+| 1 | Fluss | 150 m³/s |
+| 2 | Großer Fluss | 1000 m³/s |
+| 3 | Strom | 5000 m³/s |
+| 4 | Trockenfluss | nur in der Regenzeit, siehe Schritt 7 |
+
+**Format:** `data/world/fluesse.bin` (Kennung `TBFL`, uint32 Version, Breite, Höhe, dann ein Byte Größenklasse je Zelle, 0 = kein Fluss) und `data/world/fluesse.yaml` (Klassen mit Namensschlüssel und Mindestabfluss).
+
+**Vorgaben** (`lore/flussvorgaben.yaml`): `wuestenstrom`, der Abfluss des Sees am Regenwald nach Südosten durch die Wüste in die Bucht im Süden des Ostkontinents.
+
+Ergebnis (2026-10-23): 9.717 / 5.538 / 2.743 Zellen Fluss / großer Fluss / Strom, 11.261 Zellen Trockenfluss, größter Abfluss rund 57.000 m³/s.
+
+- O - Maßstab: Die Zellfläche folgt dem Planetenradius der Klimasimulation (6371 km); Design-Referenz Abschnitt 4 nennt 5 km pro Pixel der Weltkarte, das entspräche einem kleineren Planeten. Abflüsse und Klassengrenzen hängen daran.
+- O - Vorschlag: Ein einmaliger, riesiger Wasserfall als Naturwunder, von Hand gesetzt (Ort, Höhe, Breite), nicht berechnet: Bei 18 km je Zelle und glatter Heightmap entsteht keine Steilkante. Kandidat: großer Fluss (~1.200 m³/s), der bei Länge 71°, Breite 29° steil aus dem Gebirge der Draconik stürzt.
+- O - Endseen: Alle Senken laufen über und münden ins Meer; Flüsse, die in einem abflusslosen See enden, gibt es so nicht.

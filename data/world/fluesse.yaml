@@ -1,0 +1,8 @@
+# Hauptflüsse, Größenklassen nach mittlerem Abfluss (lore/welt_konfiguration.md Abschnitt 7).
+# Erzeugt von tools/fluesse.py, nicht von Hand ändern. 0 im Raster = kein Fluss.
+raster: fluesse.bin
+classes:
+  - { id: 1, name_key: RIVER, seasonal: false, min_discharge_m3s: 150, color: [90, 160, 220] }
+  - { id: 2, name_key: RIVER_LARGE, seasonal: false, min_discharge_m3s: 1000, color: [50, 120, 210] }
+  - { id: 3, name_key: RIVER_GREAT, seasonal: false, min_discharge_m3s: 5000, color: [20, 70, 180] }
+  - { id: 4, name_key: RIVER_DRY, seasonal: true, min_discharge_m3s: 0, color: [200, 140, 80] }

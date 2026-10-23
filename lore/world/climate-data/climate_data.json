@@ -1,8 +1,8 @@
 {
   "format": "wcl-climate-data",
   "format_version": 1,
-  "generator": "World Climate Lab 0.1.10",
-  "created": "2026-10-20T10:12:52Z",
+  "generator": "World Climate Lab 0.1.11",
+  "created": "2026-10-23T09:32:15Z",
   "grid": {
     "projection": "equirectangular (plate carree), longitude and latitude in degrees",
     "width": 2048,
@@ -197,6 +197,156 @@
       "file": "precipitation_month_12.png",
       "metadata": "precipitation_month_12.json",
       "quantity": "Monthly precipitation, month 12"
+    },
+    {
+      "file": "relative_humidity_annual_mean.png",
+      "metadata": "relative_humidity_annual_mean.json",
+      "quantity": "Annual mean relative humidity"
+    },
+    {
+      "file": "dew_point_annual_mean.png",
+      "metadata": "dew_point_annual_mean.json",
+      "quantity": "Annual mean dew point"
+    },
+    {
+      "file": "relative_humidity_month_01.png",
+      "metadata": "relative_humidity_month_01.json",
+      "quantity": "Monthly relative humidity, month 1"
+    },
+    {
+      "file": "relative_humidity_month_02.png",
+      "metadata": "relative_humidity_month_02.json",
+      "quantity": "Monthly relative humidity, month 2"
+    },
+    {
+      "file": "relative_humidity_month_03.png",
+      "metadata": "relative_humidity_month_03.json",
+      "quantity": "Monthly relative humidity, month 3"
+    },
+    {
+      "file": "relative_humidity_month_04.png",
+      "metadata": "relative_humidity_month_04.json",
+      "quantity": "Monthly relative humidity, month 4"
+    },
+    {
+      "file": "relative_humidity_month_05.png",
+      "metadata": "relative_humidity_month_05.json",
+      "quantity": "Monthly relative humidity, month 5"
+    },
+    {
+      "file": "relative_humidity_month_06.png",
+      "metadata": "relative_humidity_month_06.json",
+      "quantity": "Monthly relative humidity, month 6"
+    },
+    {
+      "file": "relative_humidity_month_07.png",
+      "metadata": "relative_humidity_month_07.json",
+      "quantity": "Monthly relative humidity, month 7"
+    },
+    {
+      "file": "relative_humidity_month_08.png",
+      "metadata": "relative_humidity_month_08.json",
+      "quantity": "Monthly relative humidity, month 8"
+    },
+    {
+      "file": "relative_humidity_month_09.png",
+      "metadata": "relative_humidity_month_09.json",
+      "quantity": "Monthly relative humidity, month 9"
+    },
+    {
+      "file": "relative_humidity_month_10.png",
+      "metadata": "relative_humidity_month_10.json",
+      "quantity": "Monthly relative humidity, month 10"
+    },
+    {
+      "file": "relative_humidity_month_11.png",
+      "metadata": "relative_humidity_month_11.json",
+      "quantity": "Monthly relative humidity, month 11"
+    },
+    {
+      "file": "relative_humidity_month_12.png",
+      "metadata": "relative_humidity_month_12.json",
+      "quantity": "Monthly relative humidity, month 12"
+    },
+    {
+      "file": "dew_point_month_01.png",
+      "metadata": "dew_point_month_01.json",
+      "quantity": "Monthly dew point, month 1"
+    },
+    {
+      "file": "dew_point_month_02.png",
+      "metadata": "dew_point_month_02.json",
+      "quantity": "Monthly dew point, month 2"
+    },
+    {
+      "file": "dew_point_month_03.png",
+      "metadata": "dew_point_month_03.json",
+      "quantity": "Monthly dew point, month 3"
+    },
+    {
+      "file": "dew_point_month_04.png",
+      "metadata": "dew_point_month_04.json",
+      "quantity": "Monthly dew point, month 4"
+    },
+    {
+      "file": "dew_point_month_05.png",
+      "metadata": "dew_point_month_05.json",
+      "quantity": "Monthly dew point, month 5"
+    },
+    {
+      "file": "dew_point_month_06.png",
+      "metadata": "dew_point_month_06.json",
+      "quantity": "Monthly dew point, month 6"
+    },
+    {
+      "file": "dew_point_month_07.png",
+      "metadata": "dew_point_month_07.json",
+      "quantity": "Monthly dew point, month 7"
+    },
+    {
+      "file": "dew_point_month_08.png",
+      "metadata": "dew_point_month_08.json",
+      "quantity": "Monthly dew point, month 8"
+    },
+    {
+      "file": "dew_point_month_09.png",
+      "metadata": "dew_point_month_09.json",
+      "quantity": "Monthly dew point, month 9"
+    },
+    {
+      "file": "dew_point_month_10.png",
+      "metadata": "dew_point_month_10.json",
+      "quantity": "Monthly dew point, month 10"
+    },
+    {
+      "file": "dew_point_month_11.png",
+      "metadata": "dew_point_month_11.json",
+      "quantity": "Monthly dew point, month 11"
+    },
+    {
+      "file": "dew_point_month_12.png",
+      "metadata": "dew_point_month_12.json",
+      "quantity": "Monthly dew point, month 12"
+    },
+    {
+      "file": "current_surface_u_annual_mean.png",
+      "metadata": "current_surface_u_annual_mean.json",
+      "quantity": "Annual mean eastward current, surface"
+    },
+    {
+      "file": "current_surface_v_annual_mean.png",
+      "metadata": "current_surface_v_annual_mean.json",
+      "quantity": "Annual mean northward current, surface"
+    },
+    {
+      "file": "current_deep_u_annual_mean.png",
+      "metadata": "current_deep_u_annual_mean.json",
+      "quantity": "Annual mean eastward current, deep"
+    },
+    {
+      "file": "current_deep_v_annual_mean.png",
+      "metadata": "current_deep_v_annual_mean.json",
+      "quantity": "Annual mean northward current, deep"
     }
   ]
 }

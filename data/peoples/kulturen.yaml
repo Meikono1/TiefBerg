@@ -1,0 +1,124 @@
+# Kulturgruppen und Völker mit Mittelpunkt, Radius und Lebensraum für die Heimatgebiete (lore/voelker/verbreitung.md).
+# center: [Länge, Breite] in Grad (Ost und Nord positiv), radius in Grad, profiles aus data/peoples/lebensraum.yaml,
+# bonus: river und/oder coast. Meeresvölker (CORALOR im Meer, MERMAN) fehlen: Sie haben noch kein berechnetes Gebiet.
+# TODO: Meeresvölker und CORALOR-Flachmeer (lore/voelker/verbreitung.md, offener Punkt)
+cultures:
+  - id: humanic
+    name_key: CULTURE_HUMANIC
+    color: [225, 60, 60]
+    peoples:
+      - { id: human, name_key: PEOPLE_HUMAN, center: [-102, 45], radius: 13, profiles: [farmland], bonus: [river] }
+      - { id: elf, name_key: PEOPLE_ELF, center: [-84, 42], radius: 9, profiles: [forest] }
+      - { id: dwarf, name_key: PEOPLE_DWARF, center: [-139, 41], radius: 8, profiles: [mountains] }
+      - { id: gnome, name_key: PEOPLE_GNOME, center: [-126, 45], radius: 8, profiles: [forest, farmland, mountains] }
+  - id: feylin
+    name_key: CULTURE_FEYLIN
+    color: [245, 130, 200]
+    peoples:
+      - { id: halfling, name_key: PEOPLE_HALFLING, center: [8, 45], radius: 7, profiles: [farmland], bonus: [river] }
+      - { id: changeling, name_key: PEOPLE_CHANGELING, center: [15, 50], radius: 7, profiles: [forest] }
+      - { id: pixie, name_key: PEOPLE_PIXIE, center: [-12, 60], radius: 4, profiles: [forest] }
+  - id: fennari
+    name_key: CULTURE_FENNARI
+    color: [80, 150, 235]
+    peoples:
+      - { id: wolfkin, name_key: PEOPLE_WOLFKIN, center: [12, 63], radius: 9, profiles: [cold] }
+      - { id: husky, name_key: PEOPLE_HUSKY, center: [-112, 67], radius: 8, profiles: [cold], bonus: [coast] }
+      - { id: shepherd, name_key: PEOPLE_SHEPHERD, center: [32, 52], radius: 7, profiles: [steppe, farmland] }
+      - { id: kitsune, name_key: PEOPLE_KITSUNE, center: [155, 36], radius: 5, profiles: [forest] }
+      - { id: fennec, name_key: PEOPLE_FENNEC, center: [4, 22], radius: 7, profiles: [desert] }
+  - id: tarpan
+    name_key: CULTURE_TARPAN
+    color: [235, 165, 50]
+    peoples:
+      - { id: equus, name_key: PEOPLE_EQUUS, center: [-95, 10], radius: 12, profiles: [steppe] }
+      - { id: asinus, name_key: PEOPLE_ASINUS, center: [-108, -14], radius: 9, profiles: [desert, steppe] }
+      - { id: hippotigris, name_key: PEOPLE_HIPPOTIGRIS, center: [-100, -3], radius: 9, profiles: [savanna] }
+  - id: ruminan
+    # vorläufig: Aufteilung offen (Design-Referenz Abschnitt 5)
+    name_key: CULTURE_RUMINAN
+    color: [200, 205, 90]
+    peoples:
+      - { id: bovinea, name_key: PEOPLE_BOVINEA, center: [-88, 24], radius: 10, profiles: [steppe, farmland], bonus: [river] }
+      - { id: cervinae, name_key: PEOPLE_CERVINAE, center: [-98, 32], radius: 9, profiles: [forest] }
+      - { id: capreolinae, name_key: PEOPLE_CAPREOLINAE, center: [-82, 32], radius: 8, profiles: [forest] }
+      - { id: saola, name_key: PEOPLE_SAOLA, center: [-130, 0], radius: 5, profiles: [jungle, mountains] }
+  - id: rodini
+    name_key: CULTURE_RODINI
+    color: [160, 105, 60]
+    peoples:
+      - { id: chinchilla, name_key: PEOPLE_CHINCHILLA, center: [-114, -34], radius: 6, profiles: [mountains] }
+      - { id: caviid, name_key: PEOPLE_CAVIID, center: [-102, -30], radius: 8, profiles: [farmland, savanna], bonus: [river] }
+      - { id: leporid, name_key: PEOPLE_LEPORID, center: [-104, -42], radius: 7, profiles: [steppe] }
+      - { id: squirrel, name_key: PEOPLE_SQUIRREL, center: [-98, -40], radius: 6, profiles: [forest] }
+      - { id: mustelid, name_key: PEOPLE_MUSTELID, center: [-101, -50], radius: 5, profiles: [cold, forest], bonus: [coast] }
+      - { id: murid, name_key: PEOPLE_MURID, center: [-110, -25], radius: 12, profiles: [farmland], bonus: [river] }
+      - { id: jerboa, name_key: PEOPLE_JERBOA, center: [-120, 34], radius: 6, profiles: [desert] }
+      - { id: euplerid, name_key: PEOPLE_EUPLERID, center: [140, -22], radius: 6, profiles: [jungle, forest] }
+  - id: veskral
+    name_key: CULTURE_VESKRAL
+    color: [140, 70, 175]
+    peoples:
+      - { id: girtablilu, name_key: PEOPLE_GIRTABLILU, center: [-126, 32], radius: 8, profiles: [desert] }
+      - { id: araneae, name_key: PEOPLE_ARANEAE, center: [-120, 14], radius: 8, profiles: [jungle, forest] }
+      - { id: mantodea, name_key: PEOPLE_MANTODEA, center: [-112, 22], radius: 8, profiles: [savanna, steppe] }
+      - { id: odonata, name_key: PEOPLE_ODONATA, center: [-122, 6], radius: 7, profiles: [jungle], bonus: [river] }
+  - id: nagalith
+    name_key: CULTURE_NAGALITH
+    color: [30, 165, 105]
+    peoples:
+      - { id: reptilid, name_key: PEOPLE_REPTILID, center: [34, 0], radius: 9, profiles: [jungle], bonus: [river] }
+      - { id: serathi, name_key: PEOPLE_SERATHI, center: [42, -6], radius: 8, profiles: [jungle] }
+      - { id: draconicnaga, name_key: PEOPLE_DRACONICNAGA, center: [50, 13], radius: 7, profiles: [mountains] }
+      - { id: lamia, name_key: PEOPLE_LAMIA, center: [60, 14], radius: 8, profiles: [desert, steppe] }
+      - { id: viper, name_key: PEOPLE_VIPER, center: [66, 6], radius: 8, profiles: [savanna, desert] }
+  - id: kataru
+    name_key: CULTURE_KATARU
+    color: [250, 205, 40]
+    peoples:
+      - { id: pantherine, name_key: PEOPLE_PANTHERINE, center: [56, -3], radius: 8, profiles: [jungle, savanna] }
+      - { id: serval, name_key: PEOPLE_SERVAL, center: [66, -9], radius: 7, profiles: [savanna], bonus: [river] }
+      - { id: acinonyx, name_key: PEOPLE_ACINONYX, center: [76, -13], radius: 9, profiles: [savanna] }
+      - { id: caracal, name_key: PEOPLE_CARACAL, center: [84, -18], radius: 8, profiles: [steppe, desert] }
+  - id: hyrax
+    name_key: CULTURE_HYRAX
+    color: [205, 95, 40]
+    peoples:
+      - { id: gnoll, name_key: PEOPLE_GNOLL, center: [52, -21], radius: 9, profiles: [steppe, savanna] }
+      - { id: jackal, name_key: PEOPLE_JACKAL, center: [43, -18], radius: 8, profiles: [desert], bonus: [river] }
+      - { id: bat, name_key: PEOPLE_BAT, center: [60, -17], radius: 6, profiles: [mountains, savanna] }
+      - { id: cristasus, name_key: PEOPLE_CRISTASUS, center: [48, -27], radius: 7, profiles: [steppe] }  # Lebensraum offen (Design-Referenz Abschnitt 5)
+  - id: goblin
+    name_key: CULTURE_GOBLIN
+    color: [125, 190, 40]
+    peoples:
+      - { id: goblin, name_key: PEOPLE_GOBLIN, center: [110, -12], radius: 9, profiles: [forest, jungle] }
+      - { id: hobgoblin, name_key: PEOPLE_HOBGOBLIN, center: [121, -18], radius: 7, profiles: [forest, mountains] }
+  - id: draconik
+    name_key: CULTURE_DRACONIK
+    color: [235, 85, 25]
+    peoples:
+      - { id: dragonkin, name_key: PEOPLE_DRAGONKIN, center: [58, 33], radius: 6, profiles: [mountains] }
+      - { id: kobold, name_key: PEOPLE_KOBOLD, center: [46, 30], radius: 8, profiles: [mountains] }
+      - { id: felbold, name_key: PEOPLE_FELBOLD, center: [72, 29], radius: 8, profiles: [mountains] }
+  - id: tengu
+    name_key: CULTURE_TENGU
+    color: [110, 215, 225]
+    peoples:
+      - { id: gryphon, name_key: PEOPLE_GRYPHON, center: [106, 36], radius: 7, profiles: [mountains] }
+      - { id: owl, name_key: PEOPLE_OWL, center: [124, 35], radius: 8, profiles: [forest, mountains] }
+      - { id: harpy, name_key: PEOPLE_HARPY, center: [140, 26], radius: 6, profiles: [mountains], bonus: [coast] }
+      - { id: falcon, name_key: PEOPLE_FALCON, center: [96, 42], radius: 8, profiles: [steppe] }
+  - id: brutahk
+    name_key: CULTURE_BRUTAHK
+    color: [165, 165, 190]
+    peoples:
+      - { id: giant, name_key: PEOPLE_GIANT, center: [46, -46], radius: 8, profiles: [cold, mountains] }
+      - { id: goliath, name_key: PEOPLE_GOLIATH, center: [78, -46], radius: 8, profiles: [mountains] }
+      - { id: ursine, name_key: PEOPLE_URSINE, center: [62, -49], radius: 8, profiles: [forest, cold] }
+  - id: coralor
+    name_key: CULTURE_CORALOR
+    color: [40, 205, 195]
+    peoples:
+      - { id: crocodilian, name_key: PEOPLE_CROCODILIAN, center: [162, 1], radius: 6, profiles: [jungle], bonus: [river] }
+      - { id: axolotl, name_key: PEOPLE_AXOLOTL, center: [69, -12], radius: 3, profiles: [mountains, savanna] }

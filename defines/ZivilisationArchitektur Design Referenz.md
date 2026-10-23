@@ -49,6 +49,8 @@ Der Simulationskern ist reines C# ohne Godot-Abhängigkeit; Godot ist nur Darste
 - E - Simulation ist tick-basiert und unterstützt Multicore. Godot liest nur Snapshots.
 - E - Schichten: Daten ← Simulation ← Szenario ← Präsentation. Abhängigkeiten nur nach links. Die UI sendet Befehle (Command-Pattern) statt Methoden direkt aufzurufen.
 - E - Inhalte sind Daten in YAML, nicht Klassen pro Eintrag, damit Modding möglich ist. Ein Editor folgt bei Bedarf.
+- E - Kein Volk, keine Kultur, kein Profil und keine Zone ist im Code fest verdrahtet; Berechnungen wie die Heimatgebiete (Abschnitt 4) laufen beim Weltstart auf den geladenen Daten.
+- O - Vorschlag: Das Spiel soll sehr modfreundlich werden. Ziel ist, dass ein Daten-Mod völlig fremde Inhalte einbringen kann, etwa Tiere mit Entwicklungsstufen, die durch die Welt ziehen, oder eine ganze Zivilisation, deren Entwicklungsstufen als eigene Kulturen auftreten.
 - E - Kontinente und grobe Verteilung der Spezies sind fest. Ressourcen liegen teilweise zufällig.
 - E - Zufall nur über seedbare RNG-Instanzen. Gleicher Seed ergibt gleiche Welt.
 
@@ -81,11 +83,17 @@ Die Weltzeit ist ein `ulong`-Zähler in Sekunden seit Weltstart; Kalender und An
 Die Welt ist fest und wird über mehrere Bitmaps beschrieben, aus denen Grenzen berechnet werden; es gibt keine Provinzen.
 
 - E - Handgestaltete Welt, Karte ist WIP. Jedes Spiel beginnt in einer vorsimulierten Welt: Entweder wird sie beim Start neu vorsimuliert, oder man wählt die mitgelieferte, fertig vorsimulierte Welt. Weiterführen einer bestehenden Welt kommt später.
-- E - Vorsimulation: Die Völker beginnen in festen Startgebieten (grobe Völkerkarte). Innerhalb ihres Gebiets lassen sie sich zufällig nieder, ggf. mit mehreren Startstädten; das ist der Anfang der Zivilisation. Simuliert wird, wo genau Städte entstehen und wie stark sie ausgebaut werden, nicht wo welches Volk lebt.
-- E - Völker-Startgebiete sind eine eigene Ebene in der Größe der Weltkarte (4320×2160). Sie zeigt die Gebiete um das Startjahr des Spiels; da nicht simuliert wird, wo welches Volk lebt, sind das zugleich die Startgebiete der Vorsimulation. `voelkerkarte.png` ist ein Schaubild (Weltkarte plus 400 px Legende, mit Beschriftungen) und keine Datenebene.
+- E - Vorsimulation: Jedes Volk beginnt in seinem **Heimatgebiet**. Darin werden mehrere Startpunkte zufällig gewählt; dort entsteht je eine erste Stadt, und von dort baut die Simulation die Zivilisation auf. Nach rund 1000 Jahren steht das Heimatgebiet unter der Kontrolle des Volks, und es wirkt nach außen.
+- E - Begriffe: **Heimatgebiet** ist das Gebiet eines Volks zu Beginn der Vorsimulation. **Startort** ist der Einstieg eines Szenarios (Punkt plus Sicht, Abschnitt 11).
+- E - Heimatgebiete werden aus Mittelpunkt, Radius und Lebensraum-Profil je Volk über den Klimazonen berechnet (`lore/voelker/verbreitung.md`); Heimatgebiet ist das Kerngebiet der Berechnung. Einfluss- und Mischgebiet der Berechnung sind Vergleichswerte für das Ergebnis der Vorsimulation. Eine gemalte Ebene in der Größe der Weltkarte (4320×2160) legt sich darüber und hat Vorrang, wo sie bemalt ist. `voelkerkarte.png` ist ein Schaubild (Weltkarte plus 400 px Legende, mit Beschriftungen) und keine Datenebene.
+- E - Das Lebensraum-Profil beschreibt das natürliche Habitat eines Volks, nicht wo es leben kann.
 - E - Der Planet dreht sich wie die Erde. Die Windrichtung folgt Windgürteln nach Breitengrad (Passate aus Osten, Westwinde in mittleren Breiten, polare Ostwinde), die Windstärke kommt aus den 96 Monatsaufnahmen (12 Monate × 8) der Klimasimulation.
-- O - Vorschlag: Die Vorsimulation muss nicht reproduzierbar sein. Ein fester Seed entfällt, wenn sie dadurch auf mehreren Kernen schneller läuft; das Spielgefühl sichern die festen Startgebiete und die Startbedingungen der Szenarien (Abschnitt 11).
+- O - Vorschlag: Die Vorsimulation muss nicht reproduzierbar sein. Ein fester Seed entfällt, wenn sie dadurch auf mehreren Kernen schneller läuft; das Spielgefühl sichern die festen Heimatgebiete und die Startbedingungen der Szenarien (Abschnitt 11).
 - O - Dauer der Vorsimulation: Sie soll auf einem aktuellen System in Grenzen bleiben, konkretes Budget offen. Die mitgelieferte Welt trägt eine Version und wird bei Änderungen an Simulation oder Daten neu erzeugt.
+- E - Die Weltkarte zeigt nur Hauptflüsse (aus der Klimasimulation). Ein Fluss ist schmaler als eine Zelle: Die Ebene speichert seinen Verlauf als Linie und seine Größe als Klasse, nicht seine gezeichnete Breite. Bäche und Teiche haben keinen Einfluss auf die Welt; sie werden erst beim Betreten einer Gegend zufällig mit platziert.
+- O - Vorschlag: Trockenflüsse in Steppe und Wüste: Flussbetten, die nur in der Regenzeit Wasser führen (Oasen, Sturzfluten, Handelswege entlang der Täler).
+- E - Einzelne Flussläufe dürfen von Hand vorgegeben werden (`lore/flussvorgaben.yaml`), z. B. der Strom vom Regenwald durch die Wüste in die Bucht im Süden des Ostkontinents.
+- O - Vorschlag: Ein einmaliger, riesiger Wasserfall als Naturwunder, von Hand gesetzt. Ort offen (`lore/welt_konfiguration.md` Abschnitt 7).
 - E - Zwei Hauptkontinente (West, Ost), Inseln, offenes Meer, Polareis im Norden.
 - E - Mehrere Bitmaps sagen, was wo ist. Grenzen werden daraus berechnet.
 - E - Kulturen liegen auf einer eigenen Karte und sind fluide.
@@ -104,6 +112,8 @@ Rund 70 Spezies in 16 Kulturgruppen, von drachenartigen Riesen bis zu mausartige
 - E - Kulturgruppen sind grobe Zusammenschlüsse, die sich aus den Regionen ergeben haben. Kulturen sind fluide (Karte, Abschnitt 4).
 - E - Jede Person hat eine Spezies und eine Kultur. Kulturwandel über Generationen ist möglich und eine Konfliktquelle.
 - E - Jede Spezies hat eigene Präferenzen, die Siedlungen prägen und Konflikte auslösen (Abschnitt 9).
+- E - Die Völker einer Kulturgruppe leben nahe beieinander und ergänzen sich, können aber auch eigene Städte bauen. Siedlungen sind daher von einem Volk, von einer Kulturgruppe oder multikulturell bewohnt; was davon entsteht, ergibt sich in der Vorsimulation.
+- E - Wer zuzieht, bringt seine Kultur mit und beeinflusst die Siedlung (Präferenzen, Gebäude, Bräuche), auch die des Spielers (Abschnitt 9).
 - E - Größenklasse, Lebensdauer und Ernährung wirken auf Gebäude, Nahrungsbedarf, KCAL und Generationenfolge.
 - E - Mystische Wesen (z. B. Drachen) sind benannte Individuen mit Namen und Geschichte aus der Vorsimulation.
 - E - Eine Liste der Pflanzen und Tiere stattet die ganze Welt aus: Keine Klima- oder Vegetationszone bleibt ohne Leben, und jede Ressource (z. B. Leinen aus Flachs) hat eine Quelle, die irgendwo wächst bzw. lebt.
@@ -135,6 +145,11 @@ O - Nagaji (Abschnitt 9, Währung) fehlen in der Tabelle: eigene Spezies, Fauna 
 | BRUTAHK | Giant, Goliath, Ursine |
 | CORALOR | Hippocampus, Cephalopod, Carcharhini, Cetacean, Crocodilian, Axolotl, Pinniped |
 | MERMAN | Merman, Leviathan, Siren, Delphinoid |
+
+**Zielwerte:** Wunschergebnisse der Simulation, keine Regeln. Sie dienen als Prüfwert beim Abstimmen und stehen nicht in der Lore.
+
+- O - Vorschlag: Etwa 1 % der Draconik können fliegen (grobe Richtung).
+- O - Vorschlag: Nach rund 1000 Jahren Vorsimulation steht das Heimatgebiet unter Kontrolle des Volks, es gibt 5–6 Reiche und Einfluss über das Heimatgebiet hinaus, ungefähr wie Einfluss- und Mischgebiet der Berechnung (Abschnitt 4). Offen: 5–6 Reiche je Volk oder je Kulturgruppe. Ergibt sich aus Flug ab Stufe 8 (`lore/voelker/draconik.md`, Abschnitt 7), nicht aus einer festen Quote.
 
 ## 6. Personen, Charaktere, Stammbaum
 

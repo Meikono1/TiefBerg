@@ -111,5 +111,4 @@ Die Draconik ordnen sich nach ihrem Hort. Drachen horten, und das liegt ihnen im
 
 - O - Gewichte von Kobold und Felbold bestätigen (Vorschlag, aus Größe und Körperbau geschätzt; Abschnitt 5).
 - E - Wer mit wem Nachkommen haben kann, steht nicht hier, sondern in einer eigenen Datei als Kreuztabelle aller Spezies (Reproduktionstabelle, Abschnitt 5). O - Datei noch nicht angelegt.
-- O - Lebensraum in `lore/welt_konfiguration.md`: Kobold und Felbold stehen auf Gebirge + Steppe, der Text beschreibt Tunnel bzw. Hochgebirge.
 - O - Nagaji als Währung der Startkobolde (Abschnitt 9): eigene Spezies oder eine NAGALITH-Rasse?

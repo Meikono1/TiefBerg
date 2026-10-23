@@ -3,7 +3,7 @@
   "format_version": 1,
   "file": "elevation.png",
   "quantity": "Land elevation",
-  "description": "Height of the land above sea level, in metres. Sea pixels are 0: this map holds no sea floor depth.",
+  "description": "Height of the land above sea level, in metres; dry land below sea level (a depressions mask) is negative. Sea pixels are 0: this map holds no sea floor depth.",
   "grid": {
     "projection": "equirectangular (plate carree), longitude and latitude in degrees",
     "width": 2048,
@@ -32,6 +32,6 @@
     "formula": "value = encoding_min + pixel / 65535 * (encoding_max - encoding_min)"
   },
   "observed_min": 0.0,
-  "observed_max": 8831.6,
+  "observed_max": 8826.4,
   "valid": "all"
 }

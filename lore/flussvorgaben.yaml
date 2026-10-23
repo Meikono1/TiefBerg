@@ -1,0 +1,8 @@
+# Vorgegebene Flussläufe für tools/fluesse.py (lore/welt_konfiguration.md Abschnitt 7).
+# Ein Verlauf wird ins Gelände eingeschnitten, das Wasser folgt ihm von der Quelle zur Mündung.
+# Wie viel Wasser er führt, ergibt sich aus seinem Einzugsgebiet, nicht aus der Vorgabe.
+# Punkte als [Länge, Breite] in Grad (Länge −180 bis 180, Ost positiv); der letzte Punkt liegt im Meer oder in einem Binnengewässer.
+courses:
+  - id: wuestenstrom
+    note: Abfluss des Sees am Regenwald nach Südosten durch die Wüste in die Bucht im Süden des Ostkontinents
+    points: [[43.2, -19.8], [47.2, -22.5], [50.8, -25.6], [53.3, -28.8], [54.0, -30.6]]

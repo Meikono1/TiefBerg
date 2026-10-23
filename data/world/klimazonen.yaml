@@ -1,0 +1,23 @@
+# Vereinfachte Klimazonen (lore/welt_konfiguration.md Abschnitt 5).
+# Erzeugt von tools/klimazonen.py, nicht von Hand ändern. kind: land, sea oder inland_water.
+raster: klimazonen.bin
+zones:
+  - { id: 1, name_key: ZONE_TROPICAL_RAINFOREST, kind: land, color: [15, 100, 35] }
+  - { id: 2, name_key: ZONE_SAVANNA, kind: land, color: [160, 195, 60] }
+  - { id: 3, name_key: ZONE_HOT_DESERT, kind: land, color: [240, 175, 90] }
+  - { id: 4, name_key: ZONE_COLD_DESERT, kind: land, color: [200, 170, 150] }
+  - { id: 5, name_key: ZONE_STEPPE, kind: land, color: [235, 230, 150] }
+  - { id: 6, name_key: ZONE_MEDITERRANEAN, kind: land, color: [215, 115, 70] }
+  - { id: 7, name_key: ZONE_HUMID_SUBTROPICAL, kind: land, color: [40, 155, 110] }
+  - { id: 8, name_key: ZONE_TEMPERATE_FOREST, kind: land, color: [110, 195, 85] }
+  - { id: 9, name_key: ZONE_CONTINENTAL, kind: land, color: [150, 125, 195] }
+  - { id: 10, name_key: ZONE_TAIGA, kind: land, color: [30, 90, 80] }
+  - { id: 11, name_key: ZONE_TUNDRA, kind: land, color: [165, 175, 155] }
+  - { id: 12, name_key: ZONE_ICE, kind: land, color: [245, 248, 252] }
+  - { id: 13, name_key: ZONE_HIGH_MOUNTAINS, kind: land, color: [120, 95, 85] }
+  - { id: 20, name_key: ZONE_TROPICAL_SEA, kind: sea, color: [35, 85, 165] }
+  - { id: 21, name_key: ZONE_REEF, kind: sea, color: [60, 175, 205] }
+  - { id: 22, name_key: ZONE_TEMPERATE_SEA, kind: sea, color: [35, 65, 115] }
+  - { id: 23, name_key: ZONE_COLD_SEA, kind: sea, color: [70, 90, 110] }
+  - { id: 24, name_key: ZONE_PACK_ICE, kind: sea, color: [200, 215, 230] }
+  - { id: 25, name_key: ZONE_INLAND_WATER, kind: inland_water, color: [85, 140, 210] }
