@@ -1,0 +1,64 @@
+# Materialien (lore/materialien_und_boeden.md Abschnitt 5, Verfahren lore/welt_konfiguration.md Abschnitt 10).
+# Eingabe von tools/gestein.py (Kategorie GESTEIN) und zugleich Metadaten fürs Spiel. Lagerstätten (Abschnitte 5.2–5.6)
+# kommen mit tools/lagerstaetten.py (T-082) dazu.
+#
+# rarity: Zielklasse (Zielwerte, Design-Referenz Abschnitt 4), target_cover in rarity_classes.
+# rule.kind:
+#   share       Anteil am Grundgestein aus rock_shares; Layer = Anteil (Summe aller Anteile je Landzelle 255)
+#   occurrence  Vorkommen; Layer 0–255, 255 = ergiebigste Stelle. Eignung = rooms (Gewicht je Gesteinsraum)
+#               × source (Anteil bzw. Wert eines anderen Layers, ab min_source) × Rauschen der distribution,
+#               danach Schwellwert so, dass die Abdeckung target_cover trifft.
+
+rarity_classes:   # Zielabdeckung in % der Landfläche (O - Vorschlag: geometrische Mitte der Klasse)
+  SEHR_HAEUFIG: 30.0
+  HAEUFIG: 10.0
+  MITTEL: 2.2
+  SELTEN: 0.3
+  SEHR_SELTEN: 0.03
+  EXTREM_SELTEN: 0.005
+
+# Gesteinsanteile je Gesteinsraum in Prozent (Abschnitt 3). Travertin ist ein punktuelles Vorkommen (Abschnitt 5.1),
+# sein Anteil im GRABEN ist Tonstein zugeschlagen.
+rock_shares:
+  KRATON: { granit: 30, gneis: 25, sandstein: 15, kalkstein: 10, quarzit: 10, basalt: 5, tonschiefer: 5 }
+  ALTGEBIRGE: { granit: 30, tonschiefer: 20, gneis: 15, sandstein: 15, quarzit: 10, kalkstein: 10 }
+  KOLLISION: { gneis: 25, granit: 20, kalkstein: 20, tonschiefer: 15, marmor: 10, quarzit: 10 }
+  OPHIOLITH: { serpentinit: 50, basalt: 35, kalkstein: 15 }
+  KUESTENBOGEN: { andesit: 35, granit: 20, basalt: 15, tuff: 15, sandstein: 10, porphyr: 5 }
+  INSELBOGEN: { andesit: 35, basalt: 30, tuff: 20, kalkstein: 15 }
+  HOTSPOT: { basalt: 70, tuff: 25, andesit: 5 }
+  GRABEN: { basalt: 40, sandstein: 20, tonstein: 25, tuff: 15 }
+  BECKEN: { sandstein: 30, kalkstein: 25, tonstein: 25, kreide: 10, gips: 10 }
+  EISSCHILD: { gneis: 50, granit: 50 }
+
+materials:
+  # Anteile am Grundgestein
+  - { id: granit, name_key: MATERIAL_GRANITE, category: GESTEIN, rarity: SEHR_HAEUFIG, distribution: FLAECHIG, color: [205, 160, 150], rule: { kind: share } }
+  - { id: gneis, name_key: MATERIAL_GNEISS, category: GESTEIN, rarity: HAEUFIG, distribution: FLAECHIG, color: [150, 145, 160], rule: { kind: share } }
+  - { id: quarzit, name_key: MATERIAL_QUARTZITE, category: GESTEIN, rarity: HAEUFIG, distribution: FLAECHIG, color: [235, 225, 210], rule: { kind: share } }
+  - { id: basalt, name_key: MATERIAL_BASALT, category: GESTEIN, rarity: HAEUFIG, distribution: FLAECHIG, color: [60, 60, 70], rule: { kind: share } }
+  - { id: andesit, name_key: MATERIAL_ANDESITE, category: GESTEIN, rarity: MITTEL, distribution: FLAECHIG, color: [110, 100, 110], rule: { kind: share } }
+  - { id: tuff, name_key: MATERIAL_TUFF, category: GESTEIN, rarity: MITTEL, distribution: FLAECHIG, color: [190, 170, 120], rule: { kind: share } }
+  - { id: porphyr, name_key: MATERIAL_PORPHYRY, category: GESTEIN, rarity: SELTEN, distribution: KLUMPIG, color: [140, 50, 60], rule: { kind: share } }
+  - { id: kalkstein, name_key: MATERIAL_LIMESTONE, category: GESTEIN, rarity: SEHR_HAEUFIG, distribution: FLAECHIG, color: [225, 220, 180], rule: { kind: share } }
+  - { id: kreide, name_key: MATERIAL_CHALK, category: GESTEIN, rarity: MITTEL, distribution: FLAECHIG, color: [250, 250, 240], rule: { kind: share } }
+  - { id: marmor, name_key: MATERIAL_MARBLE, category: GESTEIN, rarity: MITTEL, distribution: KLUMPIG, color: [240, 235, 235], rule: { kind: share } }
+  - { id: sandstein, name_key: MATERIAL_SANDSTONE, category: GESTEIN, rarity: SEHR_HAEUFIG, distribution: FLAECHIG, color: [215, 170, 110], rule: { kind: share } }
+  - { id: tonstein, name_key: MATERIAL_MUDSTONE, category: GESTEIN, rarity: HAEUFIG, distribution: FLAECHIG, color: [150, 120, 95], rule: { kind: share } }
+  - { id: tonschiefer, name_key: MATERIAL_SLATE, category: GESTEIN, rarity: MITTEL, distribution: FLAECHIG, color: [80, 90, 105], rule: { kind: share } }
+  - { id: serpentinit, name_key: MATERIAL_SERPENTINITE, category: GESTEIN, rarity: SELTEN, distribution: KLUMPIG, color: [40, 110, 80], rule: { kind: share } }
+  - { id: gips, name_key: MATERIAL_GYPSUM, category: SALZ, rarity: MITTEL, distribution: KLUMPIG, color: [245, 240, 225], rule: { kind: share } }
+
+  # Vorkommen
+  - { id: obsidian, name_key: MATERIAL_OBSIDIAN, category: GESTEIN, rarity: SELTEN, distribution: PUNKTUELL, color: [30, 25, 35],
+      rule: { kind: occurrence, rooms: { HOTSPOT: 1.0, KUESTENBOGEN: 1.0, INSELBOGEN: 1.0, GRABEN: 1.0 } } }
+  - { id: bimsstein, name_key: MATERIAL_PUMICE, category: GESTEIN, rarity: SELTEN, distribution: PUNKTUELL, color: [230, 225, 210],
+      rule: { kind: occurrence, rooms: { HOTSPOT: 1.0, KUESTENBOGEN: 1.0, INSELBOGEN: 1.0, GRABEN: 1.0 } } }
+  - { id: travertin, name_key: MATERIAL_TRAVERTINE, category: GESTEIN, rarity: SELTEN, distribution: PUNKTUELL, color: [230, 210, 170],
+      rule: { kind: occurrence, rooms: { GRABEN: 1.0, BECKEN: 1.0 }, source: kalkstein, min_source: 0.15, source_rooms: [BECKEN] } }
+  - { id: marmor_weiss, name_key: MATERIAL_WHITE_MARBLE, category: GESTEIN, rarity: SEHR_SELTEN, distribution: PUNKTUELL, color: [255, 255, 255],
+      rule: { kind: occurrence, source: marmor, min_source: 0.1 } }
+  - { id: speckstein, name_key: MATERIAL_SOAPSTONE, category: GESTEIN, rarity: SELTEN, distribution: ABGELEITET, color: [120, 150, 130],
+      rule: { kind: occurrence, source: serpentinit, min_source: 0.1 } }
+  - { id: alabaster, name_key: MATERIAL_ALABASTER, category: GESTEIN, rarity: SELTEN, distribution: ABGELEITET, color: [250, 245, 235],
+      rule: { kind: occurrence, source: gips, min_source: 0.1 } }

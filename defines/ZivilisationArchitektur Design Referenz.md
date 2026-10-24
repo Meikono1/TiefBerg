@@ -54,7 +54,7 @@ Der Simulationskern ist reines C# ohne Godot-Abhängigkeit; Godot ist nur Darste
 - E - Inhalte sind Daten in YAML, nicht Klassen pro Eintrag, damit Modding möglich ist. Ein Editor folgt bei Bedarf.
 - E - Kein Volk, keine Kultur, kein Profil und keine Zone ist im Code fest verdrahtet; Berechnungen wie die Heimatgebiete (Abschnitt 4) laufen beim Weltstart auf den geladenen Daten.
 - O - Vorschlag: Das Spiel soll sehr modfreundlich werden. Ziel ist, dass ein Daten-Mod völlig fremde Inhalte einbringen kann, etwa Tiere mit Entwicklungsstufen, die durch die Welt ziehen, oder eine ganze Zivilisation, deren Entwicklungsstufen als eigene Kulturen auftreten.
-- E - Kontinente und grobe Verteilung der Spezies sind fest. Ressourcen liegen teilweise zufällig.
+- E - Kontinente und grobe Verteilung der Spezies sind fest. Ressourcen liegen teilweise zufällig, werden aber einmal mit festem Startwert erzeugt und liegen dann fest (Abschnitt 4).
 - E - Zufall nur über seedbare RNG-Instanzen. Gleicher Seed ergibt gleiche Welt.
 
 ## 3. Zeit
@@ -102,14 +102,26 @@ Die Welt ist fest und wird über mehrere Bitmaps beschrieben, aus denen Grenzen 
 - E - Kulturen liegen auf einer eigenen Karte und sind fluide.
 - E - Gebietsarten: Kerngebiet, Einflussgebiet, Mischgebiet zweier Kulturen, Wildnis.
 - E - Ortsgraph statt Raster: Welt → Region → Siedlung → Ort (z. B. Hütte, Koboldhöhle, Marktplatz). Bewegung zwischen Knoten kostet Zeit.
-- O - Maßstab aktuell 5 km pro Pixel. Vorschlag: reicht für Weltlayer (Terrain, Klima, Ressourcen, Grenzen). Siedlungen und Orte liegen im Ortsgraph unterhalb der Pixelauflösung. Bei Bedarf eigene, feinere Karten nur für Siedlungen.
-- O - Welche Bitmap-Layer es gibt (z. B. Terrain, Höhe, Ressourcen, Spezies, Kultur).
+- E - Spielfeld: Der Spieler wählt einen Pixel der Karte 8192 × 4096 (Raster der Heightmap) und beginnt dort. Ein Pixel ist am Äquator rund 4,9 × 4,9 km (≈ 24 km²) und wird polwärts schmaler (bei 60° Breite halb so breit). Siedlungen und Orte liegen im Ortsgraph unterhalb dieser Auflösung.
+- E - Weltdaten (Klima, Flüsse, Gestein, Lagerstätten, Bodenfeuchte, Böden, Pflanzen) liegen auf einem gemeinsamen, kleineren Raster 2160 × 1080 (eine Zelle ≈ 18,5 km am Äquator). Jede Ebene hat dieselbe Größe, jede Zelle hat für jedes Material, jeden Boden und jede Pflanze einen Wert. Feiner gibt es die Klimadaten nicht.
+- E - Wird ein Spielfeld gewählt, berechnet das Spiel seine Werte aus den umliegenden Zellen der Weltdaten (Mittelwert bzw. Interpolation) und überträgt sie als Eintrag in die Spielwelt. Was im Feld konkret liegt (Erzader, Bach, Wäldchen), wird erst dort gesetzt.
+- O - Verfahren für die Werte des Spielfelds (gewichteter Mittelwert, bilinear, Zufall im Feld) und wie die Spielwelt das Feld daraus aufbaut.
+- O - Die angezeigte Weltkarte (`resources/maps/weltkarte.png`) hat 4320 × 2160, das Spielfeldraster 8192 × 4096; die Auswahl rechnet zwischen beiden um.
+- E - Ressourcen (Gestein, Lagerstätten, Böden, Pflanzen) werden von Werkzeugen in `tools/` einmal mit festem Startwert erzeugt und liegen dann fest; sie werden nicht je Spiel neu verteilt. Verfahren: `lore/welt_konfiguration.md` Abschnitte 8–12, Inhalte: `lore/materialien_und_boeden.md`, `lore/pflanzen.md`.
+- E - Als Zwischenschritt bekommt jede Landzelle einen **Gesteinsraum** (geologische Herkunft, z. B. altes Vulkangebiet oder uralter Kontinentkern). Er bestimmt, welche Gesteine und Lagerstätten zusammen auftreten. Gesteinsräume sind keine Gebiete im Spiel und haben mit Grenzen nichts zu tun. Die Zuordnung erfolgt je Gebirgskette von Hand.
+- E - Natur-Ebenen: Klimazonen, Köppen-Klassen, Flüsse, Gesteinsräume, Gestein, Lagerstätten, Bodenfeuchte, Böden, Pflanzen.
+- O - Weitere Bitmap-Layer (z. B. Spezies, Kultur, Reiche).
+
+**Zielwerte:** Wunschergebnisse der Erzeugung, keine Regeln.
+
+- O - Vorschlag: Seltenheit als flächengewichteter Anteil der Landzellen mit Vorkommen: sehr häufig über 20 %, häufig 5–20 %, mittel 1–5 %, selten 0,1–1 %, sehr selten 0,01–0,1 %, extrem selten unter 0,01 % (einzelne Fundorte weltweit). Einzelne Materialien mit eigener Richtung, z. B. Zinn an 2 bis 4 Fundorten weltweit.
+- O - Vorschlag: Jede Landzelle außer Eis hat mindestens eine Pflanze für Nahrung, für Holz oder Brennmaterial und für Faser, sofern das Klima es zulässt.
 - O - Was eine Region im Ortsgraph ist und welche Daten sie trägt.
 - O - Startort von Szenario 1 auf dem Ostkontinent.
 
 ## 5. Völker und Fauna
 
-Rund 70 Spezies in 16 Kulturgruppen, von drachenartigen Riesen bis zu mausartigen Völkern; die Fauna besteht aus prähistorischen Tieren.
+Rund 70 Spezies in 16 Kulturgruppen, von drachenartigen Riesen bis zu Feenvölkern; die Fauna besteht aus prähistorischen Tieren.
 
 - E - Spezies ist Biologie. Eine Reproduktionstabelle legt fest, welche Spezies gemeinsam Nachkommen haben können. Das gilt nicht automatisch innerhalb einer Kulturgruppe.
 - E - Kulturgruppen sind grobe Zusammenschlüsse, die sich aus den Regionen ergeben haben. Kulturen sind fluide (Karte, Abschnitt 4).
@@ -124,10 +136,12 @@ Rund 70 Spezies in 16 Kulturgruppen, von drachenartigen Riesen bis zu mausartige
 - E - Fauna: prähistorische Tiere als Gegenstück zu den Anthro-Spezies. Sie liefern Rohstoffe wie Fleisch, Fell, Leder und Wolle (z. B. Wollmammut, Wollnashorn).
 - O - Konkrete Werte je Spezies (Größenklasse, Lebensdauer, Ernährung).
 - E - Die Lebenserwartung im Steckbrief einer Rasse ist das Alter, das ihre Biologie gut erreicht, kein Durchschnitt. Viele sterben früher; bei den Odonata etwa überleben manche Erwachsene das erste Jahr nicht.
-- E - Ausarbeitung je Kulturgruppe in `lore/voelker/<kulturgruppe>.md` (Gemeinsame Grundlage, Rassen, Zivilisation); bisher DRACONIK, KATARU, VESKRAL, HYRAX, TARPAN, NAGALITH, HUMANIC (ohne Zivilisation). Der Rest steht noch in `lore/Races V3.odt`.
+- E - Ausarbeitung je Kulturgruppe in `lore/voelker/<kulturgruppe>.md` (Gemeinsame Grundlage, Rassen, Zivilisation); bisher DRACONIK, KATARU, VESKRAL, HYRAX, TARPAN, NAGALITH, HUMANIC, RUMINAN, MERMAN, URODAK. Der Rest steht noch in `lore/Races V3.odt`.
 - E - Draconik wechseln ihr Geschlecht im Lauf des Lebens (`lore/voelker/draconik.md`). Das Geschlecht einer Person ist damit veränderlich, und eine Person kann bei verschiedenen Kindern Mutter und Vater sein (Abschnitt 6).
 - O - Aufteilung RUMINAN.
-- O - Spezies außerhalb ihres Kulturgebiets auf der Karte (WIP): Jerboa, Euplerid, Axolotl, Kitsune, Husky, Pinniped.
+- O - Spezies außerhalb ihres Kulturgebiets auf der Karte (WIP): Kitsune, Husky.
+- O - CORALOR vorerst gestrichen (2026-10-23): Ein Jägervolk zwischen Land und Wasser wird später neu gedacht. Die alten Texte stehen nur noch in `lore/Races V3.odt`.
+- O - RODINI gestrichen (2026-10-24): Ohne eigenen Kern; an ihre Stelle tritt URODAK, eine spielbare Lurchkultur, die mit lebendem Gewebe baut und weiteren Rassen einen Einstieg gibt (`lore/voelker/urodak.md`). Die alten Texte stehen nur noch in `lore/Races V3.odt`.
 
 O - Nagaji (Abschnitt 9, Währung) fehlen in der Tabelle: eigene Spezies, Fauna oder anderer Name für eine NAGALITH-Spezies?
 
@@ -138,7 +152,7 @@ O - Nagaji (Abschnitt 9, Währung) fehlen in der Tabelle: eigene Spezies, Fauna 
 | FENNARI | Wolfkin, Husky, Shepherd, Kitsune, Fennec |
 | TARPAN | Equus, Asinus, Hippotigris |
 | RUMINAN | Bovinea, Cervinae, Capreolinae, Saola |
-| RODINI | Chinchilla, Caviid, Leporid, Squirrel, Mustelid, Murid, Jerboa, Euplerid |
+| URODAK | Axolotl, Anuran, Salamander, Newt |
 | VESKRAL | Girtablilu, Araneae, Mantodea, Odonata |
 | NAGALITH | Reptilid, Serathi, DraconicNaga, Lamia, Viper |
 | KATARU | Pantherine, Serval, Acinonyx, Caracal |
@@ -147,8 +161,7 @@ O - Nagaji (Abschnitt 9, Währung) fehlen in der Tabelle: eigene Spezies, Fauna 
 | DRACONIK | Dragonkin, Kobold, Felbold |
 | TENGU | Gryphon, Owl, Harpy, Falcon |
 | BRUTAHK | Giant, Goliath, Ursine |
-| CORALOR | Hippocampus, Cephalopod, Carcharhini, Cetacean, Crocodilian, Axolotl, Pinniped |
-| MERMAN | Merman, Leviathan, Siren, Delphinoid |
+| MERMAN | Mermaid, Siren, Undine, Cecaelia (dazu Leviathan als mystische Wesen) |
 
 **Zielwerte:** Wunschergebnisse der Simulation, keine Regeln. Sie dienen als Prüfwert beim Abstimmen und stehen nicht in der Lore.
 
@@ -216,7 +229,7 @@ Der Herrscher vergibt Aufträge, die Einwohner arbeiten sie ab und bringen ihre 
 - E - Rezepte kommen auch über Personen: Ein Meisterschmied ermöglicht neue Materialien. Neue Technologien entwickeln NPCs selbst; der Spieler schafft dafür die Freiräume.
 - E - Werkzeug ist Voraussetzung in Rezepten. Material und Level des Werkzeugs wirken auf Arbeitszeit und Qualität.
 - E - Dinge werden stabil und zuverlässig gebaut. Reparatur hat Vorrang vor Neuanfertigung.
-- O - Welche Pflanzen und Materialien natürlich vorkommen (Grundlage aller Rezepte).
+- O - Welche Pflanzen und Materialien natürlich vorkommen (Grundlage aller Rezepte). Arbeitsstand: `lore/materialien_und_boeden.md` und `lore/pflanzen.md`, noch nicht bestätigt; die Listen werden zu YAML unter `data/`.
 - E - Das Spiel startet nicht im Kapitalismus. Bis Wohlstand entsteht, zählen Vertrauen und Beziehungen mehr; jeder kennt jeden, die Gemeinschaft hilft sich.
 - E - Währung ergibt sich aus den Umständen: das Gut, das die Krone festlegt und das akzeptiert wird, oder ein Gut, das selten, aber verfügbar ist. Beispiel: Die Startkobolde handeln mit Zähnen oder Schuppen von Nagaji; wer Besucher will, muss die Nagaji beschützen.
 

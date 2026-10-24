@@ -1,0 +1,43 @@
+# Köppen-Klassen und Meeresklassen (lore/welt_konfiguration.md Abschnitt 8), Nummern wie in climate_classes.json.
+# Erzeugt von tools/klimazonen.py, nicht von Hand ändern. zone: Zone aus klimazonen.yaml.
+raster: koeppen.bin
+classes:
+  - { id: 1, code: Af, zone: 1, color: [0, 0, 255] }
+  - { id: 2, code: Am, zone: 1, color: [0, 119, 255] }
+  - { id: 3, code: Aw, zone: 2, color: [70, 169, 250] }
+  - { id: 4, code: As, zone: 2, color: [121, 186, 236] }
+  - { id: 5, code: BWh, zone: 3, color: [255, 0, 0] }
+  - { id: 6, code: BWk, zone: 4, color: [255, 150, 149] }
+  - { id: 7, code: BSh, zone: 5, color: [245, 163, 1] }
+  - { id: 8, code: BSk, zone: 5, color: [255, 219, 99] }
+  - { id: 9, code: Cfa, zone: 7, color: [198, 255, 78] }
+  - { id: 10, code: Cfb, zone: 8, color: [102, 255, 51] }
+  - { id: 11, code: Cfc, zone: 8, color: [51, 199, 1] }
+  - { id: 12, code: Csa, zone: 6, color: [255, 255, 0] }
+  - { id: 13, code: Csb, zone: 6, color: [198, 199, 0] }
+  - { id: 14, code: Csc, zone: 6, color: [150, 150, 0] }
+  - { id: 15, code: Cwa, zone: 7, color: [150, 255, 150] }
+  - { id: 16, code: Cwb, zone: 8, color: [99, 199, 100] }
+  - { id: 17, code: Cwc, zone: 8, color: [50, 150, 51] }
+  - { id: 18, code: Dfa, zone: 9, color: [0, 255, 255] }
+  - { id: 19, code: Dfb, zone: 9, color: [56, 199, 255] }
+  - { id: 20, code: Dfc, zone: 10, color: [0, 126, 125] }
+  - { id: 21, code: Dfd, zone: 10, color: [0, 69, 94] }
+  - { id: 22, code: Dsa, zone: 9, color: [255, 0, 255] }
+  - { id: 23, code: Dsb, zone: 9, color: [198, 0, 199] }
+  - { id: 24, code: Dsc, zone: 10, color: [150, 50, 149] }
+  - { id: 25, code: Dsd, zone: 10, color: [150, 100, 149] }
+  - { id: 26, code: Dwa, zone: 9, color: [171, 177, 255] }
+  - { id: 27, code: Dwb, zone: 9, color: [90, 119, 219] }
+  - { id: 28, code: Dwc, zone: 10, color: [76, 81, 181] }
+  - { id: 29, code: Dwd, zone: 10, color: [50, 0, 135] }
+  - { id: 30, code: ET, zone: 11, color: [178, 178, 178] }
+  - { id: 31, code: EF, zone: 12, color: [104, 104, 104] }
+  - { id: 32, code: WI, zone: 24, color: [247, 248, 248] }
+  - { id: 33, code: WS, zone: 24, color: [184, 193, 204] }
+  - { id: 34, code: WC, zone: 23, color: [122, 138, 162] }
+  - { id: 35, code: WT, zone: 22, color: [93, 105, 123] }
+  - { id: 36, code: WW, zone: 20, color: [59, 70, 84] }
+  - { id: 37, code: WH, zone: 20, color: [44, 52, 63] }
+  - { id: 38, code: WE, zone: 20, color: [28, 34, 42] }
+  - { id: 39, code: WB, zone: 20, color: [8, 11, 16] }

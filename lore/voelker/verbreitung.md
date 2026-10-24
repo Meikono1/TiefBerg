@@ -21,19 +21,17 @@ Gerechnet wird beim Weltstart (`HomelandCalculator` im Simulationskern) auf eine
 - Alles darunter ist Wildnis.
 - **Heimatgebiet eines Volks:** Kerngebiet seiner Kultur, in dem sein eigener Einfluss über 0,22 liegt (Annahme). Benachbarte Völker einer Kultur überlappen dort.
 
-Ergebnis (2026-10-23), Anteil am Land: Kern 32,9 %, Einfluss 19,7 %, Misch 1,7 %, Wildnis 45,7 %.
+Ergebnis (2026-10-23, ohne CORALOR, Saola bei −98 / 13), Anteil am Land: Kern 32,2 %, Einfluss 18,1 %, Misch 1,6 %, Wildnis 48,1 %.
 
 ## Meeresvölker
 
 Sie haben noch kein berechnetes Gebiet und stehen nicht in den Daten, nur als Beschriftung im Schaubild (Länge, Breite):
 
-- **CORALOR im Meer:** Hippocampus (158, −7), Cephalopod (172, 4), Carcharhini (149, 6), Cetacean (176, −13), Pinniped (−94, −56)
-- **MERMAN** (Farbe 120, 160, 255): Merman (−35, 21), Leviathan (−160, −28), Siren (−58, 17), Delphinoid (−28, −12)
-- **CORALOR-Flachmeer:** 2,5° breiter Streifen um den Tropen-Archipel (Länge > 145°, Breite −14° bis 15°) und die Großinsel.
+- **MERMAN** (Farbe 120, 160, 255): Mermaid (−35, 21), Siren (−58, 17; Delphinoid bei −28, −12 ist in Siren aufgegangen), Undine und Cecaelia noch ohne Mittelpunkt; Leviathan (−160, −28) als mystische Wesen (`lore/voelker/merman.md`)
 
 **Freies Land** (bewusst unbesiedelt): Südland, Doppelinsel, Eisschild, Vulkaninsel, Hotspot- und Karibik-Inseln. Es ist nicht als Fläche festgelegt; die Berechnung lässt es leer, weil kein Weg über Land dorthin führt.
 
 ## Offen
 
-- O - Meeresvölker und CORALOR-Flachmeer: wie sie zu einem Gebiet kommen.
-- O - Sechs Mittelpunkte liegen auf der heutigen Karte im Wasser, diese Völker haben kein Heimatgebiet: Gnome (−126, 45; nächstes Land −119,4 / 44,9), Husky (−112, 67; −113,8 / 66,9), Squirrel (−98, −40; −102,1 / −42,2), Girtablilu (−126, 32; −125,6 / 31,8) im Meer, Jackal (43, −18; 44,2 / −19,2) und Axolotl (69, −12; 68,6 / −12,1) in einem Binnengewässer. Das Schaubild `voelkerkarte.png` stammt aus einem älteren Stand der Küsten im Nordwesten.
+- O - Meeresvölker: wie sie zu einem Gebiet kommen.
+- O - Vier Mittelpunkte liegen auf der heutigen Karte im Wasser, diese Völker haben kein Heimatgebiet: Gnome (−126, 45; nächstes Land −119,4 / 44,9), Husky (−112, 67; −113,8 / 66,9), Girtablilu (−126, 32; −125,6 / 31,8) im Meer, Jackal (43, −18; 44,2 / −19,2) in einem Binnengewässer. CORALOR ist vorerst gestrichen; das Schaubild `voelkerkarte.png` zeigt sie noch. Das Schaubild `voelkerkarte.png` stammt aus einem älteren Stand der Küsten im Nordwesten.

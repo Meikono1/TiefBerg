@@ -1,0 +1,14 @@
+# Gesteinsräume (lore/welt_konfiguration.md Abschnitt 9, lore/materialien_und_boeden.md Abschnitt 2).
+# Erzeugt von tools/gesteinsraeume.py, nicht von Hand ändern. 0 im Raster = Meer oder Binnengewässer.
+raster: gesteinsraeume.bin
+types:
+  - { id: 1, key: KRATON, color: [205, 190, 150] }
+  - { id: 2, key: BECKEN, color: [240, 225, 120] }
+  - { id: 3, key: ALTGEBIRGE, color: [60, 150, 75] }
+  - { id: 4, key: KOLLISION, color: [150, 60, 190] }
+  - { id: 5, key: OPHIOLITH, color: [20, 90, 70] }
+  - { id: 6, key: KUESTENBOGEN, color: [220, 50, 45] }
+  - { id: 7, key: INSELBOGEN, color: [240, 140, 30] }
+  - { id: 8, key: GRABEN, color: [0, 180, 185] }
+  - { id: 9, key: HOTSPOT, color: [35, 80, 220] }
+  - { id: 10, key: EISSCHILD, color: [245, 248, 252] }

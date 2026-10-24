@@ -1,19 +1,23 @@
-"""Erzeugt die vereinfachten Klimazonen als Datenebene (T-067).
+"""Erzeugt die vereinfachten Klimazonen und die Köppen-Klassen als Datenebenen (T-067, T-075).
 
-Regeln und Zonen-IDs: lore/welt_konfiguration.md, Abschnitt 5.
+Regeln und Zonen-IDs: lore/welt_konfiguration.md, Abschnitt 5; Köppen-Raster: Abschnitt 8.
 Quellen (alle aus demselben Lauf des World Climate Lab bzw. dessen Eingaben):
   lore/world/all-layers/02-climate_zones-raw.png  Köppen-Klassen als Legendenfarben, 8192 x 4096 (Lauf 2026-10-10)
   lore/Version 5 HM.png          Heightmap, 16 Bit, 8192 x 4096 (Eingabe des Laufs)
   lore/Version5 Meermaske.png    255 = Land, 0 = Meer, 8192 x 4096 (Eingabe des Laufs)
+  lore/world/climate-data/climate_classes.json   Nummern der Köppen- und Meeresklassen (gleich in allen Läufen)
 Ergebnis:
   data/world/klimazonen.bin      Kopf + ein Byte Zonen-ID je Pixel (Format siehe write_raster)
   data/world/klimazonen.yaml     Zonentabelle (ID, Namensschlüssel, Farbe)
+  data/world/koeppen.bin         Kopf + ein Byte Köppen-Klasse je Pixel, gleiches Format
+  data/world/koeppen.yaml        Klassentabelle (Nummer, Code, Zone, Farbe)
+  lore/klimazonen.png, lore/koeppen.png   Bilder des Ergebnisses
 
-Aufruf aus dem Projektordner:  python tools/klimazonen.py [--preview <datei.png>]
+Aufruf aus dem Projektordner:  python tools/klimazonen.py
 Benötigt numpy, Pillow, scipy.
 """
 
-import argparse
+import json
 import logging
 import struct
 import sys
@@ -29,13 +33,20 @@ ROOT = Path(__file__).resolve().parent.parent
 SRC_CLIMATE = ROOT / "lore" / "world" / "all-layers" / "02-climate_zones-raw.png"
 SRC_HEIGHT = ROOT / "lore" / "Version 5 HM.png"
 SRC_MASK = ROOT / "lore" / "Version5 Meermaske.png"
+SRC_CLASSES = ROOT / "lore" / "world" / "climate-data" / "climate_classes.json"
 OUT_DIR = ROOT / "data" / "world"
 OUT_RASTER = OUT_DIR / "klimazonen.bin"
 OUT_TABLE = OUT_DIR / "klimazonen.yaml"
+OUT_KOEPPEN = OUT_DIR / "koeppen.bin"
+OUT_KOEPPEN_TABLE = OUT_DIR / "koeppen.yaml"
+OUT_ZONES_IMAGE = ROOT / "lore" / "klimazonen.png"
+OUT_KOEPPEN_IMAGE = ROOT / "lore" / "koeppen.png"
 
 WIDTH, HEIGHT = 2160, 1080
 MAGIC = b"TBKZ"
+KOEPPEN_MAGIC = b"TBKP"
 FORMAT_VERSION = 1
+KOEPPEN_SYSTEMS = {"Koppen-Geiger", "Water"}
 
 # Heightmap-Grauwert = Höhe / 8849 m (welt_konfiguration.md Abschnitt 4, Export).
 PEAK_HEIGHT_M = 8849.0
@@ -83,6 +94,14 @@ LAND_ZONES = list(range(1, 13))
 SEA_ORDER = [20, 22, 23, 24]  # Ordinalwerte für die Glättung: warm → kalt
 SOUTH_CHAIN_SEED = (4.0, 22.0)
 SOUTH_CHAIN_MAX_LAT = 29.0
+# Köppen-Klasse je neuer Zone der Südkette (welt_konfiguration.md Abschnitt 8, Vorschlag)
+SOUTH_CHAIN_KOEPPEN = {6: "Csa", 5: "BSh", 2: "Aw"}
+# Grenzen der Südkette (29°, 24,5°, 17,5°) nicht als gerade Breitenlinie, sondern um geglättetes Rauschen verschoben,
+# höchstens ± SOUTH_CHAIN_JITTER_DEG (O - Vorschlag). Je Grenze ein eigenes Feld, fester Startwert.
+SOUTH_CHAIN_BANDS = (24.5, 17.5)
+SOUTH_CHAIN_JITTER_DEG = 1.5
+SOUTH_CHAIN_JITTER_SIGMA = 12.0  # Strukturgröße in px
+SOUTH_CHAIN_NOISE_SEED = 1
 ICE_SHEET = (-52.0, -15.0, 58.0, 86.0)  # Länge von, bis; Breite von, bis
 MODE_FILTER_SIZE = 5
 SMALL_AREA_PX = 40
@@ -161,53 +180,119 @@ def load_sources():
     return np.array(climate), height, land
 
 
-def classify(climate_rgb):
-    """Legendenfarbe → Zone. Unbekannte Farben brechen ab, statt geraten zu werden."""
+def load_class_numbers():
+    """Köppen-Code → Nummer aus der Klassenliste der Klimasimulation. Fehlt ein Code der Legende, bricht es ab."""
+    if not SRC_CLASSES.is_file():
+        raise FileNotFoundError(f"Quelle fehlt: {SRC_CLASSES}")
+    classes = json.loads(SRC_CLASSES.read_text(encoding="utf-8"))["classes"]
+    numbers = {entry["code"]: entry["value"] for entry in classes if entry["system"] in KOEPPEN_SYSTEMS}
+    missing = sorted(set(LEGEND.values()) - set(numbers))
+    if missing:
+        raise ValueError(f"{SRC_CLASSES.name}: Klassen ohne Nummer: {missing}")
+    if max(numbers.values()) > 255:
+        raise ValueError(f"{SRC_CLASSES.name}: Klassennummer passt nicht in ein Byte")
+    log.info("Klassennummern geladen: %d Klassen", len(numbers))
+    return numbers
+
+
+def zone_of_class(numbers):
+    """Tabelle Köppen-Nummer → Zone (0 = keine Zone)."""
+    table = np.zeros(256, np.uint8)
+    for zone_id, _, codes, _ in ZONES:
+        for code in codes:
+            table[numbers[code]] = zone_id
+    return table
+
+
+def classify(climate_rgb, numbers):
+    """Legendenfarbe → Zone und Köppen-Klasse. Unbekannte Farben brechen ab, statt geraten zu werden."""
     code_to_zone = {code: zone_id for zone_id, _, codes, _ in ZONES for code in codes}
     packed = (climate_rgb[..., 0].astype(np.int32) << 16) | (climate_rgb[..., 1].astype(np.int32) << 8) | climate_rgb[..., 2]
     zones = np.zeros(packed.shape, np.uint8)
+    koeppen = np.zeros(packed.shape, np.uint8)
     for value in np.unique(packed):
         rgb = (int(value) >> 16, (int(value) >> 8) & 255, int(value) & 255)
         if rgb not in LEGEND:
             raise ValueError(f"Farbe {rgb} steht nicht in der Legende")
         zones[packed == value] = code_to_zone[LEGEND[rgb]]
-    return zones
+        koeppen[packed == value] = numbers[LEGEND[rgb]]
+    return zones, koeppen
 
 
-def align_to_mask(zones, land):
-    """Küste der Meermaske gilt: Landpixel mit Meeresfarbe bekommen die nächste Landzone und umgekehrt."""
+def align_to_mask(zones, koeppen, land):
+    """Küste der Meermaske gilt: Landpixel mit Meeresfarbe bekommen die nächste Landzone und umgekehrt.
+    Die Köppen-Klasse kommt vom selben Pixel wie die Zone."""
     is_land_zone = np.isin(zones, LAND_ZONES)
     wrong_land = land & ~is_land_zone
     wrong_sea = ~land & is_land_zone
     log.info("Küstenabgleich: %d Landpixel ohne Landzone, %d Meerpixel mit Landzone", wrong_land.sum(), wrong_sea.sum())
-    result = np.where(land, fill_from_nearest(zones, is_land_zone), fill_from_nearest(zones, ~is_land_zone))
-    return result.astype(np.uint8)
+    zones = np.where(land, fill_from_nearest(zones, is_land_zone), fill_from_nearest(zones, ~is_land_zone))
+    koeppen = np.where(land, fill_from_nearest(koeppen, is_land_zone), fill_from_nearest(koeppen, ~is_land_zone))
+    return zones.astype(np.uint8), koeppen.astype(np.uint8)
 
 
-def mode_filter_land(zones, land):
-    """Regel 1: 5 × 5-Modusfilter auf Land. Bei Gleichstand bleibt die eigene Zone."""
+def mode_filter_land(values, land, classes, name):
+    """Regel 1: 5 × 5-Modusfilter auf Land. Bei Gleichstand bleibt der eigene Wert."""
     counts = np.stack([
-        ndimage.uniform_filter(((zones == z) & land).astype(np.float32), MODE_FILTER_SIZE, mode=("nearest", "wrap"))
-        for z in LAND_ZONES])
-    own = np.stack([(zones == z) for z in LAND_ZONES]).astype(np.float32)
-    best = np.array(LAND_ZONES, np.uint8)[np.argmax(counts + own * 1e-3, axis=0)]
-    changed = land & (best != zones)
-    log.info("Regel 1 (Modusfilter): %d Pixel geändert", changed.sum())
-    return np.where(land, best, zones).astype(np.uint8)
+        ndimage.uniform_filter(((values == c) & land).astype(np.float32), MODE_FILTER_SIZE, mode=("nearest", "wrap"))
+        for c in classes])
+    own = np.stack([(values == c) for c in classes]).astype(np.float32)
+    best = np.array(classes, np.uint8)[np.argmax(counts + own * 1e-3, axis=0)]
+    changed = land & (best != values)
+    log.info("Regel 1 (Modusfilter, %s): %d Pixel geändert", name, changed.sum())
+    return np.where(land, best, values).astype(np.uint8)
 
 
-def south_chain(zones, land):
-    """Regel 2: Südkette grüner, nur B-Klimate (Zonen 3 und 4) nach Breite umfärben."""
+def south_chain(zones, koeppen, land, numbers):
+    """Regel 2: Südkette grüner, nur B-Klimate (Zonen 3 und 4) nach Breite umfärben; die Köppen-Klasse folgt der neuen Zone."""
     labels, _ = label_wrapped(land)
     seed_x, seed_y = to_pixel(*SOUTH_CHAIN_SEED)
     seed_label = labels[seed_y, seed_x]
     if seed_label == 0:
         raise ValueError(f"Startpunkt der Südkette {SOUTH_CHAIN_SEED} liegt nicht an Land")
     lat = np.broadcast_to(lat_of_rows(HEIGHT)[:, None], zones.shape)
-    area = (labels == seed_label) & (lat < SOUTH_CHAIN_MAX_LAT) & np.isin(zones, [3, 4])
-    greener = np.where(lat > 24.5, 6, np.where(lat >= 17.5, 5, 2)).astype(np.uint8)
+    edge_outer, edge_mid, edge_inner = south_chain_edges(zones.shape)
+    area = (labels == seed_label) & (lat < SOUTH_CHAIN_MAX_LAT + edge_outer) & np.isin(zones, [3, 4])
+    greener = np.where(lat > SOUTH_CHAIN_BANDS[0] + edge_mid, 6,
+                       np.where(lat >= SOUTH_CHAIN_BANDS[1] + edge_inner, 5, 2)).astype(np.uint8)
+    greener_class = np.zeros(256, np.uint8)
+    for zone_id, code in SOUTH_CHAIN_KOEPPEN.items():
+        greener_class[zone_id] = numbers[code]
     log.info("Regel 2 (Südkette): %d Pixel umgefärbt", area.sum())
-    return np.where(area, greener, zones).astype(np.uint8)
+    zones = np.where(area, greener, zones).astype(np.uint8)
+    koeppen = np.where(area, greener_class[greener], koeppen).astype(np.uint8)
+    return zones, koeppen
+
+
+def south_chain_edges(shape):
+    """Verschiebung der drei Grenzen in Grad: geglättetes Rauschen, auf ± SOUTH_CHAIN_JITTER_DEG begrenzt."""
+    rng = np.random.default_rng(SOUTH_CHAIN_NOISE_SEED)
+    edges = []
+    for _ in range(3):
+        noise = ndimage.gaussian_filter(rng.standard_normal(shape), SOUTH_CHAIN_JITTER_SIGMA, mode=("nearest", "wrap"))
+        noise /= max(noise.std(), 1e-9)
+        edges.append(np.clip(noise / 2.0, -1.0, 1.0) * SOUTH_CHAIN_JITTER_DEG)
+    return edges
+
+
+def reconcile_koeppen(koeppen, zones, numbers):
+    """Köppen-Klasse passend zur endgültigen Zone: Wo Modusfilter, Kleinflächen oder Meeresglättung die Zone geändert
+    haben, gilt die Klasse des nächsten Pixels, dessen Klasse zu dieser Zone gehört. Hochgebirge, Riff und Binnengewässer
+    haben keine eigenen Klassen und behalten die aus dem Bild."""
+    current = zone_of_class(numbers)[koeppen]
+    result = koeppen.copy()
+    for zone_id, _, codes, _ in ZONES:
+        if not codes:
+            continue
+        wrong = (zones == zone_id) & (current != zone_id)
+        if not wrong.any():
+            continue
+        valid = current == zone_id
+        if not valid.any():
+            raise ValueError(f"Zone {zone_id}: keine passende Köppen-Klasse im Bild")
+        result[wrong] = fill_from_nearest(koeppen, valid)[wrong]
+        log.info("Köppen an Zone %d angeglichen: %d Pixel", zone_id, wrong.sum())
+    return result
 
 
 def high_mountains(zones, land, height, ice_sheet):
@@ -285,29 +370,31 @@ def reefs(zones, land):
     return np.where(area, 21, zones).astype(np.uint8)
 
 
-def build():
+def build(numbers):
     climate, height, land = load_sources()
     ice_sheet = ice_sheet_mask()
-    zones = align_to_mask(classify(climate), land)
-    zones = mode_filter_land(zones, land)
-    zones = south_chain(zones, land)
+    zones, koeppen = align_to_mask(*classify(climate, numbers), land)
+    zones = mode_filter_land(zones, land, LAND_ZONES, "Zonen")
+    land_classes = sorted({numbers[code] for zone_id, _, codes, _ in ZONES if zone_id in LAND_ZONES for code in codes})
+    koeppen = mode_filter_land(koeppen, land, land_classes, "Köppen")
+    zones, koeppen = south_chain(zones, koeppen, land, numbers)
     zones = high_mountains(zones, land, height, ice_sheet)
     zones = dissolve_small_areas(zones, land, ice_sheet)
     zones = smooth_sea(zones, land)
     zones = reefs(zones, land)
     zones[inland_water(land)] = 25
-    return zones
+    return zones, reconcile_koeppen(koeppen, zones, numbers)
 
 
-def write_raster(zones):
-    """Format: 4 Byte Kennung „TBKZ“, dann uint32 Version, Breite, Höhe (Little Endian),
-    danach Breite × Höhe Bytes Zonen-ID, zeilenweise von Norden nach Süden, Spalten ab 180° W."""
+def write_raster(values, path, magic):
+    """Format: 4 Byte Kennung („TBKZ“ Zonen, „TBKP“ Köppen), dann uint32 Version, Breite, Höhe (Little Endian),
+    danach Breite × Höhe Bytes (Zonen-ID bzw. Köppen-Nummer), zeilenweise von Norden nach Süden, Spalten ab 180° W."""
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    with open(OUT_RASTER, "wb") as file:
-        file.write(MAGIC)
+    with open(path, "wb") as file:
+        file.write(magic)
         file.write(struct.pack("<III", FORMAT_VERSION, WIDTH, HEIGHT))
-        file.write(np.ascontiguousarray(zones, np.uint8).tobytes())
-    log.info("Raster geschrieben: %s (%d Bytes)", OUT_RASTER, OUT_RASTER.stat().st_size)
+        file.write(np.ascontiguousarray(values, np.uint8).tobytes())
+    log.info("Raster geschrieben: %s (%d Bytes)", path, path.stat().st_size)
 
 
 def write_table():
@@ -324,31 +411,52 @@ def write_table():
     log.info("Zonentabelle geschrieben: %s", OUT_TABLE)
 
 
-def write_preview(zones, path):
+def write_koeppen_table(numbers):
+    zone_of = zone_of_class(numbers)
+    color_of = {code: rgb for rgb, code in LEGEND.items()}
+    lines = [
+        "# Köppen-Klassen und Meeresklassen (lore/welt_konfiguration.md Abschnitt 8), Nummern wie in climate_classes.json.",
+        "# Erzeugt von tools/klimazonen.py, nicht von Hand ändern. zone: Zone aus klimazonen.yaml.",
+        f"raster: {OUT_KOEPPEN.name}",
+        "classes:",
+    ]
+    for code, number in sorted(((c, numbers[c]) for c in color_of), key=lambda item: item[1]):
+        color = color_of[code]
+        lines.append(f"  - {{ id: {number}, code: {code}, zone: {zone_of[number]}, color: [{color[0]}, {color[1]}, {color[2]}] }}")
+    OUT_KOEPPEN_TABLE.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    log.info("Klassentabelle geschrieben: %s", OUT_KOEPPEN_TABLE)
+
+
+def write_image(values, palette_entries, path):
     palette = np.zeros((256, 3), np.uint8)
-    for zone_id, _, _, color in ZONES:
-        palette[zone_id] = color
-    Image.fromarray(palette[zones]).save(path)
-    log.info("Vorschau geschrieben: %s", path)
+    for value, color in palette_entries:
+        palette[value] = color
+    Image.fromarray(palette[values]).save(path)
+    log.info("Bild geschrieben: %s", path)
 
 
 def main():
     sys.stderr.reconfigure(encoding="utf-8")
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(funcName)s: %(message)s")
-    parser = argparse.ArgumentParser(description="Erzeugt data/world/klimazonen.bin und .yaml")
-    parser.add_argument("--preview", type=Path, help="zusätzlich ein Vorschaubild der Zonen schreiben")
-    args = parser.parse_args()
     try:
-        zones = build()
+        numbers = load_class_numbers()
+        zones, koeppen = build(numbers)
         unknown = set(np.unique(zones).tolist()) - {zone_id for zone_id, *_ in ZONES}
         if unknown:
             raise ValueError(f"Unbekannte Zonen im Ergebnis: {sorted(unknown)}")
+        unknown = set(np.unique(koeppen).tolist()) - {numbers[code] for code in LEGEND.values()}
+        if unknown:
+            raise ValueError(f"Unbekannte Köppen-Klassen im Ergebnis: {sorted(unknown)}")
         counts = np.bincount(zones.ravel(), minlength=256)
         log.info("Pixel je Zone: %s", {zone_id: int(counts[zone_id]) for zone_id, *_ in ZONES})
-        write_raster(zones)
+        counts = np.bincount(koeppen.ravel(), minlength=256)
+        log.info("Pixel je Köppen-Klasse: %s", {code: int(counts[numbers[code]]) for code in LEGEND.values()})
+        write_raster(zones, OUT_RASTER, MAGIC)
         write_table()
-        if args.preview:
-            write_preview(zones, args.preview)
+        write_raster(koeppen, OUT_KOEPPEN, KOEPPEN_MAGIC)
+        write_koeppen_table(numbers)
+        write_image(zones, [(zone_id, color) for zone_id, _, _, color in ZONES], OUT_ZONES_IMAGE)
+        write_image(koeppen, [(numbers[code], rgb) for rgb, code in LEGEND.items()], OUT_KOEPPEN_IMAGE)
     except Exception:
         log.exception("Klimazonen konnten nicht erzeugt werden")
         return 1

@@ -8,10 +8,10 @@ Magie ist vorhanden, weil ihre Ursprünge in der Welt sind; ihre Anwesenheit all
 
 | Tradition | Herkunft der Magie | Naheliegende Kulturgruppen |
 | --- | --- | --- |
-| Arkan | Der Kosmos, wie ein Schleier über allem; arkane Magie ist die Kontrolle darüber. Zugang über eigenes Wirken und Studium | HUMANIC, DRACONIK, GOBLIN, NAGALITH, RODINI |
+| Arkan | Der Kosmos, wie ein Schleier über allem; arkane Magie ist die Kontrolle darüber. Zugang über eigenes Wirken und Studium | HUMANIC, DRACONIK, GOBLIN, NAGALITH |
 | Göttlich | Eingreifen einer Gottheit, genauer eines Gottes, der gerade ihre Stelle einnimmt (Hauptdokument, Abschnitt 1) | HUMANIC, HYRAX, MERMAN, NAGALITH, RUMINAN |
 | Natur | Die Flora der Welt (Druidenmagie) | FENNARI, TARPAN, RUMINAN, KATARU, TENGU, BRUTAHK, VESKRAL, FEYLIN |
-| Wasser | Die Titanen, die selbst Wasser sind; zugleich eine Fraktion | CORALOR, MERMAN |
+| Elemente | Die Titanen, die die Elemente beherrschen, darunter die Leviathan; zugleich eine Fraktion. Wasser gehört zu dieser Tradition | MERMAN |
 | Traum | Die Feywelt, eine eigene Ebene, aus der die FEYLIN ihre Magie beziehen; Illusion und Geist | FEYLIN |
 | Fel | Die Drachen dieser Welt. Drachen gehören zu den Fey; Fel hat dieselben Zauber wie Traum, nur einen anderen Zugang | DRACONIK, DraconicNaga (NAGALITH) |
 
@@ -23,7 +23,7 @@ Magie ist vorhanden, weil ihre Ursprünge in der Welt sind; ihre Anwesenheit all
 
 ### Körpermagie: die eigene Rasse als Herkunft
 
-So wie die Titanen die Herkunft der Wassermagie und die Drachen die des Fel sind, kann eine Rasse selbst die Herkunft ihrer Magie sein. Diese Körpermagie ist keine Tradition, die man lernt oder aus der man zaubert, sondern eine angeborene Wirkung im eigenen Körper.
+So wie die Titanen die Herkunft der Elementmagie und die Drachen die des Fel sind, kann eine Rasse selbst die Herkunft ihrer Magie sein. Diese Körpermagie ist keine Tradition, die man lernt oder aus der man zaubert, sondern eine angeborene Wirkung im eigenen Körper.
 
 - E - Körpermagie gehört zur Spezies und wirkt von selbst. Sie muss nicht gelernt werden und braucht keine Bestandteile.
 - E - Sie kostet KCAL wie jede Magie.
@@ -62,7 +62,7 @@ Die maximale Zauberstufe ist Charakterlevel / 3, aufgerundet. Alle Zauber kosten
 ### Bestandteile und Nähe
 
 - E - Jeder Zauber braucht einen semantischen, einen gestischen und einen vokalen Anteil sowie eine Verbindung zur Herkunft. Je höher der Zauber, desto stärker muss die Verbindung sein.
-- E - Die Verbindung entsteht durch Nähe zur Herkunft: über mitgeführte Materialien und über den Ort (z. B. Wald für Natur, Meer für Wasser).
+- E - Die Verbindung entsteht durch Nähe zur Herkunft: über mitgeführte Materialien und über den Ort (z. B. Wald für Natur, Meer für Elemente).
 - E - Zauber verlangen Materialien, z. B. Kräuter für Heilzauber. Materialien können auch verstärken (Kohle für Feuerzauber) oder Effekte ermöglichen (Magnete für Orientierung).
 
 ### Lernen und Verbreitung
@@ -112,12 +112,12 @@ Beispiel: Stufe 10 mit Stufe-2-Zauberern ergibt 0,5^8, also etwa 0,4 % Effizienz
 | Natur | Weg kennen | 2 | Kennt Norden und bekannte Orte | Erkundung |
 | Natur | Geröll | 2 | Schaden und schwieriges Gelände | Kampf |
 | Natur | Windstoß | 2 | Stößt Gegner weg | Kampf |
-| Wasser | Fontäne | 2 | Wasserstrahl, Ziel verliert Halt | Kampf |
-| Wasser | Frostbiss | 2 | Kälteschaden, Ziel wird langsamer | Kampf |
-| Wasser | Wasser formen | 2 | Kleine Wassermengen formen | Alltag |
-| Wasser | Trocknen | 2 | Zieht Feuchtigkeit aus Dingen | Siedlung (Konservierung) |
-| Wasser | Langer Atem | 1 | Atem länger anhalten | Tauchen |
-| Wasser | Strömung lesen | 2 | Erkennt Strömung, Tiefe, Wetter auf See | Seefahrt |
+| Elemente | Fontäne | 2 | Wasserstrahl, Ziel verliert Halt | Kampf |
+| Elemente | Frostbiss | 2 | Kälteschaden, Ziel wird langsamer | Kampf |
+| Elemente | Wasser formen | 2 | Kleine Wassermengen formen | Alltag |
+| Elemente | Trocknen | 2 | Zieht Feuchtigkeit aus Dingen | Siedlung (Konservierung) |
+| Elemente | Langer Atem | 1 | Atem länger anhalten | Tauchen |
+| Elemente | Strömung lesen | 2 | Erkennt Strömung, Tiefe, Wetter auf See | Seefahrt |
 | Traum | Trugbild | 2 | Einfaches Geräusch oder Bild | Ablenkung |
 | Traum | Benommenheit | 2 | Geistiger Schaden, bei schwerem Fehlschlag kurz betäubt | Kampf |
 | Traum | Traumblick | 2 | Kurzer Blick in die Traumebene, erkennt Illusionen | Erkundung |

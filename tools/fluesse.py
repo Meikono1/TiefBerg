@@ -8,14 +8,16 @@ Regeln: lore/welt_konfiguration.md, Abschnitt 7. Quellen (Abschnitt 6):
   lore/flussvorgaben.yaml                                      von Hand vorgegebene Flussläufe
 Vergleich (nur Vorschau): lore/world/all-layers/06-rivers-raw.png (Lauf 2026-10-10)
 Ergebnis:
-  data/world/fluesse.bin    Kopf + ein Byte Größenklasse je Zelle (0 = kein Fluss), Raster der Klimazonen
-  data/world/fluesse.yaml   Größenklassen (ID, Namensschlüssel, Mindestabfluss, Farbe)
+  data/world/fluesse.bin         Kopf + ein Byte Größenklasse je Zelle (0 = kein Fluss), Raster der Klimazonen
+  data/world/fluesse.yaml        Größenklassen (ID, Namensschlüssel, Mindestabfluss, Farbe)
+  data/world/fliessrichtung.bin  Kopf + ein Byte Abflussrichtung je Zelle (T-075, Abschnitt 10; Werte siehe DIRECTION_*)
+  lore/fluesse.png               Ergebnis; lore/fluesse_vergleich.png Ergebnis neben dem Vergleichsbild
+  lore/fliessrichtung.png        Abflussrichtung als Farbton
 
-Aufruf aus dem Projektordner:  python tools/fluesse.py [--preview <datei.png>]
+Aufruf aus dem Projektordner:  python tools/fluesse.py
 Benötigt numpy, Pillow, scipy, PyYAML.
 """
 
-import argparse
 import heapq
 import json
 import logging
@@ -41,8 +43,13 @@ SRC_COMPARE = ROOT / "lore" / "world" / "all-layers" / "06-rivers-raw.png"
 OUT_DIR = ROOT / "data" / "world"
 OUT_RASTER = OUT_DIR / "fluesse.bin"
 OUT_TABLE = OUT_DIR / "fluesse.yaml"
+OUT_DIRECTION = OUT_DIR / "fliessrichtung.bin"
+OUT_IMAGE = ROOT / "lore" / "fluesse.png"
+OUT_COMPARE_IMAGE = ROOT / "lore" / "fluesse_vergleich.png"
+OUT_DIRECTION_IMAGE = ROOT / "lore" / "fliessrichtung.png"
 
 MAGIC = b"TBFL"
+DIRECTION_MAGIC = b"TBFR"
 FORMAT_VERSION = 1
 ZONES_MAGIC = b"TBKZ"
 OCEAN_ZONES = {20, 21, 22, 23, 24}
@@ -83,6 +90,11 @@ COURSE_RADIUS_CELLS = 2
 COURSE_SLOPE_M = 2.0  # Gefälle je Zelle Richtung Mündung
 
 NEIGHBOURS = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
+
+# Fließrichtung je Zelle: 0 = Meer, 1–8 = Nachbar aus NEIGHBOURS (1 = Nordwest, 2 = Nord, 3 = Nordost, 4 = West, 5 = Ost,
+# 6 = Südwest, 7 = Süd, 8 = Südost), 9 = Küstenzelle, mündet direkt ins Meer. Binnengewässer fließen weiter (überlaufen).
+DIRECTION_SEA = 0
+DIRECTION_MOUTH = 9
 
 
 def read_zones():
@@ -262,19 +274,39 @@ def build():
         rivers[discharge >= minimum] = class_id
     rivers[(catchment < MIN_CATCHMENT_KM2) | ocean | lakes] = 0
     log.info("Größter Abfluss: %.0f m³/s", discharge[~ocean].max())
-    return rivers
+    return rivers, flow_directions(receiver, ocean)
 
 
-def write_raster(rivers):
-    """Format: 4 Byte Kennung „TBFL“, dann uint32 Version, Breite, Höhe (Little Endian),
-    danach Breite × Höhe Bytes Größenklasse (0 = kein Fluss), zeilenweise von Norden nach Süden, Spalten ab 180° W."""
-    height, width = rivers.shape
+def flow_directions(receiver, ocean):
+    """Ziel je Zelle → Richtungscode (siehe DIRECTION_*). Ost-West läuft über die Datumsgrenze."""
+    height, width = ocean.shape
+    index = np.arange(height * width)
+    has_target = receiver >= 0
+    dy = np.where(has_target, receiver // width - index // width, 0)
+    dx = np.where(has_target, receiver % width - index % width, 0)
+    dx = (dx + 1) % width - 1  # −1, 0, 1 auch über die Datumsgrenze
+    directions = np.full(height * width, DIRECTION_MOUTH, np.uint8)
+    for code, (oy, ox) in enumerate(NEIGHBOURS, start=1):
+        directions[has_target & (dy == oy) & (dx == ox)] = code
+    unknown = has_target & ((np.abs(dy) > 1) | (np.abs(dx) > 1) | ((dy == 0) & (dx == 0)))
+    if unknown.any():
+        raise ValueError(f"Fließnetz: {int(unknown.sum())} Zellen fließen nicht in eine Nachbarzelle")
+    directions[ocean.ravel()] = DIRECTION_SEA
+    log.info("Fließrichtung: %d Landzellen, %d münden direkt ins Meer", int((directions != DIRECTION_SEA).sum()),
+             int((directions == DIRECTION_MOUTH).sum()))
+    return directions.reshape(height, width)
+
+
+def write_raster(values, path, magic):
+    """Format: 4 Byte Kennung („TBFL“ Größenklasse, 0 = kein Fluss; „TBFR“ Fließrichtung), dann uint32 Version, Breite,
+    Höhe (Little Endian), danach Breite × Höhe Bytes, zeilenweise von Norden nach Süden, Spalten ab 180° W."""
+    height, width = values.shape
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    with open(OUT_RASTER, "wb") as file:
-        file.write(MAGIC)
+    with open(path, "wb") as file:
+        file.write(magic)
         file.write(struct.pack("<III", FORMAT_VERSION, width, height))
-        file.write(np.ascontiguousarray(rivers, np.uint8).tobytes())
-    log.info("Raster geschrieben: %s (%d Bytes)", OUT_RASTER, OUT_RASTER.stat().st_size)
+        file.write(np.ascontiguousarray(values, np.uint8).tobytes())
+    log.info("Raster geschrieben: %s (%d Bytes)", path, path.stat().st_size)
 
 
 def write_table():
@@ -294,38 +326,52 @@ def write_table():
     log.info("Klassentabelle geschrieben: %s", OUT_TABLE)
 
 
-def write_preview(rivers, path):
-    """Links das Ergebnis, rechts das Vergleichsbild des gültigen Laufs."""
+def background(zones):
+    land = ~np.isin(zones, list(OCEAN_ZONES | {INLAND_WATER_ZONE}))
+    return np.where(land[..., None], np.array([200, 195, 175], np.uint8), np.array([30, 40, 60], np.uint8))
+
+
+def write_images(rivers, directions):
+    """Ergebnis, Ergebnis neben dem Vergleichsbild des gültigen Laufs und Fließrichtung als Farbton."""
     zones = read_zones()
     height, width = rivers.shape
-    land = ~np.isin(zones, list(OCEAN_ZONES | {INLAND_WATER_ZONE}))
-    image = np.where(land[..., None], np.array([200, 195, 175], np.uint8), np.array([30, 40, 60], np.uint8))
+    image = background(zones)
     for class_id, _, _, color in CLASSES + [(DRY_CLASS[0], None, None, DRY_CLASS[2])]:
         image[rivers == class_id] = color
     result = Image.fromarray(image.astype(np.uint8))
+    result.save(OUT_IMAGE)
+    log.info("Bild geschrieben: %s", OUT_IMAGE)
+    if not SRC_COMPARE.is_file():
+        raise FileNotFoundError(f"Quelle fehlt: {SRC_COMPARE}")
     compare = Image.open(SRC_COMPARE).convert("RGB").resize((width, height), Image.BOX)
     sheet = Image.new("RGB", (width * 2, height))
     sheet.paste(result, (0, 0))
     sheet.paste(compare, (width, 0))
-    sheet.save(path)
-    log.info("Vorschau geschrieben: %s", path)
+    sheet.save(OUT_COMPARE_IMAGE)
+    log.info("Bild geschrieben: %s", OUT_COMPARE_IMAGE)
+    # Farbton = Richtung im Uhrzeigersinn ab Nord, Mündungen weiß
+    image = background(zones)
+    for code, (dy, dx) in enumerate(NEIGHBOURS, start=1):
+        hue = (np.arctan2(dx, -dy) / (2 * np.pi)) % 1.0
+        rgb = Image.new("HSV", (1, 1), (int(hue * 255), 200, 230)).convert("RGB").getpixel((0, 0))
+        image[directions == code] = rgb
+    image[directions == DIRECTION_MOUTH] = (255, 255, 255)
+    Image.fromarray(image.astype(np.uint8)).save(OUT_DIRECTION_IMAGE)
+    log.info("Bild geschrieben: %s", OUT_DIRECTION_IMAGE)
 
 
 def main():
     sys.stderr.reconfigure(encoding="utf-8")
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(funcName)s: %(message)s")
-    parser = argparse.ArgumentParser(description="Erzeugt data/world/fluesse.bin und .yaml")
-    parser.add_argument("--preview", type=Path, help="zusätzlich ein Vorschaubild (Ergebnis neben Vergleichsbild) schreiben")
-    args = parser.parse_args()
     try:
-        rivers = build()
+        rivers, directions = build()
         counts = np.bincount(rivers.ravel(), minlength=DRY_CLASS[0] + 1)
         ids = [class_id for class_id, *_ in CLASSES] + [DRY_CLASS[0]]
         log.info("Zellen je Klasse: %s", {class_id: int(counts[class_id]) for class_id in ids})
-        write_raster(rivers)
+        write_raster(rivers, OUT_RASTER, MAGIC)
         write_table()
-        if args.preview:
-            write_preview(rivers, args.preview)
+        write_raster(directions, OUT_DIRECTION, DIRECTION_MAGIC)
+        write_images(rivers, directions)
     except Exception:
         log.exception("Flussebene konnte nicht erzeugt werden")
         return 1

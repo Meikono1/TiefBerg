@@ -1,0 +1,101 @@
+# Böden (lore/materialien_und_boeden.md Abschnitt 6, Verfahren lore/welt_konfiguration.md Abschnitt 11).
+# Eingabe von tools/boeden.py und zugleich Metadaten fürs Spiel. Der Layer hauptboden in boeden.bin enthält die
+# Position in soils (ab 1, 0 = Meer oder Binnengewässer).
+#
+# fertility: 0 (kein Boden) bis 5 (sehr fruchtbar). ph: Spanne [von, bis] aus
+#   STARK_SAUER, SAUER, SCHWACH_SAUER, NEUTRAL, BASISCH; variabel = [SAUER, BASISCH]; Eis ohne pH.
+
+soils:
+  - { id: laterit, name_key: SOIL_LATERITE, fertility: 1, ph: [SAUER, SAUER], color: [175, 60, 35] }
+  - { id: roterde, name_key: SOIL_TROPICAL_RED_EARTH, fertility: 2, ph: [SAUER, NEUTRAL], color: [200, 95, 60] }
+  - { id: vertisol, name_key: SOIL_VERTISOL, fertility: 3, ph: [NEUTRAL, BASISCH], color: [70, 60, 55] }
+  - { id: wuestenrohboden, name_key: SOIL_DESERT, fertility: 1, ph: [BASISCH, BASISCH], color: [235, 205, 150] }
+  - { id: sandboden, name_key: SOIL_SAND, fertility: 1, ph: [SAUER, BASISCH], color: [250, 230, 120] }
+  - { id: kalkkruste, name_key: SOIL_CALCRETE, fertility: 2, ph: [BASISCH, BASISCH], color: [225, 215, 190] }
+  - { id: salzboden, name_key: SOIL_SALINE, fertility: 1, ph: [BASISCH, BASISCH], color: [250, 250, 250] }
+  - { id: kastanienerde, name_key: SOIL_CHESTNUT, fertility: 3, ph: [NEUTRAL, BASISCH], color: [150, 105, 65] }
+  - { id: schwarzerde, name_key: SOIL_BLACK_EARTH, fertility: 5, ph: [NEUTRAL, NEUTRAL], color: [35, 30, 30] }
+  - { id: terra_rossa, name_key: SOIL_TERRA_ROSSA, fertility: 3, ph: [NEUTRAL, BASISCH], color: [190, 40, 40] }
+  - { id: rendzina, name_key: SOIL_RENDZINA, fertility: 2, ph: [BASISCH, BASISCH], color: [160, 150, 125] }
+  - { id: braunerde, name_key: SOIL_BROWN_EARTH, fertility: 4, ph: [SCHWACH_SAUER, SCHWACH_SAUER], color: [125, 85, 45] }
+  - { id: rotgelberde, name_key: SOIL_RED_YELLOW, fertility: 2, ph: [SAUER, SAUER], color: [225, 150, 60] }
+  - { id: podsol, name_key: SOIL_PODZOL, fertility: 1, ph: [STARK_SAUER, STARK_SAUER], color: [170, 165, 175] }
+  - { id: gley, name_key: SOIL_GLEY, fertility: 2, ph: [SAUER, BASISCH], color: [90, 130, 135] }
+  - { id: moor, name_key: SOIL_BOG, fertility: 1, ph: [STARK_SAUER, STARK_SAUER], color: [55, 75, 50] }
+  - { id: permafrost, name_key: SOIL_PERMAFROST, fertility: 1, ph: [SAUER, SAUER], color: [150, 190, 210] }
+  - { id: auenboden, name_key: SOIL_ALLUVIAL, fertility: 5, ph: [NEUTRAL, NEUTRAL], color: [60, 160, 90] }
+  - { id: vulkanboden, name_key: SOIL_VOLCANIC, fertility: 5, ph: [SCHWACH_SAUER, SCHWACH_SAUER], color: [110, 40, 110] }
+  - { id: loessboden, name_key: SOIL_LOESS, fertility: 5, ph: [NEUTRAL, BASISCH], color: [240, 200, 90] }
+  - { id: rohboden_fels, name_key: SOIL_BARE_ROCK, fertility: 0, ph: [SAUER, BASISCH], color: [120, 120, 120] }
+  - { id: eis, name_key: SOIL_ICE, fertility: 0, ph: null, color: [245, 248, 252] }
+
+# 1. Zonaler Grundwert je Köppen-Klasse (Abschnitt 6.2). main_share: Anteil des Hauptbodens in Prozent, der Rest zu
+# gleichen Teilen auf die Nebenböden (O - Vorschlag). where: Nebenboden nur dort, sonst geht sein Anteil an den Hauptboden.
+#   SENKE  aufgefüllte Senke im Gelände       KALK  Kalkstein + Marmor ab 25 % Anteil
+#   SAND   Sandstein ab 25 % Anteil
+#   FEUCHT Bodenfeuchte FEUCHT vorherrschend
+# main_if: { soil, where }: an Stellen mit der Bedingung ersetzt soil den Hauptboden (Nebenböden bleiben).
+# Schwarzerde „am feuchteren Rand“ bzw. „im Übergang zu BSk“ kommt aus transitions, nicht aus den Nebenböden.
+zonal:
+  main_share: 70
+  classes:
+    - { koeppen: [Af, Am], main: laterit, secondary: [{ soil: roterde }] }
+    - { koeppen: [Aw, As], main: roterde, secondary: [{ soil: vertisol }, { soil: laterit }] }
+    - { koeppen: [BWh], main: wuestenrohboden, secondary: [{ soil: sandboden }, { soil: kalkkruste }] }
+    - { koeppen: [BWk], main: wuestenrohboden, secondary: [{ soil: sandboden }, { soil: salzboden }] }
+    - { koeppen: [BSh], main: kastanienerde, secondary: [{ soil: kalkkruste }, { soil: roterde }, { soil: sandboden }] }
+    - { koeppen: [BSk], main: kastanienerde, secondary: [] }
+    - { koeppen: [Csa, Csb, Csc], main: braunerde, secondary: [{ soil: terra_rossa, where: KALK }] }
+    - { koeppen: [Cwa], main: rotgelberde, secondary: [{ soil: roterde }] }
+    - { koeppen: [Cwb, Cwc], main: braunerde, secondary: [{ soil: rotgelberde }] }
+    # Cfa: ausgewaschene Rotgelberde, wo es dauerhaft feucht ist, sonst Braunerde (O - Vorschlag)
+    - { koeppen: [Cfa], main: braunerde, main_if: { soil: rotgelberde, where: FEUCHT }, secondary: [{ soil: rotgelberde }] }
+    - { koeppen: [Cfb], main: braunerde, secondary: [{ soil: podsol, where: SAND }, { soil: gley }] }
+    - { koeppen: [Cfc], main: podsol, secondary: [{ soil: gley }, { soil: moor }] }
+    # Dfa: warme Sommer, Grasland mit tiefem Humus; wo es dauerhaft feucht ist, Wald und Braunerde (O - Vorschlag)
+    - { koeppen: [Dfa], main: schwarzerde, main_if: { soil: braunerde, where: FEUCHT }, secondary: [{ soil: braunerde }] }
+    - { koeppen: [Dsa, Dsb, Dwa, Dwb], main: braunerde, secondary: [] }
+    - { koeppen: [Dfb], main: braunerde, secondary: [{ soil: podsol }] }
+    - { koeppen: [Dsc, Dwc, Dfc], main: podsol, secondary: [{ soil: moor }, { soil: gley }] }
+    - { koeppen: [Dsd, Dwd, Dfd], main: podsol, secondary: [{ soil: permafrost }] }
+    - { koeppen: [ET], main: permafrost, secondary: [{ soil: rohboden_fels }, { soil: moor }] }
+    - { koeppen: [EF], main: eis, secondary: [] }
+
+# Übergangsstreifen: Zellen der Klassen in from bzw. to, die höchstens width_km / 2 von der jeweils anderen Seite
+# entfernt liegen, bekommen soil als Hauptboden (Abschnitt 6.2, Schwarzerde). width_km: O - Vorschlag.
+transitions:
+  - { soil: schwarzerde, from: [BSk], to: [Dfa, Dfb, Dwa, Dwb, Cfa, Cfb], width_km: 500 }
+
+# 2. Überschreibungen in fester Reihenfolge (Abschnitt 6.3). Jede Regel setzt ihren Boden auf einen Anteil der Zelle,
+# die übrigen Böden schrumpfen im selben Verhältnis. Die Stärken stehen in tools/boeden.py.
+overrides:
+  # Gestein: gilt, wo das vorherrschende Gestein der Zelle in rocks liegt; Anteil = Summe der Anteile von rocks × strength.
+  # koeppen/exclude_koeppen begrenzen die Regel aufs Klima, rooms/exclude_rooms auf Gesteinsräume. Rendzina, Vulkanboden
+  # und Vertisol nicht in Wüste und Eis (O - Vorschlag: brauchen Feuchte zur Bildung). Vulkanboden nur in jungen
+  # Vulkangebieten, in den Bögen nur anteilig (Asche fällt um die einzelnen Vulkane, nicht über den ganzen Bogen);
+  # alter Basalt verwittert zu tonreichem Vertisol. Podsol auf Sandstein nur bei Bodenfeuchte FEUCHT.
+  rock:
+    - { rocks: [kalkstein, marmor], soil: terra_rossa, koeppen: [Csa, Csb, Csc], strength: 1.0 }
+    - { rocks: [kalkstein, marmor], soil: rendzina, exclude_koeppen: [Csa, Csb, Csc, BWh, BWk, ET, EF], strength: 1.0 }
+    - { rocks: [basalt, andesit, tuff], soil: vulkanboden, rooms: [HOTSPOT], exclude_koeppen: [BWh, BWk, ET, EF], strength: 1.0 }
+    - { rocks: [basalt, andesit, tuff], soil: vulkanboden, rooms: [INSELBOGEN, KUESTENBOGEN], exclude_koeppen: [BWh, BWk, ET, EF], strength: 0.4 }
+    - { rocks: [basalt], soil: vertisol, exclude_rooms: [HOTSPOT, INSELBOGEN, KUESTENBOGEN], exclude_koeppen: [BWh, BWk, ET, EF], strength: 1.0 }
+    - { rocks: [sandstein], soil: podsol, moisture: FEUCHT, strength: 0.5 }
+  # Windablagerungen (Abschnitt 6.3 Regel 2): Sandmeere auf cover Prozent der Fläche der Klassen (O - Vorschlag).
+  # TODO: Löss braucht die Windrichtung (T-039).
+  dunes: { soil: sandboden, koeppen: [BWh], cover: 25 }
+  water:
+    floodplain: auenboden          # entlang ganzjähriger Flüsse
+    wetland: gley                  # Feuchtgebietsanteil ...
+    wetland_cold: moor             # ... in kühlen Klassen
+    wetland_cold_koeppen: [Cfc, Dfb, Dfc, Dfd, Dsc, Dsd, Dwb, Dwc, Dwd, ET]
+    basin_salt: salzboden          # aufgefüllte Senken in den Klassen von salt_koeppen
+    salt_koeppen: [BWh, BWk, BSh, BSk]
+    dry_river: sandboden           # entlang von Trockenflüssen
+  coast:
+    salt: salzboden                # flache Küsten in salt_koeppen
+    salt_koeppen: [BWh, BWk, BSh, BSk]
+    sand: sandboden                # flache Küsten über Sandstein oder im Becken
+  slope: rohboden_fels
+  high_mountains: rohboden_fels    # Zone Hochgebirge, fester Anteil
+  ice: { soil: eis, koeppen: [EF] }  # dazu der Gesteinsraum EISSCHILD
