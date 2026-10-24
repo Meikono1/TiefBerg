@@ -77,6 +77,12 @@ BASIN_LOWLAND_M = 400.0        # Tiefland
 BASIN_FORELAND_KM = 400.0      # Streifen auf der Landseite von KOLLISION und KUESTENBOGEN
 BASIN_LAKE_KM = 150.0          # Tiefland um Binnengewässer
 BASIN_SINK_DEPTH_M = 50.0      # Senke: so tief unter ihrem Überlauf
+# Küstenebenen an ruhigen Küsten: junge Ablagerungen statt Kraton (materialien_und_boeden.md Abschnitt 2, 2026-10-24).
+# Die Breite schwankt großräumig zwischen 0 und dem Doppelten, damit kein gleichmäßiger Ring um die Küsten entsteht.
+COASTAL_PLAIN_M = 150.0        # unter dieser Höhe ...
+COASTAL_PLAIN_KM = 150.0       # ... bis im Mittel so weit von der Küste ...
+QUIET_COAST_KM = 500.0         # ... und so weit von aktiven Ketten (KOLLISION, KUESTENBOGEN, INSELBOGEN, OPHIOLITH)
+COASTAL_PLAIN_NOISE_SIGMA = 15.0  # Strukturgröße der Breitenschwankung, in Zellen
 
 
 
@@ -281,18 +287,24 @@ def filled_depth(elevation, sea):
 
 
 def assign_basins(result, land, elevation, lakes, ocean):
-    """Regel 6: Tiefland vor KOLLISION und KUESTENBOGEN, um Binnengewässer und in Senken → BECKEN.
-    Vorland liegt auf der Landseite: näher am Gebirge als am Meer."""
+    """Regel 6: Tiefland vor KOLLISION und KUESTENBOGEN, um Binnengewässer, in Senken und Küstenebenen an ruhigen
+    Küsten → BECKEN. Vorland liegt auf der Landseite: näher am Gebirge als am Meer."""
     lowland = land & (result == 0) & (elevation < BASIN_LOWLAND_M)
     mountains = np.isin(result, [TYPE_ID["KOLLISION"], TYPE_ID["KUESTENBOGEN"], TYPE_ID["OPHIOLITH"]])
     to_mountains = wrapped_distance_km(mountains)
-    foreland = lowland & (to_mountains <= BASIN_FORELAND_KM) & (to_mountains < wrapped_distance_km(ocean))
+    to_ocean = wrapped_distance_km(ocean)
+    foreland = lowland & (to_mountains <= BASIN_FORELAND_KM) & (to_mountains < to_ocean)
     lakeside = lowland & (wrapped_distance_km(lakes) <= BASIN_LAKE_KM) if lakes.any() else np.zeros_like(lowland)
     sinks = land & (result == 0) & (filled_depth(elevation, ocean) >= BASIN_SINK_DEPTH_M)
-    cells = foreland | lakeside | sinks
+    active = np.isin(result, [TYPE_ID["KOLLISION"], TYPE_ID["KUESTENBOGEN"], TYPE_ID["INSELBOGEN"], TYPE_ID["OPHIOLITH"]])
+    noise = ebenen.smooth_noise(land.shape, COASTAL_PLAIN_NOISE_SIGMA, seeded_rng("kuestenebene"))
+    width_km = COASTAL_PLAIN_KM * np.clip(1.0 + noise, 0.0, 2.0)
+    coastal = land & (result == 0) & (elevation < COASTAL_PLAIN_M) & (to_ocean <= width_km) \
+        & (wrapped_distance_km(active) > QUIET_COAST_KM)
+    cells = foreland | lakeside | sinks | coastal
     result[cells] = TYPE_ID["BECKEN"]
-    log.info("Regel 6 (Becken): %d Zellen (Vorland %d, Binnengewässer %d, Senken %d)", int(cells.sum()),
-             int(foreland.sum()), int(lakeside.sum()), int(sinks.sum()))
+    log.info("Regel 6 (Becken): %d Zellen (Vorland %d, Binnengewässer %d, Senken %d, Küstenebenen %d)", int(cells.sum()),
+             int(foreland.sum()), int(lakeside.sum()), int(sinks.sum()), int(coastal.sum()))
 
 
 def build():

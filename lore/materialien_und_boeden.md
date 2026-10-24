@@ -20,7 +20,7 @@ Ein Gesteinsraum sagt, woher der Untergrund einer Gegend stammt. Er ist kein Geb
 | `OPHIOLITH` | aufgeschobener Meeresboden in einer Kollisionszone | schmale Streifen dunklen, grünlichen Gesteins an den Flanken von `KOLLISION` |
 | `ALTGEBIRGE` | abgetragenes altes Gebirge | lange, aber niedrige und breite Rücken |
 | `KRATON` | alter, stabiler Kontinentkern | weites, flaches Land fern aller Gebirge |
-| `BECKEN` | Sedimentbecken vor Gebirgen | Tiefland neben Gebirgen, um Binnenmeere, in Senken |
+| `BECKEN` | Sedimentbecken vor Gebirgen und junge Küstenebenen | Tiefland neben Gebirgen, um Binnenmeere, in Senken, flache Küstenebenen an ruhigen Küsten |
 | `GRABEN` | ein Kontinent reißt auf | langgestreckte Senke oder Seenkette zwischen zwei Rücken |
 | `HOTSPOT` | Vulkanland über einer Aufschmelzung im Erdmantel | rundliche, einzeln stehende Erhebung oder Vulkaninsel |
 | `EISSCHILD` | dauerhaft vergletschert | die Eisinsel im hohen Norden |
@@ -84,7 +84,7 @@ Jeder Gesteinsraum liefert Gesteinsanteile in Prozent.
 Klimabedingungen für Gesteine:
 
 - Gips in `BECKEN` nur in Köppen-Klassen BW/BS oder angrenzend an Binnenmeere. Sonst wird der Anteil Kalkstein zugeschlagen.
-- Kreide nur in `BECKEN`, die nicht ausschließlich Wüste sind (ehemaliges Flachmeer). Kreide ist Voraussetzung für Feuerstein.
+- Kreide in allen `BECKEN` (ehemaliges Flachmeer), unabhängig vom heutigen Klima: Das Gestein ist viel älter als das Klima darüber. Kreide ist Voraussetzung für Feuerstein.
 - Marmor entsteht zusätzlich in `ALTGEBIRGE` dort, wo Kalkstein an Granit grenzt (Kontaktmetamorphose), als schmaler Saum.
 
 ## 4. Lesart der Materialtabelle
@@ -125,7 +125,7 @@ Kategorien: `GESTEIN`, `ERZ`, `BRENNSTOFF`, `SALZ`, `INDUSTRIE`, `EDELSTEIN` (je
 | ID | Name | Entstehung | Verteilung | Seltenheit | Abhängig von | Nutzung |
 |---|---|---|---|---|---|---|
 | `eisen_bandeisen` | Gebändertes Eisenerz | KRATON | KLUMPIG | MITTEL | – | Eisen in großen Mengen, aber anspruchsvoll in der Verhüttung |
-| `eisen_raseneisen` | Raseneisenerz | Feuchtgebiete und Moore in Cfb, Cfc, Dfb, Dfc, Dwb, Dwc | KLUMPIG | HAEUFIG | Feuchtgebietsanteil | frühe, einfach zugängliche Eisenquelle |
+| `eisen_raseneisen` | Raseneisenerz | Feuchtgebiete und Moore in Cfb, Cfc, Dfb, Dfc, Dwb, Dwc | KLUMPIG | MITTEL | Feuchtgebietsanteil | frühe, einfach zugängliche Eisenquelle |
 | `eisen_laterit` | Laterit-Eisen | Af, Am, Aw auf flachem Gelände | FLAECHIG | MITTEL | Boden `laterit` | Eisen, Pigment |
 | `eisen_magnetit` | Magneteisenerz | Kontaktsaum, wo Granit an Kalkstein grenzt: KOLLISION, ALTGEBIRGE, KUESTENBOGEN | KLUMPIG | MITTEL | `granit`, `kalkstein` | reiches Eisenerz, magnetisch (Kompassnadel) |
 | `eisen_haematit` | Roteisenerz (Hämatit) | Gänge und Lager in Kalkstein und Sandstein: BECKEN, ALTGEBIRGE | KLUMPIG | MITTEL | `kalkstein`, `sandstein` | reiches Eisenerz, Rötel als rotes Pigment |
@@ -133,16 +133,17 @@ Kategorien: `GESTEIN`, `ERZ`, `BRENNSTOFF`, `SALZ`, `INDUSTRIE`, `EDELSTEIN` (je
 | `meteoreisen` | Meteoreisen | einzelne Einschläge, unabhängig vom Gesteinsraum | PUNKTUELL | EXTREM_SELTEN | – | gediegenes Eisen lange vor der Verhüttung, kalt gehämmert; Prestige, Sagenstoff |
 | `kupfer_gediegen` | Gediegenes Kupfer | Hohlräume in Basaltdecken: HOTSPOT, GRABEN, seltener KRATON | KLUMPIG | SELTEN | `basalt` | erstes Metall, kalt gehämmert zu Werkzeug und Schmuck, vor jeder Verhüttung |
 | `kupfer_porphyr` | Kupfer (magmatisch) | KUESTENBOGEN, INSELBOGEN | KLUMPIG | MITTEL | – | Kupfer, Bronze |
-| `kupfer_sediment` | Kupfer (sedimentär) | GRABEN, BECKEN | KLUMPIG | SELTEN | – | Kupfer, Bronze |
-| `zinn` | Zinn (primär) | KOLLISION, ALTGEBIRGE, an Granit | PUNKTUELL | SEHR_SELTEN | `granit` | Bronze; 2 bis 4 Fundorte weltweit |
+| `kupfer_sediment` | Kupfer (sedimentär) | GRABEN, BECKEN | KLUMPIG | MITTEL | – | Kupfer, Bronze |
+| `kupfer_gang` | Kupfer (in Gängen) | KOLLISION, ALTGEBIRGE | KLUMPIG | SELTEN | – | Kupfer, Bronze |
+| `zinn` | Zinn (primär) | KOLLISION, ALTGEBIRGE, an Granit | PUNKTUELL | SEHR_SELTEN | `granit` | Bronze; genau 4 Fundorte weltweit, einer je Festland (Entscheidung 2026-10-25) |
 | `zinn_seife` | Zinnseife | flussabwärts von Zinn | SEIFE | SEHR_SELTEN | `zinn` | Bronze, leichter abbaubar als primäres Zinn |
 | `wolfram` | Wolfram | gemeinsam mit Zinn | ABGELEITET | SEHR_SELTEN | `zinn` | späte Metallurgie |
 | `bismut` | Bismut (Wismut) | gemeinsam mit Zinn, Wolfram und Silber, teils gediegen | ABGELEITET | SELTEN | `zinn`, `silber` | Bismutbronze, wo Zinn knapp ist; leicht schmelzende Legierungen, weißes Pigment, Kosmetik, Heilmittel |
 | `gold_primaer` | Gold (gediegen, in Gängen) | KUESTENBOGEN, KRATON, ALTGEBIRGE | PUNKTUELL | SELTEN | – | Schmuck, Währung |
 | `gold_seife` | Waschgold | flussabwärts von Gold | SEIFE | SELTEN | `gold_primaer` | historisch fast immer die erste Goldquelle |
-| `silber` | Silber | KUESTENBOGEN, Flanken von KOLLISION, mit Blei | KLUMPIG | SELTEN | – | Schmuck, Währung |
+| `silber` | Silber | KUESTENBOGEN, Flanken von KOLLISION, überall mit Blei (silberhaltiges Bleierz) | KLUMPIG | SELTEN | `blei` | Schmuck, Währung |
 | `silber_gediegen` | Gediegenes Silber | reichste Stellen der Silbergänge, oft mit Kobalt, Nickel und Arsen | ABGELEITET | SEHR_SELTEN | `silber` | Silber ohne Verhüttung, Schmuck, Währung |
-| `blei` | Blei | KUESTENBOGEN, KOLLISION-Flanken, in Kalkstein | KLUMPIG | MITTEL | `kalkstein` | Rohre, Gewichte, Glasur |
+| `blei` | Blei | KUESTENBOGEN, KOLLISION-Flanken, in Kalkstein (auch Kalkstein-Becken und Kraton) | KLUMPIG | MITTEL | `kalkstein` | Rohre, Gewichte, Glasur |
 | `zink` | Zink | wie Blei | ABGELEITET | MITTEL | `blei` | Messing |
 | `quecksilber` | Quecksilber (Zinnober) | Vulkan- und Thermalgebiete: KUESTENBOGEN, GRABEN, HOTSPOT | PUNKTUELL | SEHR_SELTEN | – | Goldgewinnung, rotes Pigment, giftig |
 | `chrom` | Chrom | in Serpentinit | ABGELEITET | SELTEN | `serpentinit` | späte Metallurgie |
@@ -160,7 +161,7 @@ Kategorien: `GESTEIN`, `ERZ`, `BRENNSTOFF`, `SALZ`, `INDUSTRIE`, `EDELSTEIN` (je
 |---|---|---|---|---|---|---|
 | `steinkohle` | Steinkohle | BECKEN, Vorland von ALTGEBIRGE | KLUMPIG | MITTEL | – | Brennstoff, Verhüttung |
 | `braunkohle` | Braunkohle | BECKEN, jünger und flacher | KLUMPIG | MITTEL | – | Brennstoff |
-| `torf` | Torf | Moore in Cfb, Cfc, Dfb, Dfc, Dwc, ET | FLAECHIG | HAEUFIG | Feuchtgebietsanteil | Brennstoff, wo Holz fehlt |
+| `torf` | Torf | Moore in Cfb, Cfc, Dfb, Dfc, Dwc, ET | FLAECHIG | MITTEL | Feuchtgebietsanteil | Brennstoff, wo Holz fehlt |
 | `bitumen` | Bitumen / Erdöl (Austritte) | BECKEN, besonders Vorlandbecken | PUNKTUELL | SELTEN | – | Abdichtung, Kleber, Lampenöl |
 | `oelschiefer` | Ölschiefer | BECKEN | KLUMPIG | SELTEN | – | Brennstoff (später) |
 
@@ -168,10 +169,10 @@ Kategorien: `GESTEIN`, `ERZ`, `BRENNSTOFF`, `SALZ`, `INDUSTRIE`, `EDELSTEIN` (je
 
 | ID | Name | Entstehung | Verteilung | Seltenheit | Abhängig von | Nutzung |
 |---|---|---|---|---|---|---|
-| `steinsalz` | Steinsalz | BECKEN in BW/BS, ehemalige Meere, Salzpfannen an Enden von Trockenflüssen | KLUMPIG | MITTEL | – | Konservierung, Handel |
-| `meersalz` | Meersalz | flache Küsten in BWh, BSh, Csa, Aw | FLAECHIG (Küstensaum) | MITTEL | – | Konservierung |
+| `steinsalz` | Steinsalz | alle BECKEN (Salzlager älter als das Klima, Solequellen), Salzpfannen (Boden `salzboden`) | KLUMPIG | MITTEL | – | Konservierung, Handel |
+| `meersalz` | Meersalz | flache Küsten außer in kalten Klimaten (D·c, D·d, E) | FLAECHIG (Küstensaum) | MITTEL | – | Konservierung |
 | `gips` | Gips | BECKEN in BW/BS, Salzseen | KLUMPIG | MITTEL | Gestein | Putz, Mörtel |
-| `natron` | Natron (Soda) | Salzseen in Wüsten und in GRABEN | PUNKTUELL | SELTEN | – | Glas, Seife, Konservierung |
+| `natron` | Natron (Soda) | Salzseen und Salzpfannen (Boden `salzboden`) in Wüsten und in GRABEN | PUNKTUELL | SELTEN | – | Glas, Seife, Konservierung |
 | `salpeter` | Salpeter | sehr trockene Wüsten (BWh, BWk), Höhlen in Kalkstein | PUNKTUELL | SELTEN | – | Dünger, später Schießpulver |
 | `kalisalz` | Kalisalz | tiefere Salzlager in BECKEN | ABGELEITET | SELTEN | `steinsalz` | Dünger |
 | `borax` | Borax | Salzseen in BWh, BWk, GRABEN | PUNKTUELL | SEHR_SELTEN | `natron` | Flussmittel beim Löten, Glasur |
@@ -205,13 +206,13 @@ Kategorien: `GESTEIN`, `ERZ`, `BRENNSTOFF`, `SALZ`, `INDUSTRIE`, `EDELSTEIN` (je
 | `azurit` | Azurit | Oxidationszone über Kupfer | ABGELEITET | SELTEN | `kupfer_porphyr`, `kupfer_sediment` | blaues Pigment |
 | `tuerkis` | Türkis | über Kupfer in BWh, BWk, BSh, BSk | ABGELEITET | SELTEN | `kupfer_porphyr` | Schmuck |
 | `opal` | Opal | Sedimentbecken in BW/BS | PUNKTUELL | SEHR_SELTEN | – | Schmuck |
-| `jade` | Jade (Nephrit, Jadeit) | Serpentinit, Kontakt zu Subduktion | ABGELEITET | SEHR_SELTEN | `serpentinit` | Werkzeuge, Schmuck, Ritualobjekte |
+| `jade` | Jade (Nephrit, Jadeit) | Serpentinit (in dieser Welt nur an Kollisionszonen) | ABGELEITET | SEHR_SELTEN | `serpentinit` | Werkzeuge, Schmuck, Ritualobjekte |
 | `smaragd` | Smaragd | Granitgänge in Tonschiefer | PUNKTUELL | SEHR_SELTEN | `granit`, `tonschiefer` | Schmuck |
 | `rubin` | Rubin | Marmor in KOLLISION, Seifen | PUNKTUELL + SEIFE | SEHR_SELTEN | `marmor` | Schmuck |
 | `saphir` | Saphir | Marmor in KOLLISION, Basalt-Seifen | PUNKTUELL + SEIFE | SEHR_SELTEN | `marmor`, `basalt` | Schmuck |
 | `lapislazuli` | Lapislazuli | Marmor mit Granitkontakt | PUNKTUELL | EXTREM_SELTEN | `marmor`, `granit` | Schmuck, Ultramarin-Pigment |
-| `diamant` | Diamant | KRATON (Kimberlitschlote), Seifen | PUNKTUELL + SEIFE | EXTREM_SELTEN | – | Schmuck, Schneidwerkzeuge |
-| `bernstein` | Bernstein | küstennahe BECKEN mit ehemaligen Nadelwäldern | PUNKTUELL | SELTEN | – | Schmuck, Handel |
+| `diamant` | Diamant | alte, hoch gelegene Kratonkerne wie der Nordschild (Kimberlitschlote), Seifen | PUNKTUELL + SEIFE | EXTREM_SELTEN | – | Schmuck, Schneidwerkzeuge |
+| `bernstein` | Bernstein | küstennahe BECKEN in Cf- und Df-Klimaten (anstelle ehemaliger Nadelwälder) | PUNKTUELL | SELTEN | – | Schmuck, Handel |
 
 ## 6. Böden
 
@@ -283,8 +284,6 @@ Spätere Regeln überschreiben frühere. Jede Regel setzt Anteile, nicht zwingen
 
 ## 7. Offen
 
-- O - Ostküstenkette: `ALTGEBIRGE` gewählt; vor ihr liegen die Inselbögen, als `KUESTENBOGEN` brächte sie mehr Kupfer, Gold und Vulkane an die Ostküste. Nach dem ersten Bild prüfen.
-- O - Flache Küstenebenen an ruhigen Küsten (z. B. Ostküste des Westkontinents) sind geologisch junge Ablagerungen und eher `BECKEN` als `KRATON` (mehr Ton, Sand und Kalk). Nach dem ersten Bild entscheiden.
-- O - Kreide nur in Becken, „die nicht ausschließlich Wüste sind“: Anteil Wüste, ab dem ein Becken nicht mehr zählt.
+- E - Ostküstenkette bleibt `ALTGEBIRGE` (2026-10-24). Die Mengen der Erze hängen nicht daran (Kalibrierung auf die Seltenheitsklasse), nur ihre Lage.
 - O - Zielklassen der einzelnen Materialien sind ein erster Stand und werden nach den ersten Läufen abgestimmt.
 - TODO: Löss braucht die Windrichtung (T-039).

@@ -1,6 +1,6 @@
 # Materialien (lore/materialien_und_boeden.md Abschnitt 5, Verfahren lore/welt_konfiguration.md Abschnitt 10).
-# Eingabe von tools/gestein.py (Kategorie GESTEIN) und zugleich Metadaten fürs Spiel. Lagerstätten (Abschnitte 5.2–5.6)
-# kommen mit tools/lagerstaetten.py (T-082) dazu.
+# Eingabe von tools/gestein.py (Kategorie GESTEIN, rule.kind share/occurrence) und tools/lagerstaetten.py (Abschnitte
+# 5.2–5.6, rule.kind deposit) und zugleich Metadaten fürs Spiel.
 #
 # rarity: Zielklasse (Zielwerte, Design-Referenz Abschnitt 4), target_cover in rarity_classes.
 # rule.kind:
@@ -8,6 +8,25 @@
 #   occurrence  Vorkommen; Layer 0–255, 255 = ergiebigste Stelle. Eignung = rooms (Gewicht je Gesteinsraum)
 #               × source (Anteil bzw. Wert eines anderen Layers, ab min_source) × Rauschen der distribution,
 #               danach Schwellwert so, dass die Abdeckung target_cover trifft.
+#   deposit     Lagerstätte (tools/lagerstaetten.py); Eignung = Produkt aller Bedingungen, je 0–1 pro Zelle:
+#                 rooms {RAUM: Gewicht}        weiches Gewicht der Gesteinsräume (Summe)
+#                 source / sources, combine    Wert anderer Layer (Gestein oder Lagerstätte) ab min_source (presence: true
+#                                              = nur ob vorhanden, Faktor 1);
+#                                              combine any = größter, all = kleinster Wert (beide nötig)
+#                 koeppen [Klassen]            nur in diesen Köppen-Klassen; exclude_koeppen: nicht in diesen
+#                 soils [Böden]                Summe der Bodenanteile aus boeden.bin
+#                 wetland: true                Feuchtgebietsanteil aus bodenfeuchte.bin
+#                 flat: true                   flaches Gelände (Faktor fällt bis 0,4 % Gefälle auf 0)
+#                 coast_km / lakes_km          höchstens so weit vom Meer bzw. von einem Binnengewässer
+#                 rivers: true                 im Streifen ganzjähriger Flüsse
+#                 near_rooms {RAUM: km}        höchstens so weit von einem dieser Gesteinsräume
+#                 min_elevation_m / max_elevation_m   Höhe
+#                 chains [Ketten], chain_km    höchstens so weit von diesen Ketten aus lore/gesteinsraeume.yaml
+#                 weight                       fester Faktor
+#                 any_of [Bedingungen]         größter Wert der Teilbedingungen (oder)
+#               Dazu: sites N (PUNKTUELL: genau N Fundorte statt Abdeckung), sites_per_landmass K (davon zuerst K auf
+#               jedem Festland), placer: true (PUNKTUELL mit Seife).
+#               Verteilung SEIFE: Quelle flussabwärts angereichert (tools/seifen.py).
 
 rarity_classes:   # Zielabdeckung in % der Landfläche (O - Vorschlag: geometrische Mitte der Klasse)
   SEHR_HAEUFIG: 30.0
@@ -62,3 +81,164 @@ materials:
       rule: { kind: occurrence, source: serpentinit, min_source: 0.1 } }
   - { id: alabaster, name_key: MATERIAL_ALABASTER, category: GESTEIN, rarity: SELTEN, distribution: ABGELEITET, color: [250, 245, 235],
       rule: { kind: occurrence, source: gips, min_source: 0.1 } }
+
+  # ---------------------------------------------------------------------------------------------------------------------
+  # Lagerstätten (Abschnitte 5.2–5.6), erzeugt von tools/lagerstaetten.py. Eignung = Produkt der Bedingungen
+  # (Schlüssel siehe Kopf), danach wie die Vorkommen auf die Zielabdeckung kalibriert.
+
+  # 5.2 Erze
+  - { id: eisen_bandeisen, name_key: MATERIAL_BANDED_IRON, category: ERZ, rarity: MITTEL, distribution: KLUMPIG, color: [150, 60, 50],
+      rule: { kind: deposit, rooms: { KRATON: 1.0 } } }
+  - { id: eisen_raseneisen, name_key: MATERIAL_BOG_IRON, category: ERZ, rarity: MITTEL, distribution: KLUMPIG, color: [120, 80, 40],
+      rule: { kind: deposit, wetland: true, koeppen: [Cfb, Cfc, Dfb, Dfc, Dwb, Dwc] } }
+  - { id: eisen_laterit, name_key: MATERIAL_LATERITE_IRON, category: ERZ, rarity: MITTEL, distribution: FLAECHIG, color: [180, 70, 40],
+      rule: { kind: deposit, soils: [laterit], flat: true, koeppen: [Af, Am, Aw] } }
+  - { id: eisen_magnetit, name_key: MATERIAL_MAGNETITE, category: ERZ, rarity: MITTEL, distribution: KLUMPIG, color: [60, 60, 70],
+      rule: { kind: deposit, rooms: { KOLLISION: 1.0, ALTGEBIRGE: 1.0, KUESTENBOGEN: 1.0 }, sources: [granit, kalkstein], combine: all, min_source: 0.05 } }
+  - { id: eisen_haematit, name_key: MATERIAL_HEMATITE, category: ERZ, rarity: MITTEL, distribution: KLUMPIG, color: [160, 40, 40],
+      rule: { kind: deposit, rooms: { BECKEN: 1.0, ALTGEBIRGE: 1.0 }, sources: [kalkstein, sandstein], combine: any } }
+  - { id: eisensand, name_key: MATERIAL_IRON_SAND, category: ERZ, rarity: MITTEL, distribution: SEIFE, color: [40, 40, 50],
+      rule: { kind: deposit, sources: [basalt, andesit, granit], combine: any } }
+  - { id: meteoreisen, name_key: MATERIAL_METEORIC_IRON, category: ERZ, rarity: EXTREM_SELTEN, distribution: PUNKTUELL, color: [200, 200, 210],
+      rule: { kind: deposit } }
+  - { id: kupfer_gediegen, name_key: MATERIAL_NATIVE_COPPER, category: ERZ, rarity: SELTEN, distribution: KLUMPIG, color: [210, 110, 50],
+      rule: { kind: deposit, rooms: { HOTSPOT: 1.0, GRABEN: 1.0, KRATON: 0.3 }, source: basalt, min_source: 0.1 } }
+  - { id: kupfer_porphyr, name_key: MATERIAL_PORPHYRY_COPPER, category: ERZ, rarity: MITTEL, distribution: KLUMPIG, color: [40, 170, 140],
+      rule: { kind: deposit, rooms: { KUESTENBOGEN: 1.0, INSELBOGEN: 1.0 } } }
+  - { id: kupfer_sediment, name_key: MATERIAL_SEDIMENTARY_COPPER, category: ERZ, rarity: MITTEL, distribution: KLUMPIG, color: [60, 150, 120],
+      rule: { kind: deposit, rooms: { GRABEN: 1.0, BECKEN: 1.0 } } }
+  # Kupfer in Erzgängen der Gebirge (2026-10-25), damit Kupfer nicht nur an Küsten- und Inselbögen liegt
+  - { id: kupfer_gang, name_key: MATERIAL_VEIN_COPPER, category: ERZ, rarity: SELTEN, distribution: KLUMPIG, color: [70, 180, 150],
+      rule: { kind: deposit, rooms: { KOLLISION: 1.0, ALTGEBIRGE: 1.0 } } }
+  # Zinn: genau 4 Fundorte weltweit, einer auf jedem Festland (Entscheidung 2026-10-25), nicht nach Abdeckung
+  - { id: zinn, name_key: MATERIAL_TIN, category: ERZ, rarity: SEHR_SELTEN, distribution: PUNKTUELL, color: [200, 200, 220],
+      rule: { kind: deposit, sites: 4, sites_per_landmass: 1, rooms: { KOLLISION: 1.0, ALTGEBIRGE: 1.0 }, source: granit, min_source: 0.2 } }
+  - { id: zinn_seife, name_key: MATERIAL_PLACER_TIN, category: ERZ, rarity: SEHR_SELTEN, distribution: SEIFE, color: [170, 170, 200],
+      rule: { kind: deposit, source: zinn } }
+  - { id: wolfram, name_key: MATERIAL_TUNGSTEN, category: ERZ, rarity: SEHR_SELTEN, distribution: ABGELEITET, color: [90, 90, 110],
+      rule: { kind: deposit, source: zinn } }
+  - { id: bismut, name_key: MATERIAL_BISMUTH, category: ERZ, rarity: SELTEN, distribution: ABGELEITET, color: [220, 170, 220],
+      rule: { kind: deposit, sources: [zinn, silber], combine: any } }
+  - { id: gold_primaer, name_key: MATERIAL_GOLD, category: ERZ, rarity: SELTEN, distribution: PUNKTUELL, color: [255, 205, 30],
+      rule: { kind: deposit, rooms: { KUESTENBOGEN: 1.0, KRATON: 1.0, ALTGEBIRGE: 1.0 } } }
+  - { id: gold_seife, name_key: MATERIAL_PLACER_GOLD, category: ERZ, rarity: SELTEN, distribution: SEIFE, color: [230, 180, 40],
+      rule: { kind: deposit, source: gold_primaer } }
+  # Silber auch im Bleierz (silberhaltiger Bleiglanz, 2026-10-25)
+  - { id: silber, name_key: MATERIAL_SILVER, category: ERZ, rarity: SELTEN, distribution: KLUMPIG, color: [190, 195, 210],
+      rule: { kind: deposit, any_of: [{ rooms: { KUESTENBOGEN: 1.0, KOLLISION: 0.5, OPHIOLITH: 0.5 } }, { source: blei, presence: true, weight: 0.7 }] } }
+  - { id: silber_gediegen, name_key: MATERIAL_NATIVE_SILVER, category: ERZ, rarity: SEHR_SELTEN, distribution: ABGELEITET, color: [235, 235, 245],
+      rule: { kind: deposit, source: silber, min_source: 0.2 } }
+  # Blei auch in Kalkstein-Becken und im Kraton (Blei-Zink-Lager im Kalk, 2026-10-25); trägt Silber mit
+  - { id: blei, name_key: MATERIAL_LEAD, category: ERZ, rarity: MITTEL, distribution: KLUMPIG, color: [100, 100, 120],
+      rule: { kind: deposit, any_of: [{ rooms: { KUESTENBOGEN: 1.0 } }, { rooms: { KOLLISION: 1.0, OPHIOLITH: 1.0 }, source: kalkstein, min_source: 0.05 },
+                                      { rooms: { BECKEN: 1.0, KRATON: 1.0 }, source: kalkstein, min_source: 0.25, weight: 0.7 }] } }
+  - { id: zink, name_key: MATERIAL_ZINC, category: ERZ, rarity: MITTEL, distribution: ABGELEITET, color: [150, 160, 170],
+      rule: { kind: deposit, source: blei } }
+  - { id: quecksilber, name_key: MATERIAL_MERCURY, category: ERZ, rarity: SEHR_SELTEN, distribution: PUNKTUELL, color: [200, 30, 40],
+      rule: { kind: deposit, rooms: { KUESTENBOGEN: 1.0, GRABEN: 1.0, HOTSPOT: 1.0 } } }
+  - { id: chrom, name_key: MATERIAL_CHROMIUM, category: ERZ, rarity: SELTEN, distribution: ABGELEITET, color: [90, 130, 100],
+      rule: { kind: deposit, source: serpentinit, min_source: 0.1 } }
+  - { id: nickel, name_key: MATERIAL_NICKEL, category: ERZ, rarity: SELTEN, distribution: ABGELEITET, color: [130, 160, 120],
+      rule: { kind: deposit, source: serpentinit, min_source: 0.05 } }
+  - { id: platin, name_key: MATERIAL_PLATINUM, category: ERZ, rarity: EXTREM_SELTEN, distribution: SEIFE, color: [225, 225, 230],
+      rule: { kind: deposit, source: serpentinit, min_source: 0.1 } }
+  - { id: mangan, name_key: MATERIAL_MANGANESE, category: ERZ, rarity: MITTEL, distribution: KLUMPIG, color: [70, 50, 60],
+      rule: { kind: deposit, any_of: [{ rooms: { BECKEN: 1.0 } }, { soils: [laterit] }] } }
+  - { id: kobalt, name_key: MATERIAL_COBALT, category: ERZ, rarity: SELTEN, distribution: ABGELEITET, color: [40, 70, 200],
+      rule: { kind: deposit, sources: [kupfer_sediment, kupfer_porphyr, kupfer_gang], combine: any } }
+  - { id: antimon, name_key: MATERIAL_ANTIMONY, category: ERZ, rarity: SELTEN, distribution: PUNKTUELL, color: [150, 150, 160],
+      rule: { kind: deposit, rooms: { KOLLISION: 1.0, KUESTENBOGEN: 1.0 } } }
+  - { id: arsen, name_key: MATERIAL_ARSENIC, category: ERZ, rarity: SELTEN, distribution: ABGELEITET, color: [190, 200, 150],
+      rule: { kind: deposit, sources: [kupfer_porphyr, gold_primaer, silber], combine: any } }
+  - { id: bauxit, name_key: MATERIAL_BAUXITE, category: ERZ, rarity: MITTEL, distribution: FLAECHIG, color: [200, 120, 80],
+      rule: { kind: deposit, rooms: { KRATON: 1.0, ALTGEBIRGE: 1.0 }, koeppen: [Af, Am, Aw], soils: [laterit], flat: true } }
+
+  # 5.3 Brennstoffe. Steinkohle eher am Rand zum Gebirge, Braunkohle in Becken unter 200 m (O - Vorschlag)
+  - { id: steinkohle, name_key: MATERIAL_COAL, category: BRENNSTOFF, rarity: MITTEL, distribution: KLUMPIG, color: [30, 30, 30],
+      rule: { kind: deposit, any_of: [{ rooms: { BECKEN: 1.0 }, min_elevation_m: 200 }, { rooms: { BECKEN: 1.0, KRATON: 1.0 }, near_rooms: { ALTGEBIRGE: 300 } }] } }
+  - { id: braunkohle, name_key: MATERIAL_LIGNITE, category: BRENNSTOFF, rarity: MITTEL, distribution: KLUMPIG, color: [90, 70, 50],
+      rule: { kind: deposit, rooms: { BECKEN: 1.0 }, max_elevation_m: 200 } }
+  - { id: torf, name_key: MATERIAL_PEAT, category: BRENNSTOFF, rarity: MITTEL, distribution: FLAECHIG, color: [70, 55, 40],
+      rule: { kind: deposit, wetland: true, koeppen: [Cfb, Cfc, Dfb, Dfc, Dwc, ET] } }
+  - { id: bitumen, name_key: MATERIAL_BITUMEN, category: BRENNSTOFF, rarity: SELTEN, distribution: PUNKTUELL, color: [15, 15, 20],
+      rule: { kind: deposit, rooms: { BECKEN: 1.0 }, any_of: [{ weight: 0.3 }, { near_rooms: { KOLLISION: 400, KUESTENBOGEN: 400 } }] } }
+  - { id: oelschiefer, name_key: MATERIAL_OIL_SHALE, category: BRENNSTOFF, rarity: SELTEN, distribution: KLUMPIG, color: [60, 50, 45],
+      rule: { kind: deposit, rooms: { BECKEN: 1.0 } } }
+
+  # 5.4 Salze. Salzseen und Salzpfannen über den Boden salzboden (Entscheidung 2026-10-24); kommen später Endseen dazu,
+  # ändert sich der Salzboden und die Salze ziehen mit. Steinsalz in allen Becken: Salzlager sind älter als das heutige
+  # Klima, über ihnen treten Solequellen aus. Meersalz an allen flachen Küsten außer den kalten (2026-10-25).
+  - { id: steinsalz, name_key: MATERIAL_ROCK_SALT, category: SALZ, rarity: MITTEL, distribution: KLUMPIG, color: [240, 240, 240],
+      rule: { kind: deposit, any_of: [{ rooms: { BECKEN: 1.0 } }, { soils: [salzboden] }] } }
+  - { id: meersalz, name_key: MATERIAL_SEA_SALT, category: SALZ, rarity: MITTEL, distribution: FLAECHIG, color: [230, 240, 250],
+      rule: { kind: deposit, coast_km: 30, flat: true, exclude_koeppen: [Dfc, Dfd, Dsc, Dsd, Dwc, Dwd, ET, EF] } }
+  - { id: natron, name_key: MATERIAL_NATRON, category: SALZ, rarity: SELTEN, distribution: PUNKTUELL, color: [235, 225, 200],
+      rule: { kind: deposit, any_of: [{ soils: [salzboden] }, { lakes_km: 50, koeppen: [BWh, BWk, BSh, BSk] }, { rooms: { GRABEN: 1.0 }, lakes_km: 100 }] } }
+  - { id: salpeter, name_key: MATERIAL_SALTPETER, category: SALZ, rarity: SELTEN, distribution: PUNKTUELL, color: [245, 235, 210],
+      rule: { kind: deposit, any_of: [{ koeppen: [BWh, BWk] }, { source: kalkstein, min_source: 0.3, weight: 0.3 }] } }
+  - { id: kalisalz, name_key: MATERIAL_POTASH, category: SALZ, rarity: SELTEN, distribution: ABGELEITET, color: [230, 150, 150],
+      rule: { kind: deposit, source: steinsalz, rooms: { BECKEN: 1.0 } } }
+  - { id: borax, name_key: MATERIAL_BORAX, category: SALZ, rarity: SEHR_SELTEN, distribution: PUNKTUELL, color: [250, 250, 230],
+      rule: { kind: deposit, source: natron, any_of: [{ koeppen: [BWh, BWk] }, { rooms: { GRABEN: 1.0 } }] } }
+
+  # 5.5 Industrieminerale
+  - { id: ton, name_key: MATERIAL_CLAY, category: INDUSTRIE, rarity: SEHR_HAEUFIG, distribution: FLAECHIG, color: [180, 120, 90],
+      rule: { kind: deposit, any_of: [{ source: tonstein, min_source: 0.05 }, { rivers: true }, { soils: [auenboden, vertisol, gley] }, { max_elevation_m: 200, weight: 0.5 }] } }
+  - { id: kaolin, name_key: MATERIAL_KAOLIN, category: INDUSTRIE, rarity: SELTEN, distribution: KLUMPIG, color: [250, 250, 250],
+      rule: { kind: deposit, source: granit, min_source: 0.2, koeppen: [Af, Am, Aw, Cfa, Cwa] } }
+  - { id: quarzsand, name_key: MATERIAL_QUARTZ_SAND, category: INDUSTRIE, rarity: HAEUFIG, distribution: FLAECHIG, color: [245, 230, 180],
+      rule: { kind: deposit, any_of: [{ soils: [sandboden] }, { coast_km: 30 }, { koeppen: [BWh, BWk] }, { rivers: true, weight: 0.5 }] } }
+  - { id: feuerstein, name_key: MATERIAL_FLINT, category: INDUSTRIE, rarity: MITTEL, distribution: ABGELEITET, color: [80, 80, 90],
+      rule: { kind: deposit, source: kreide, min_source: 0.05 } }
+  - { id: chert, name_key: MATERIAL_CHERT, category: INDUSTRIE, rarity: MITTEL, distribution: ABGELEITET, color: [150, 110, 90],
+      rule: { kind: deposit, source: kalkstein, min_source: 0.1 } }
+  - { id: graphit, name_key: MATERIAL_GRAPHITE, category: INDUSTRIE, rarity: SELTEN, distribution: PUNKTUELL, color: [50, 50, 55],
+      rule: { kind: deposit, rooms: { ALTGEBIRGE: 1.0, KOLLISION: 1.0 } } }
+  - { id: glimmer, name_key: MATERIAL_MICA, category: INDUSTRIE, rarity: MITTEL, distribution: KLUMPIG, color: [210, 200, 170],
+      rule: { kind: deposit, source: granit, min_source: 0.2 } }
+  - { id: schwefel, name_key: MATERIAL_SULFUR, category: INDUSTRIE, rarity: SELTEN, distribution: PUNKTUELL, color: [240, 230, 60],
+      rule: { kind: deposit, rooms: { HOTSPOT: 1.0, KUESTENBOGEN: 1.0, INSELBOGEN: 1.0, GRABEN: 1.0 } } }
+  - { id: ocker, name_key: MATERIAL_OCHRE, category: INDUSTRIE, rarity: HAEUFIG, distribution: FLAECHIG, color: [200, 140, 50],
+      rule: { kind: deposit, soils: [laterit, roterde] } }
+  - { id: schmirgel, name_key: MATERIAL_EMERY, category: INDUSTRIE, rarity: SELTEN, distribution: PUNKTUELL, color: [70, 60, 80],
+      rule: { kind: deposit, rooms: { KOLLISION: 1.0 }, source: marmor, min_source: 0.05 } }
+  - { id: wetzstein, name_key: MATERIAL_WHETSTONE, category: INDUSTRIE, rarity: MITTEL, distribution: ABGELEITET, color: [120, 130, 140],
+      rule: { kind: deposit, sources: [tonschiefer, quarzit], combine: any, min_source: 0.1 } }
+
+  # 5.6 Edel- und Schmucksteine
+  - { id: granat, name_key: MATERIAL_GARNET, category: EDELSTEIN, rarity: MITTEL, distribution: KLUMPIG, color: [150, 20, 40],
+      rule: { kind: deposit, sources: [gneis, tonschiefer], combine: any, min_source: 0.1 } }
+  - { id: achat, name_key: MATERIAL_AGATE, category: EDELSTEIN, rarity: MITTEL, distribution: KLUMPIG, color: [190, 110, 80],
+      rule: { kind: deposit, source: basalt, min_source: 0.1 } }
+  - { id: bergkristall, name_key: MATERIAL_ROCK_CRYSTAL, category: EDELSTEIN, rarity: MITTEL, distribution: PUNKTUELL, color: [230, 240, 250],
+      rule: { kind: deposit, rooms: { ALTGEBIRGE: 1.0, KOLLISION: 1.0, KUESTENBOGEN: 1.0, KRATON: 0.3 }, source: granit, min_source: 0.2 } }
+  - { id: topas, name_key: MATERIAL_TOPAZ, category: EDELSTEIN, rarity: SELTEN, distribution: PUNKTUELL, color: [240, 180, 80],
+      rule: { kind: deposit, source: granit, min_source: 0.3 } }
+  - { id: turmalin, name_key: MATERIAL_TOURMALINE, category: EDELSTEIN, rarity: SELTEN, distribution: PUNKTUELL, color: [210, 60, 120],
+      rule: { kind: deposit, source: granit, min_source: 0.3 } }
+  - { id: malachit, name_key: MATERIAL_MALACHITE, category: EDELSTEIN, rarity: SELTEN, distribution: ABGELEITET, color: [20, 150, 80],
+      rule: { kind: deposit, sources: [kupfer_porphyr, kupfer_sediment, kupfer_gang], combine: any } }
+  - { id: azurit, name_key: MATERIAL_AZURITE, category: EDELSTEIN, rarity: SELTEN, distribution: ABGELEITET, color: [30, 60, 190],
+      rule: { kind: deposit, sources: [kupfer_porphyr, kupfer_sediment, kupfer_gang], combine: any } }
+  - { id: tuerkis, name_key: MATERIAL_TURQUOISE, category: EDELSTEIN, rarity: SELTEN, distribution: ABGELEITET, color: [60, 200, 200],
+      rule: { kind: deposit, source: kupfer_porphyr, koeppen: [BWh, BWk, BSh, BSk] } }
+  - { id: opal, name_key: MATERIAL_OPAL, category: EDELSTEIN, rarity: SEHR_SELTEN, distribution: PUNKTUELL, color: [200, 230, 240],
+      rule: { kind: deposit, rooms: { BECKEN: 1.0 }, koeppen: [BWh, BWk, BSh, BSk] } }
+  # Jade: im Serpentinit. Gedacht war „bis 300 km an Küsten- oder Inselbögen“; in dieser Welt liegt Serpentinit aber nur
+  # an Kollisionszonen (Ophiolith), wo Meeresboden zwischen Kontinente gerät, und auch dort entsteht Jade.
+  - { id: jade, name_key: MATERIAL_JADE, category: EDELSTEIN, rarity: SEHR_SELTEN, distribution: ABGELEITET, color: [60, 160, 90],
+      rule: { kind: deposit, source: serpentinit } }
+  - { id: smaragd, name_key: MATERIAL_EMERALD, category: EDELSTEIN, rarity: SEHR_SELTEN, distribution: PUNKTUELL, color: [20, 180, 90],
+      rule: { kind: deposit, sources: [granit, tonschiefer], combine: all, min_source: 0.1 } }
+  - { id: rubin, name_key: MATERIAL_RUBY, category: EDELSTEIN, rarity: SEHR_SELTEN, distribution: PUNKTUELL, color: [220, 20, 60],
+      rule: { kind: deposit, placer: true, rooms: { KOLLISION: 1.0 }, source: marmor, min_source: 0.05 } }
+  - { id: saphir, name_key: MATERIAL_SAPPHIRE, category: EDELSTEIN, rarity: SEHR_SELTEN, distribution: PUNKTUELL, color: [30, 70, 220],
+      rule: { kind: deposit, placer: true, any_of: [{ rooms: { KOLLISION: 1.0 }, source: marmor, min_source: 0.05 }, { source: basalt, min_source: 0.3 }] } }
+  - { id: lapislazuli, name_key: MATERIAL_LAPIS_LAZULI, category: EDELSTEIN, rarity: EXTREM_SELTEN, distribution: PUNKTUELL, color: [30, 50, 160],
+      rule: { kind: deposit, sources: [marmor, granit], combine: all, min_source: 0.05 } }
+  # Diamant: nur in alten, hoch gelegenen Kratonkernen wie dem Nordschild (Entscheidung 2026-10-24)
+  - { id: diamant, name_key: MATERIAL_DIAMOND, category: EDELSTEIN, rarity: EXTREM_SELTEN, distribution: PUNKTUELL, color: [240, 250, 255],
+      rule: { kind: deposit, placer: true, rooms: { KRATON: 1.0 }, any_of: [{ chains: [nordschild], chain_km: 600 }, { min_elevation_m: 800, weight: 0.5 }] } }
+  # Bernstein: küstennahe Becken in heutigen Cf- und Df-Klimaten (Entscheidung 2026-10-24)
+  - { id: bernstein, name_key: MATERIAL_AMBER, category: EDELSTEIN, rarity: SELTEN, distribution: PUNKTUELL, color: [230, 150, 30],
+      rule: { kind: deposit, rooms: { BECKEN: 1.0 }, coast_km: 200, koeppen: [Cfa, Cfb, Cfc, Dfa, Dfb, Dfc] } }

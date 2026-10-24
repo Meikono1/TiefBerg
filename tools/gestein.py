@@ -4,7 +4,7 @@ Regeln: lore/welt_konfiguration.md Abschnitt 10, Inhalte: lore/materialien_und_b
 Quellen:
   data/nature/materialien.yaml     Gesteinsanteile je Gesteinsraum und Regeln je Material (Kategorie GESTEIN, dazu Gips)
   data/world/klimazonen.bin        Land, Meer, Binnengewässer
-  data/world/koeppen.bin           Köppen-Klassen (für Gips und Kreide)
+  data/world/koeppen.bin           Köppen-Klassen (für Gips)
   data/world/gesteinsraeume.bin    Gesteinsraum je Zelle (tools/gesteinsraeume.py)
 Ergebnis:
   data/world/gestein.bin           Ebenen-Datei: Anteile am Grundgestein (Summe je Landzelle 255) und Vorkommen (0–255)
@@ -25,7 +25,7 @@ from scipy import ndimage
 import yaml
 
 import ebenen
-from klimazonen import label_wrapped
+import vorkommen
 
 log = logging.getLogger("gestein")
 
@@ -45,14 +45,9 @@ SHARE_NOISE_STRENGTH = 0.5    # Anteil × exp(Stärke × Rauschen)
 NOTABLE_SHARE = 0.10          # Abdeckung eines Anteils = Fläche, auf der er mindestens so groß ist
 GYPSUM_KOEPPEN = {"BWh", "BWk", "BSh", "BSk"}
 GYPSUM_INLAND_WATER_KM = 50.0
-DESERT_KOEPPEN = {"BWh", "BWk"}
 CONTACT_GRANITE = 0.30        # Kontaktsaum im ALTGEBIRGE: Granit mindestens so viel ...
 CONTACT_LIMESTONE = 0.10      # ... und Kalkstein mindestens so viel
 CONTACT_TO_MARBLE = 0.5       # Anteil des Kalksteins, der dort zu Marmor wird
-NOISE_SIGMA = {"FLAECHIG": 10.0, "KLUMPIG": 3.0, "ABGELEITET": 3.0}
-POINT_DENSITY = 0.002         # PUNKTUELL: Anteil der Zellen, die Zentrum eines Fundorts sind
-POINT_SIGMA = 1.5             # Radius eines Fundorts, in Zellen
-MAX_RECORDED_SHORTFALL = 2.0  # Warnung, wenn die Abdeckung um mehr als diesen Faktor vom Ziel abweicht
 
 
 def read_names(path, field):
@@ -71,6 +66,7 @@ def read_materials(room_ids):
     targets = data.get("rarity_classes") or {}
     shares = data.get("rock_shares") or {}
     materials = [m for m in data.get("materials") or [] if m.get("rule", {}).get("kind") in ("share", "occurrence")]
+    # rule.kind deposit: Lagerstätten, erzeugt von tools/lagerstaetten.py
     ids = {m["id"] for m in materials}
     share_ids = [m["id"] for m in materials if m["rule"]["kind"] == "share"]
     for room, table in shares.items():
@@ -88,7 +84,7 @@ def read_materials(room_ids):
                 raise ValueError(f"{SRC_MATERIALS.name}: {material['id']}: unbekannter Gesteinsraum {room!r}")
         if rule.get("source") and rule["source"] not in ids:
             raise ValueError(f"{SRC_MATERIALS.name}: {material['id']}: Quelle {rule['source']!r} fehlt")
-        if rule["kind"] == "occurrence" and material.get("distribution") not in set(NOISE_SIGMA) | {"PUNKTUELL"}:
+        if rule["kind"] == "occurrence" and material.get("distribution") not in set(vorkommen.NOISE_SIGMA) | {"PUNKTUELL"}:
             raise ValueError(f"{SRC_MATERIALS.name}: {material['id']}: Verteilung {material.get('distribution')!r} "
                              "wird von tools/gestein.py nicht erzeugt")
     log.info("Materialien geladen: %d Anteile, %d Vorkommen", len(share_ids), len(materials) - len(share_ids))
@@ -126,7 +122,8 @@ def move_share(shares, source, target, mask, fraction=1.0):
 
 
 def apply_conditions(shares, koeppen, koeppen_ids, rooms, room_ids, zones, land):
-    """Klimabedingungen und Kontaktsaum (materialien_und_boeden.md Abschnitt 3)."""
+    """Klimabedingung für Gips und Kontaktsaum (materialien_und_boeden.md Abschnitt 3). Kreide hat keine Klimabedingung:
+    Sie ist älter als das heutige Klima und liegt in jedem Becken (2026-10-24)."""
     dry = np.isin(koeppen, [koeppen_ids[c] for c in GYPSUM_KOEPPEN])
     near_lake = ebenen.wrapped_distance_km(zones == ebenen.INLAND_WATER_ZONE) <= GYPSUM_INLAND_WATER_KM
     no_gypsum = land & ~dry & ~near_lake
@@ -134,33 +131,9 @@ def apply_conditions(shares, koeppen, koeppen_ids, rooms, room_ids, zones, land)
              int((no_gypsum & (shares["gips"] > 0)).sum()))
     move_share(shares, "gips", "kalkstein", no_gypsum)
 
-    # Kreide nur in Becken, die nicht ausschließlich Wüste sind; jede Zelle zählt zum nächsten Becken
-    basin = rooms == room_ids["BECKEN"]
-    labels, count = label_wrapped(basin)
-    desert = np.isin(koeppen, [koeppen_ids[c] for c in DESERT_KOEPPEN])
-    cells = np.bincount(labels.ravel(), minlength=count + 1)
-    desert_cells = np.bincount(labels.ravel(), weights=desert.ravel(), minlength=count + 1)
-    all_desert = (cells > 0) & (desert_cells >= cells)
-    all_desert[0] = False
-    if basin.any():
-        _, (iy, ix) = ndimage.distance_transform_edt(~basin, return_indices=True)
-        no_chalk = land & all_desert[labels[iy, ix]]
-    else:
-        no_chalk = land.copy()
-    log.info("Kreide → Kalkstein in reinen Wüstenbecken: %d von %d Becken", int(all_desert.sum()), count)
-    move_share(shares, "kreide", "kalkstein", no_chalk)
-
     contact = (rooms == room_ids["ALTGEBIRGE"]) & (shares["granit"] >= CONTACT_GRANITE) & (shares["kalkstein"] >= CONTACT_LIMESTONE)
     log.info("Kontaktsaum Kalkstein/Granit im Altgebirge → Marmor: %d Zellen", int(contact.sum()))
     move_share(shares, "kalkstein", "marmor", contact, CONTACT_TO_MARBLE)
-
-
-def distribution_noise(distribution, shape, rng):
-    if distribution == "PUNKTUELL":
-        centers = (rng.random(shape) < POINT_DENSITY).astype(np.float32) * rng.random(shape)
-        field = ndimage.gaussian_filter(centers, POINT_SIGMA, mode=("nearest", "wrap"))
-        return field / max(field.max(), 1e-9)
-    return np.exp(ebenen.smooth_noise(shape, NOISE_SIGMA[distribution], rng))
 
 
 def occurrence(material, layers, weights, target, land, area, ice):
@@ -178,45 +151,9 @@ def occurrence(material, layers, weights, target, land, area, ice):
     else:
         suitability = source if source is not None else np.ones(land.shape)
     rng = ebenen.seeded_rng(material["id"])
-    value = np.where(land & ~ice, suitability * distribution_noise(material["distribution"], land.shape, rng), 0.0)
-    candidates = value > 0
-    possible = ebenen.coverage_percent(candidates, land, area)
-    if not candidates.any():
-        log.warning("%s: keine geeignete Zelle", material["id"])
-        return np.zeros(land.shape, np.uint8), 0.0, 0.0
-    # Schwellwert: flächengewichtetes Quantil der Werte, sodass die Zielabdeckung übrig bleibt
-    values, weights_area = value[candidates], area[candidates]
-    order = np.argsort(values)[::-1]
-    cumulative = np.cumsum(weights_area[order]) / area[land].sum() * 100.0
-    cut = int(np.searchsorted(cumulative, target))
-    threshold = values[order[min(cut, len(order) - 1)]]
-    kept = value >= threshold
-    peak = value.max()
-    scaled = np.where(kept, 1.0 + (value - threshold) / max(peak - threshold, 1e-9) * 254.0, 0.0)
-    return np.clip(np.rint(scaled), 0, 255).astype(np.uint8), possible, float(threshold)
-
-
-def topological(materials):
-    """Reihenfolge nach Abhängigkeiten (Quelle vor Abgeleitetem); Zyklen brechen ab."""
-    by_id = {m["id"]: m for m in materials}
-    done, order, visiting = set(), [], set()
-
-    def visit(material_id):
-        if material_id in done:
-            return
-        if material_id in visiting:
-            raise ValueError(f"Zyklus in den Abhängigkeiten bei {material_id}")
-        visiting.add(material_id)
-        source = by_id[material_id]["rule"].get("source")
-        if source:
-            visit(source)
-        visiting.discard(material_id)
-        done.add(material_id)
-        order.append(by_id[material_id])
-
-    for material in materials:
-        visit(material["id"])
-    return order
+    value = np.where(land & ~ice, suitability * vorkommen.distribution_noise(material["distribution"], land.shape, rng),
+                     0.0)
+    return vorkommen.calibrate(material["id"], value, target, land, area)
 
 
 def build():
@@ -238,7 +175,7 @@ def build():
     if (sum(layers[r].astype(int) for r in share_ids)[land] != 255).any():
         raise ValueError("Gesteinsanteile ergeben nicht überall 255")
 
-    for material in topological(materials):
+    for material in vorkommen.topological(materials, lambda m: [m["rule"]["source"]] if m["rule"].get("source") else []):
         target = targets[material["rarity"]]
         if material["rule"]["kind"] == "share":
             cover = ebenen.coverage_percent(layers[material["id"]] >= NOTABLE_SHARE * 255, land, area)
@@ -248,13 +185,7 @@ def build():
             continue
         values, possible, threshold = occurrence(material, layers, weights, target, land, area, ice)
         layers[material["id"]] = values
-        cover = ebenen.coverage_percent(values > 0, land, area)
-        log.info("%s (%s): Abdeckung %.3f %% (Ziel %.3f %%, geeignet %.2f %%), Schwellwert %.4g, Flecken %d",
-                 material["id"], material["distribution"], cover, target, possible, threshold,
-                 ndimage.label(values > 0)[1])
-        if cover == 0 or max(cover / target, target / max(cover, 1e-9)) > MAX_RECORDED_SHORTFALL:
-            log.warning("%s: Abdeckung %.3f %% weicht um mehr als Faktor %g vom Ziel %.3f %% ab",
-                        material["id"], cover, MAX_RECORDED_SHORTFALL, target)
+        vorkommen.log_result(material, values, target, possible, threshold, land, area)
     return [(m["id"], layers[m["id"]]) for m in materials], materials, share_ids, land
 
 

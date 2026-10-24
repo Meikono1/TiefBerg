@@ -361,14 +361,14 @@ Es gibt keine Plattenkarte und keine automatische Erkennung aus der Topografie. 
 3. **Erhebungen ohne Kette:** Zusammenhängendes Land ab 1000 m (mindestens 30 Zellen), das zu keiner Kette gehört. Grenzt es an eine Kette, ist es deren Flanke und bekommt den Typ der nächsten Kettenzelle, sonst wird es `ALTGEBIRGE`.
 4. **Übrige Inseln:** Eine Insel ohne Gruppe und ohne Kette wird `HOTSPOT`, wenn sie über 500 km vom nächsten Festland liegt und nicht größer als 100.000 km² ist. Größere Inseln weit draußen sind abgetrennte Kontinentstücke und bleiben beim Standard.
 5. **OPHIOLITH:** In einem Saum von 2 Zellen am Rand von `KOLLISION` werden 35 % zu Ophiolith, ausgewählt über geglättetes Rauschen (fester Startwert).
-6. **BECKEN:** Tiefland unter 400 m, das entweder bis 400 km vor `KOLLISION` oder `KUESTENBOGEN` auf deren Landseite liegt (näher am Gebirge als am Meer), bis 150 km an einem Binnengewässer, oder in einer Senke mindestens 50 m unter ihrem Überlauf (Prioritätsflutung ohne Geländerauschen).
+6. **BECKEN:** Tiefland unter 400 m, das entweder bis 400 km vor `KOLLISION` oder `KUESTENBOGEN` auf deren Landseite liegt (näher am Gebirge als am Meer), bis 150 km an einem Binnengewässer, oder in einer Senke mindestens 50 m unter ihrem Überlauf (Prioritätsflutung ohne Geländerauschen). Dazu Küstenebenen an ruhigen Küsten (2026-10-24): Land unter 150 m, im Mittel bis 150 km von der Küste, mehr als 500 km von `KOLLISION`, `KUESTENBOGEN`, `INSELBOGEN` und `OPHIOLITH` entfernt. Die Breite schwankt über geglättetes Rauschen (Strukturgröße 15 Zellen) zwischen 0 und 300 km, damit kein gleichmäßiger Ring um die Küsten entsteht (O - Vorschlag; ein erster Versuch mit fester Breite 300 km und 200 m machte 22 % des Landes zu Becken).
 7. **EISSCHILD:** Eisschild-Maske.
 8. **KRATON:** alle übrigen Landzellen.
 9. Gespeichert wird der Typ je Zelle. Weiche Übergänge entstehen erst beim Gestein, indem die Typmasken über einige Zellen geglättet werden.
 
 **Ausgabe:** `data/world/gesteinsraeume.bin` (Kennung `TBGR`, Kopf wie `klimazonen.bin`, ein Byte Typ je Zelle, 0 = Meer oder Binnengewässer), `data/world/gesteinsraeume.yaml` (Typen mit ID, Schlüssel und Farbe; ohne Namensschlüssel, weil Gesteinsräume im Spiel nicht angezeigt werden), Bild `lore/gesteinsraeume.png`. IDs: 1 Kraton, 2 Becken, 3 Altgebirge, 4 Kollision, 5 Ophiolith, 6 Küstenbogen, 7 Inselbogen, 8 Graben, 9 Hotspot, 10 Eisschild.
 
-Ergebnis (2026-10-24), Anteil am Land flächengewichtet: Kraton 74,2 %, Becken 6,3 %, Kollision 4,8 %, Altgebirge 3,8 %, Küstenbogen 3,1 %, Inselbogen 2,4 %, Graben 2,2 %, Hotspot 1,9 %, Eisschild 1,0 %, Ophiolith 0,3 %.
+Ergebnis (2026-10-24, mit Küstenebenen), Anteil am Land flächengewichtet: Kraton 66,9 %, Becken 13,6 % (vorher 6,3 %), Kollision 4,8 %, Altgebirge 3,8 %, Küstenbogen 3,1 %, Inselbogen 2,4 %, Graben 2,2 %, Hotspot 1,9 %, Eisschild 1,0 %, Ophiolith 0,3 %.
 
 - Alle Zahlen oben sind Annahmen, eingestellt am ersten Bild.
 - O - Zwei Punkte des Karibik-Inselbogens, (−66, 27) und (−60, 23), liegen auf dem Festland des Westkontinents (die Blobs sind angewachsen) und werden dort nicht zum Inselbogen.
@@ -383,7 +383,7 @@ Ergebnis (2026-10-24), Anteil am Land flächengewichtet: Kraton 74,2 %, Becken 6
 
 1. **Weiche Übergänge:** Gewicht je Gesteinsraum = Gauß-geglättete Raummaske (Sigma 1,5 Zellen), normiert auf Summe 1; die Anteile mischen sich nach diesen Gewichten.
 2. **Schwankung:** Jeder Anteil × `exp(0,5 · Rauschen)` (Strukturen um 8 Zellen, fester Startwert je Gestein), danach wieder auf Summe 1.
-3. **Bedingungen** (`materialien_und_boeden.md` Abschnitt 3): Gips bleibt nur in BW/BS oder bis 50 km an Binnengewässern, sonst wird er Kalkstein. Kreide wird Kalkstein, wenn das nächste Becken ganz aus Wüste (BWh, BWk) besteht. Im Altgebirge wird dort, wo Granit mindestens 30 % und Kalkstein mindestens 10 % ausmacht, die Hälfte des Kalksteins zu Marmor (Kontaktsaum).
+3. **Bedingungen** (`materialien_und_boeden.md` Abschnitt 3): Gips bleibt nur in BW/BS oder bis 50 km an Binnengewässern, sonst wird er Kalkstein. Kreide hat keine Klimabedingung (2026-10-24): Sie ist älter als das heutige Klima und liegt in jedem Becken; vorher wurde sie in reinen Wüstenbecken zu Kalkstein (12 von 260 Becken). Kreide deckt jetzt 4,6 % des Landes mit mindestens 10 % Anteil (Zielklasse MITTEL 2,2 %; Anteile werden nicht kalibriert). Im Altgebirge wird dort, wo Granit mindestens 30 % und Kalkstein mindestens 10 % ausmacht, die Hälfte des Kalksteins zu Marmor (Kontaktsaum).
 4. **Bytes:** Anteile × 255, abgerundet; die fehlenden Bytes bekommen die größten Reste. Summe je Landzelle genau 255.
 
 Anteile werden nicht kalibriert: Ihre Seltenheitsklasse ist nur Vergleichswert. Als Abdeckung zählt die Fläche, auf der ein Gestein mindestens 10 % ausmacht.
@@ -412,9 +412,22 @@ Ergebnis Gestein (2026-10-24): `gestein.bin` mit 21 Layern (15 Anteile inkl. Gip
 
 1. Quellwert = Wert des Primär-Layers (z. B. `gold_primaer`).
 2. Von jeder Quellzelle flussabwärts laufen und `wert += quellwert × abfall^(strecke / 100 km)` addieren (O - Vorschlag: Abfall 0,5 je 100 km).
-3. Abbruch an Meer, Binnengewässer oder unter einem Mindestwert.
+3. Abbruch an Meer und Binnengewässer: Die Last bleibt in der letzten Landzelle. Einen eigenen Mindestwert gibt es nicht; die Kalibrierung auf die Zielabdeckung schneidet die schwachen Ausläufer ab.
 4. Trockenflüsse mit halbem Faktor, weil sie weniger transportieren.
-5. Bonus in Flachstrecken nach einem steilen Abschnitt.
+5. Bonus 1,5 in Flachstrecken nach einem steilen Abschnitt (Gefälle ab 1 % in eine Zelle unter 0,2 %; O - Vorschlag).
+
+Umgesetzt in `tools/seifen.py`: Das Fließnetz wird einmal in Stufen von der Quelle zur Mündung geordnet (353 Stufen) und für jede Seife in einem Durchlauf abgearbeitet. Der Seifenwert enthält die Quelle selbst. Seifen laufen über alle Abflusswege, nicht nur über die Hauptflüsse; auch Bäche führen Waschgold.
+
+**Lagerstätten** (`tools/lagerstaetten.py`, 2026-10-24): Die Einträge aus `materialien_und_boeden.md` 5.2–5.6 stehen in `materialien.yaml` mit `rule.kind: deposit`. Ihre Eignung ist das Produkt von Bedingungen (`tools/bedingungen.py`, Liste im Kopf von `materialien.yaml`): Gesteinsräume, Quellen aus Gestein oder anderen Lagerstätten (eine davon oder alle zusammen), Köppen-Klassen, Böden, Feuchtgebiet, flaches Gelände, Nähe zu Meer, Binnengewässer, Fluss, Gesteinsraum oder einer benannten Kette, Höhe, fester Faktor und „eine von mehreren“ (`any_of`). Danach Rauschen und Kalibrierung wie bei den Vorkommen (`tools/vorkommen.py`, gemeinsam mit `tools/gestein.py`). Reihenfolge nach Abhängigkeiten. Zwei Sonderformen:
+
+- `sites: N` (PUNKTUELL): genau N Fundorte an den besten Stellen (Eignung × Rauschen), mindestens 1500 km voneinander, statt einer Abdeckung; mit `sites_per_landmass: K` zuerst K Fundorte auf jedem Festland (Landmassen ab 2,5 Mio. km² wie in Abschnitt 9). Zinn hat 4 Fundorte, einen je Festland (Entscheidung 2026-10-25; vorher 3, alle im Osten, der Westkontinent kam nur über See an Bronze). Es bleibt das knappe Metall, um das gehandelt wird.
+- `placer: true` (PUNKTUELL + SEIFE): Die primären Fundorte bekommen die halbe Zielabdeckung, dann werden sie flussabwärts getragen und das Ganze auf das Ziel kalibriert (Rubin, Saphir, Diamant).
+
+Entscheidungen 2026-10-24: Salzseen und Salzpfannen (Steinsalz, Natron, Borax) kommen über den Boden `salzboden` und Binnengewässer in BW/BS, solange die Endseen offen sind; der Salzboden zieht bei einer späteren Entscheidung mit. Diamanten nur in alten, hoch gelegenen Kratonkernen: bis 600 km um die Kette `nordschild` oder im Kraton ab 800 m (halbes Gewicht). Bernstein in küstennahen Becken (bis 200 km) in Cf- und Df-Klimaten. Braunkohle in Becken unter 200 m, Steinkohle in Becken ab 200 m oder bis 300 km vor dem Altgebirge. Jade im Serpentinit: Gedacht war „bis 300 km an Küsten- oder Inselbögen“, dort liegt in dieser Welt aber kein Serpentinit; er liegt nur an Kollisionszonen, wo Jade ebenso entsteht.
+
+**Erreichbarkeit** (Prüfung 2026-10-25): Anteil des Landes bis 150 bzw. 400 km zum nächsten Vorkommen und Abstand vom Mittelpunkt jedes Volks. Nach dem ersten Lauf waren Salz (42 % des Landes bis 400 km, 39 Völker über 500 km), Kupfer (34 %, 25 Völker), Silber (11 %, 42 Völker) und Zinn (ein ganzer Kontinent ohne) zu knapp. Korrekturen (2026-10-25): Steinsalz in allen Becken statt nur in Trockenklimaten (Salzlager sind älter als das Klima, Solequellen); Meersalz an allen flachen Küsten außer in kalten Klimaten; sedimentäres Kupfer MITTEL statt SELTEN und neues Gangkupfer (`kupfer_gang`) in Kollision und Altgebirge; Blei auch in Kalkstein-Becken und Kraton, Silber überall, wo Blei liegt (`presence: true`: zählt nur, ob die Quelle da ist); Zinn je Festland. Danach bis 400 km: Eisen 98 %, Kalk 98 %, Edelsteine 98 %, Ton 94 %, Klingenstein 80 %, Salz 67 %, Kupfer 66 %, Kohle und Torf 64 %, Gold 56 %, Arsen und Bismut 45 %, Silber 13 %, Zinn 2 %. Völker über 500 km: Salz 14, Kupfer 12, Kohle und Torf 16 (Holz fehlt noch), Gold 17, Silber 43.
+
+Ergebnis Lagerstätten (2026-10-25): `lagerstaetten.bin` mit 68 Layern, Lauf rund 20 s. Bild `lore/lagerstaetten.png` zeigt Eisen (alle Arten), Kohle, Salz, Kupfer, Silber, Gold und Zinn; Silber, Gold und Zinn um eine Zelle verbreitert, damit sie sichtbar sind. Fundorte des Zinns: (8° O, 47° N) im Nordwestland, (81° W, 10° N) im Ostbergland des Westkontinents, (95° O, 32° N) in der Zentralkette, (167° O, 37° S) im Südland. Fast alle Einträge treffen ihr Ziel. Raseneisenerz und Torf erreichten mit HAEUFIG (10 %) nur 3,7 %, weil Feuchtgebiete in kühlen Klimaten in dieser warmen Welt knapp sind; beide sind jetzt MITTEL und treffen ihr Ziel (2026-10-25); Meersalz 1,2 % statt 2,2 %, Wolfram 0,02 % statt 0,03 % (an 3 Zinn-Fundorte gebunden).
 
 **Zugänglichkeit:** Im `EISSCHILD` sind alle Lagerstätten 0. Der Layer zeigt das oberflächennah zugängliche Vorkommen.
 
@@ -471,14 +484,14 @@ Eine Zelle kann mehrere Kategorien haben (z. B. `FRISCH` und `UFER`).
 
 **Ausgabe:** `data/world/boeden.bin` (Kennung `TBBO`, je Boden ein Anteilslayer, Summe je Landzelle 255, dazu ein Layer `hauptboden` mit der Position des Bodens in `boeden.yaml` ab 1, 0 = Wasser), Bild `lore/hauptboden.png`, Einzelbilder unter `lore/ebenen/boeden/`.
 
-**Stand 2026-10-24** (vorherrschend, Anteil am Land): Braunerde 22,6 %, Kastanienerde 16,1 %, Rotgelberde 13,1 %, Wüstenrohboden 9,5 %, Roterde 8,1 %, Laterit 6,6 %, Auenboden 4,8 %, Fels 4,7 %, Sandboden 3,2 %, Schwarzerde 3,0 %, Salzboden 2,7 %, Vulkanboden 1,6 %, Rest unter 1,5 %. Fruchtbarkeit im Mittel 2,47 (Fläche gewichtet), 16 % des Landes ab 3,5.
+**Stand 2026-10-24** (vorherrschend, Anteil am Land): Braunerde 21,9 %, Kastanienerde 16,0 %, Rotgelberde 13,1 %, Wüstenrohboden 9,5 %, Roterde 7,8 %, Laterit 6,6 %, Auenboden 4,8 %, Fels 4,7 %, Sandboden 3,3 %, Schwarzerde 2,9 %, Salzboden 2,8 %, Vulkanboden 1,6 %, Rest unter 1,5 %. Fruchtbarkeit im Mittel 2,46 (Fläche gewichtet), 16 % des Landes ab 3,5.
 
 Verlauf der Abstimmung: Die erste Tabelle folgte der Erde, wo warme Böden arm sind (Fruchtbarkeit 2,28). Danach wurde die Welt fruchtbarer gemacht (Cfa Braunerde, BSh Kastanienerde statt Kalkkruste, Vertisol in Aw/As überall, breitere Auen; 2,61, Braunerde 28,8 %). Im Vergleich mit groben Erdwerten waren dann Vulkanboden (6,5 %) zu häufig, Fels (2,0 %), Sandboden (0,1 %) und Schwarzerde (0,3 %) zu selten und Braunerde zu häufig; daraus die Regeln für junge Vulkangebiete, alten Basalt, Sandmeere, Hochgebirge, feuchtes Cfa und den breiteren Schwarzerde-Gürtel. Braunerde und Kastanienerde bleiben bewusst über den Erdwerten (etwa 12 % und 4 %), Gley, Moor, Podsol und Permafrost darunter, weil die Welt wärmer ist (D-Klimate 14 %, E-Klimate 1 %).
 
 - TODO: Löss braucht die Windrichtung (T-039). Bis dahin entfällt die Löss-Regel, der Layer `loessboden` ist leer; einen Ersatzweg gibt es nicht.
 - O - Salzböden an Enden von Trockenflüssen: Nach Abschnitt 7 laufen alle Senken über (O - Endseen). Bis das entschieden ist, kommen Salzböden nur aus Klima, Küste und aufgefüllten Senken in B-Klimaten.
 - O - Kiesanteil entlang von Trockenflüssen (`materialien_und_boeden.md` 6.3) ist kein Boden; gehört zu den Lagerstätten (T-082).
-- O - Prüfen: große Salzbodenflächen um die Binnengewässer in der Mitte des Ostkontinents (Senken in BW/BS); die Vulkanboden-Fläche im Westen des Ostkontinents nördlich des Äquators ist Gesteinsraum `HOTSPOT` auf dem Festland.
+- E - Die großen Salzbodenflächen um die Binnengewässer in der Mitte des Ostkontinents (Senken in BW/BS) bleiben (2026-10-24). Die Vulkanboden-Fläche im Westen des Ostkontinents nördlich des Äquators ist Gesteinsraum `HOTSPOT` auf dem Festland.
 
 ---
 

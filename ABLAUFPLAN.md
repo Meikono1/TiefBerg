@@ -7,7 +7,7 @@ Lebende Aufgabenliste. Claude aktualisiert sie nach jeder erledigten Aufgabe, du
 - Ergibt sich aus einer Aufgabe eine neue, steht bei der neuen `← T-###` (Herkunft).
 - Erledigte Aufgaben wandern nach **Erledigt**, mit Datum und ggf. `→ T-###` (Folgeaufgaben).
 - Verweise auf das Design-Dokument als `(Abschnitt N)`.
-- Nächste freie ID: **T-086**
+- Nächste freie ID: **T-090**
 
 ## In Arbeit
 
@@ -41,11 +41,10 @@ Test, ob eine Kulturgruppe vollständig auf den Stand der Kataru kommt, bevor di
 
 Verfahren: `lore/welt_konfiguration.md` Abschnitte 8–12, Inhalte: `lore/materialien_und_boeden.md`, `lore/pflanzen.md`. Alle Ebenen 2160 × 1080, Werkzeuge in Python, jeder Lauf schreibt Bilder nach `lore/`.
 
-- [ ] **T-084** (Entwickler) Bilder `lore/bodenfeuchte.png` und `lore/hauptboden.png` ansehen und die Annahmen in `welt_konfiguration.md` Abschnitt 11 bestätigen oder ändern (Feuchtegrenzen, Hauptboden 70 %, Schwarzerde-Streifen 200 km, Fels ab 1 % Gefälle, Senke ab 10 m, Südkette ± 1,5°). Offen: Zielwert für die Fruchtbarkeit (z. B. Anteil des Landes ab 4) als `O - Vorschlag` in der Design-Referenz. Auffällig: große Salzbodenflächen um die Binnengewässer in der Mitte des Ostkontinents, geschlossene Vulkanboden-Fläche im Westen des Ostkontinents (Abschnitt 4) ← T-078.
 - [ ] **T-085** Gezeiten als Datenebene: Quelle für die Wasserkategorie `GEZEITEN` klären (heute nur `lore/world/all-layers/07-tides-raw.png` aus dem Lauf 2026-10-10 als Bild, oder Zahlen aus einem neuen Lauf), danach Layer in `bodenfeuchte.bin` (`welt_konfiguration.md` Abschnitt 11) ← T-078.
-- [ ] **T-082** Lagerstätten: Einträge aus `materialien_und_boeden.md` 5.2–5.6 in `data/nature/materialien.yaml` (Gips ist dort schon als Gesteinsanteil), `tools/lagerstaetten.py` auf Basis von `tools/ebenen.py`, Seifen über `fliessrichtung.bin`, Kies entlang von Trockenflüssen (`fluesse.bin` Klasse 4, `materialien_und_boeden.md` 6.3), Ausgabe `lagerstaetten.bin`, `lore/lagerstaetten.png` und Einzelbilder (Abschnitt 4, 9) ← T-078.
+- [ ] **T-089** (Entwickler) Silber ist trotz Blei-Regel kaum erreichbar (13 % des Landes bis 400 km, 43 Völker über 500 km), weil SELTEN nur 0,3 % Abdeckung erlaubt. Entscheiden: Silber auf MITTEL (wie Blei, 2,2 %) oder bewusst selten lassen (Handelsgut wie Gold) (Abschnitt 4) ← T-088.
 - [ ] **T-079** Pflanzen: `data/nature/pflanzen.yaml` aus `lore/pflanzen.md` (Standort-Angaben nach Abschnitt 2 dort), `tools/pflanzen.py` mit Eignung, Linien und Prüfungen (Abschnitt 12), Ausgabe `pflanzen.bin`, Bilder (Abschnitt 5, 9) ← T-078, T-050.
-- [ ] **T-081** Werte des Spielfelds: Für einen gewählten Pixel (8192 × 4096) die Werte aus den umliegenden Zellen der Natur-Ebenen berechnen und in die Spielwelt übertragen; Loader für die Ebenen-Dateien im Kern. Verfahren offen (Abschnitt 4) ← T-082.
+- [ ] **T-081** Werte des Spielfelds: Für einen gewählten Pixel (8192 × 4096) die Werte aus den umliegenden Zellen der Natur-Ebenen berechnen und in die Spielwelt übertragen; Loader für die Ebenen-Dateien im Kern. Verfahren offen (Abschnitt 4) ← T-082. Alle Natur-Ebenen bis auf Pflanzen liegen vor.
 
 ## Später – Meilenstein 5: Weltsimulation (Abschnitt 4, 5, 10, 11, 12)
 
@@ -87,6 +86,16 @@ Karte im Spiel (eigene Weltkarte mit bekannter Welt, Abschnitt 12) kommt mit T-0
 Meilenstein 2 (Prototyp Expedition) wird aufgeschlüsselt, wenn Meilenstein 1 steht.
 
 ## Erledigt
+
+- [x] **T-088** 2026-10-25 Erreichbarkeit der Rohstoffe geprüft (Anteil des Landes bis 150/400 km, Abstand je Volk) und vier Korrekturen (Entwickler): Steinsalz in allen Becken, Meersalz an allen flachen Küsten außer kalten; sedimentäres Kupfer MITTEL, neues Gangkupfer (`kupfer_gang`, `MATERIAL_VEIN_COPPER`); Blei auch im Kalk von Becken und Kraton, Silber mit Blei (neuer Schalter `presence`); Zinn 4 Fundorte, einer je Festland (`sites_per_landmass`), neu `exclude_koeppen`. Salz 42 → 67 %, Kupfer 34 → 66 % des Landes bis 400 km; Silber nur 11 → 13 % (Seltenheit, T-089) ← T-082 → T-089
+
+- [x] **T-087** 2026-10-25 Raseneisenerz und Torf von HAEUFIG auf MITTEL gesenkt (Entwickler), beide treffen jetzt ihr Ziel (2,2 %); `materialien.yaml`, `materialien_und_boeden.md`, `welt_konfiguration.md` Abschnitt 10 ← T-082
+
+- [x] **T-082** 2026-10-24 Lagerstätten: 67 Einträge (`rule.kind: deposit`) in `materialien.yaml` mit Bedingungen, Namensschlüssel in `en.yaml`. Neue Werkzeuge `tools/lagerstaetten.py`, `tools/bedingungen.py` (Bedingungen der Regeln), `tools/seifen.py` (Fließnetz, Seifen) und `tools/vorkommen.py` (Rauschen und Kalibrierung, aus `gestein.py` ausgelagert, `gestein.bin` bytegleich). Ausgabe `data/world/lagerstaetten.bin` (67 Layer), `lore/lagerstaetten.png`, Einzelbilder. Zinn genau 3 Fundorte, Salze über `salzboden`, Diamanten um den Nordschild und in hohen Kratonkernen, Bernstein in küstennahen Becken Cf/Df, Jade im Serpentinit der Kollisionszonen. Raseneisen und Torf unter Ziel (T-087) → T-087, T-081, T-079
+
+- [x] **T-086** 2026-10-24 Offene Gesteinspunkte aus `materialien_und_boeden.md` Abschnitt 7 entschieden: Ostküstenkette bleibt `ALTGEBIRGE`; flache Küstenebenen an ruhigen Küsten werden `BECKEN` (neue Teilregel in `tools/gesteinsraeume.py`, Breite über Rauschen 0–300 km; Becken 6,3 → 13,6 % des Landes); Kreide ohne Wüstenbedingung (`tools/gestein.py`, Kreide 1,7 → 4,6 %). Gesteinsräume, Gestein und Böden neu erzeugt, Böden kaum verändert (Fruchtbarkeit 2,46) ← T-076, T-077
+
+- [x] **T-084** 2026-10-24 Bilder der Bodenfeuchte und Böden mit dem Entwickler durchgesprochen: harte Kante der Südkette behoben, Welt fruchtbarer, danach Abgleich mit groben Erdwerten (Stand in T-078 und `welt_konfiguration.md` Abschnitt 11). Zielwerte in der Design-Referenz Abschnitt 4: Schwarzerde 2–3 % und Braunerde nicht über rund 22 % (entschieden), mittlere Fruchtbarkeit um 2,5 (entschieden); Salzbodenflächen bleiben. Die übrigen Schwellen bleiben Vorschlag ← T-078
 
 - [x] **T-078** 2026-10-24 Bodenfeuchte und Böden: `data/nature/boeden.yaml` (22 Böden mit Fruchtbarkeit, pH-Spanne, Farbe; zonale Zuordnung mit Bedingungen SENKE/KALK/SAND, Übergang Schwarzerde, Überschreibungen; Namensschlüssel `SOIL_*` in `en.yaml`), `tools/boeden.py` + `tools/bodenfeuchte.py`; `quantize_shares` von `gestein.py` nach `ebenen.py` verschoben (`gestein.bin` bytegleich). Ausgabe `data/world/bodenfeuchte.bin` (10 Layer: Bodenfeuchte, Feuchtgebiet, 8 Wasserkategorien) und `boeden.bin` (22 Anteile + `hauptboden`), Bilder `lore/bodenfeuchte.png`, `lore/hauptboden.png`, Einzelbilder unter `lore/ebenen/`. Hangneigung aus der vollen Heightmap, Senken über Auffüllen von der Küste her. Löss leer bis T-039, `GEZEITEN` fehlt (T-085). Alle Schwellen als Vorschlag in `welt_konfiguration.md` Abschnitt 11, Lauf 17 s. Nachtrag 2026-10-24 nach Sichtung: Südkette (Abschnitt 5 Regel 2) mit geschwungenen Grenzen statt gerader Breitenlinie (`klimazonen.bin`/`koeppen.bin` neu, Heimatgebiete verschieben sich dort leicht), Bodenfeuchte an geänderte Köppen-Klassen angeglichen, Welt fruchtbarer (Cfa → Braunerde, BSh → Kastanienerde, Vertisol in Aw/As überall, breitere Auen; mittlere Fruchtbarkeit 2,28 → 2,61). Zweiter Nachtrag nach Erdvergleich: Vulkanboden nur in jungen Vulkangebieten, alter Basalt → Vertisol, Sandmeere in BWh, Fels im Hochgebirge, Cfa feucht → Rotgelberde, Dfa → Schwarzerde, Waldsteppen-Gürtel 500 km inkl. Cfa/Cfb (Braunerde 22,6 %, Schwarzerde 3,0 %, Vulkanboden 1,6 %, Fruchtbarkeit 2,47) → T-084, T-085, T-082, T-079
 

@@ -115,6 +115,8 @@ Die Welt ist fest und wird über mehrere Bitmaps beschrieben, aus denen Grenzen 
 **Zielwerte:** Wunschergebnisse der Erzeugung, keine Regeln.
 
 - O - Vorschlag: Seltenheit als flächengewichteter Anteil der Landzellen mit Vorkommen: sehr häufig über 20 %, häufig 5–20 %, mittel 1–5 %, selten 0,1–1 %, sehr selten 0,01–0,1 %, extrem selten unter 0,01 % (einzelne Fundorte weltweit). Einzelne Materialien mit eigener Richtung, z. B. Zinn an 2 bis 4 Fundorten weltweit.
+- E - Böden (vorherrschend, Anteil der Landfläche): Schwarzerde 2–3 %, Braunerde nicht über rund 22 %.
+- E - Mittlere Fruchtbarkeit der Böden um 2,5 (flächengewichtet, Skala 0–5), etwas fruchtbarer als die Erde (Stand 2026-10-24: 2,47).
 - O - Vorschlag: Jede Landzelle außer Eis hat mindestens eine Pflanze für Nahrung, für Holz oder Brennmaterial und für Faser, sofern das Klima es zulässt.
 - O - Was eine Region im Ortsgraph ist und welche Daten sie trägt.
 - O - Startort von Szenario 1 auf dem Ostkontinent.
