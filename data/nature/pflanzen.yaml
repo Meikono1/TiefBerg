@@ -1,0 +1,299 @@
+# Pflanzen (lore/pflanzen.md Abschnitt 6 und 7, Verfahren lore/welt_konfiguration.md Abschnitt 12).
+# Eingabe von tools/pflanzen.py und zugleich Metadaten fürs Spiel. Liste noch nicht bestätigt (T-050).
+#
+# Felder (Abbildung der Standort-Angaben nach pflanzen.md Abschnitt 2, O - Vorschlag):
+#   growth        Wuchsform (pflanzen.md Abschnitt 2)
+#   climate       Köppen-Code → Gewicht (Kernzone 1, Randzone ergibt sich im Werkzeug) oder → Bedingungen nur in dieser
+#                 Klasse: { weight, water: [...], elevation_m: [von, bis], coast_km: N }. „(Rand)“, „(warm)“ → 0.5,
+#                 „(Gebirge)“, „(Hochland)“, „(Hang)“ → ab 1000 m, „(Hochgebirge)“ → ab 2500 m, „(küstennah)“ → coast_km.
+#   water         Wasserkategorien (pflanzen.md Abschnitt 3). Ohne Angabe in der Liste: FRISCH und FEUCHT.
+#                 „TROCKEN toleriert“ → TROCKEN und FRISCH; Pflanzen aus Abschnitt 6.14 haben zusätzlich OASE.
+#   soil          prefer / tolerate / only / exclude (Boden-IDs aus boeden.yaml). Kalk → rendzina, terra_rossa,
+#                 kalkkruste und ph [NEUTRAL, BASISCH]; Fels → rohboden_fels; Moor → moor; Überschwemmungsflächen → auenboden.
+#   fertility     FRUCHTBAR („fruchtbar, nährstoffreich“) oder ARM („arm“, „auch arme Böden“)
+#   ph            [von, bis] aus STARK_SAUER, SAUER, SCHWACH_SAUER, NEUTRAL, BASISCH; „sauer“ → [STARK_SAUER, SCHWACH_SAUER]
+#   salt_tolerant true: wächst auch auf Salzboden
+#   terrain       HANG („Hang“);  drainage: GUT („gut drainiert“ → kein Gley, kein Moor)
+#   frost_free    true: kältester Monat über 0 °C;  island_bonus: true („bevorzugt Inseln“)
+#   homeland      Regionen (lore/regionen.yaml), in denen die Pflanze von Natur aus wächst; sonst worldwide: true
+#                 (Grundflora, die niemand handelt). Genau eins von beiden. Anbau außerhalb der Heimat ist Sache der
+#                 Simulation (Design-Referenz Abschnitt 9), nicht dieser Ebene. Zuordnung Entwurf 2026-10-25 (T-091).
+#   line          true: eigene Variante je Region der Verbreitung, Layer <id>_<region>
+#   shade, fire_pioneer, fog   Schatten/Unterholz, Pionier auf Brandflächen, Nebel: im Werkzeug noch nicht wirksam (TODO)
+#   use           Nutzungscodes (pflanzen.md Abschnitt 4)
+#   fictional     true für erfundene Pflanzen (Abschnitt 7); active: false, solange sie nicht freigegeben sind
+
+plants:
+  # 6.1 Tropischer Regenwald
+  - { id: banane, name_key: PLANT_BANANA, growth: STAUDE, climate: { Af: 1, Am: 1 }, water: [FRISCH, FEUCHT], fertility: FRUCHTBAR, homeland: [ost_mitte, suedost], use: [N, F] }
+  - { id: taro, name_key: PLANT_TARO, growth: KNOLLE, climate: { Af: 1, Am: 1, Cfa: 1 }, water: [NASS, UFER], homeland: [suedost], use: [N] }
+  - { id: yams, name_key: PLANT_YAM, growth: KNOLLE, climate: { Af: 1, Am: 1, Aw: 1 }, water: [FRISCH], homeland: [ost_mitte], use: [N, M] }
+  - { id: maniok, name_key: PLANT_CASSAVA, growth: KNOLLE, climate: { Am: 1, Aw: 1 }, water: [FRISCH], fertility: ARM, soil: { tolerate: [laterit] }, homeland: [west_nord], use: [N, T] }
+  - { id: brotfrucht, name_key: PLANT_BREADFRUIT, growth: BAUM, climate: { Af: 1, Am: 1 }, water: [FEUCHT], homeland: [suedost], use: [N, H, F] }
+  - { id: kokospalme, name_key: PLANT_COCONUT_PALM, growth: PALME, climate: { Af: 1, Am: 1, Aw: 1 }, water: [KUESTE], soil: { prefer: [sandboden] }, salt_tolerant: true, worldwide: true, use: [N, O, F, H] }
+  - { id: sagopalme, name_key: PLANT_SAGO_PALM, growth: PALME, climate: { Af: 1 }, water: [NASS], homeland: [suedost], use: [N] }
+  - { id: oelpalme, name_key: PLANT_OIL_PALM, growth: PALME, climate: { Af: 1, Am: 1 }, water: [FEUCHT], homeland: [ost_mitte], use: [O] }
+  - { id: kakao, name_key: PLANT_CACAO, growth: BAUM, climate: { Af: 1 }, water: [FEUCHT], shade: true, homeland: [west_nord], use: [N, S] }
+  - { id: pfeffer, name_key: PLANT_PEPPER, growth: KLETTERPFLANZE, climate: { Af: 1, Am: 1 }, water: [FEUCHT], homeland: [suedost], use: [G] }
+  - { id: nelke, name_key: PLANT_CLOVE, growth: BAUM, climate: { Af: 1 }, water: [FEUCHT], soil: { prefer: [vulkanboden] }, homeland: [suedost], use: [G, M] }
+  - { id: muskat, name_key: PLANT_NUTMEG, growth: BAUM, climate: { Af: 1 }, water: [FEUCHT], soil: { prefer: [vulkanboden] }, island_bonus: true, homeland: [suedost], use: [G] }
+  - { id: zimt, name_key: PLANT_CINNAMON, growth: BAUM, climate: { Af: 1, Am: 1 }, water: [FEUCHT], homeland: [ost_mitte], use: [G] }
+  - { id: kardamom, name_key: PLANT_CARDAMOM, growth: STAUDE, climate: { Af: 1, Am: 1 }, water: [FEUCHT], terrain: HANG, shade: true, homeland: [ost_mitte], use: [G] }
+  - { id: ingwer, name_key: PLANT_GINGER, growth: STAUDE, climate: { Af: 1, Am: 1, Aw: 1 }, water: [FRISCH], homeland: [ost_mitte], use: [G, M] }
+  - { id: kurkuma, name_key: PLANT_TURMERIC, growth: STAUDE, climate: { Am: 1, Aw: 1 }, water: [FRISCH], homeland: [ost_mitte], use: [G, Fa, M] }
+  - { id: vanille, name_key: PLANT_VANILLA, growth: KLETTERPFLANZE, climate: { Af: 1 }, water: [FEUCHT], shade: true, homeland: [west_nord], use: [G] }
+  - { id: zuckerrohr, name_key: PLANT_SUGARCANE, growth: GRAS, climate: { Af: 1, Am: 1, Aw: 1, Cwa: 1 }, water: [FEUCHT, UFER], homeland: [suedost, ost_mitte], use: [N] }
+  - { id: kautschuk, name_key: PLANT_RUBBER_TREE, growth: BAUM, climate: { Af: 1 }, water: [FEUCHT], homeland: [ost_mitte], use: [W] }
+  - { id: kapok, name_key: PLANT_KAPOK, growth: BAUM, climate: { Af: 1, Am: 1, Aw: 1 }, water: [FRISCH], homeland: [ost_mitte], use: [F, O] }
+  - { id: abaka, name_key: PLANT_ABACA, growth: STAUDE, climate: { Af: 1 }, water: [FEUCHT], soil: { prefer: [vulkanboden] }, homeland: [suedost], use: [F] }
+  - { id: rattan, name_key: PLANT_RATTAN, growth: PALME, climate: { Af: 1 }, water: [FEUCHT], shade: true, homeland: [suedost], use: [F, H] }
+  - { id: bambus, name_key: PLANT_BAMBOO, growth: GRAS, climate: { Af: 1, Am: 1, Cfa: 1, Cwa: 1 }, water: [FEUCHT], homeland: [ost_mitte, ost_sued], use: [H, F, P, N] }
+  - { id: teak, name_key: PLANT_TEAK, growth: BAUM, climate: { Am: 1, Aw: 1 }, water: [FRISCH], drainage: GUT, homeland: [ost_mitte], use: [H] }
+  - { id: mahagoni, name_key: PLANT_MAHOGANY, growth: BAUM, climate: { Af: 1, Am: 1 }, water: [FEUCHT], homeland: [west_nord], use: [H] }
+  - { id: ebenholz, name_key: PLANT_EBONY, growth: BAUM, climate: { Af: 1, Am: 1 }, water: [FEUCHT], homeland: [ost_mitte], use: [H] }
+  - { id: durian, name_key: PLANT_DURIAN, growth: BAUM, climate: { Af: 1 }, water: [FEUCHT], homeland: [suedost], use: [N] }
+  - { id: mangostan, name_key: PLANT_MANGOSTEEN, growth: BAUM, climate: { Af: 1 }, water: [FEUCHT], homeland: [suedost], use: [N] }
+  - { id: jackfrucht, name_key: PLANT_JACKFRUIT, growth: BAUM, climate: { Af: 1, Am: 1 }, water: [FEUCHT], homeland: [ost_mitte], use: [N, H] }
+  - { id: ananas, name_key: PLANT_PINEAPPLE, growth: STAUDE, climate: { Am: 1, Aw: 1 }, water: [FRISCH, FEUCHT], soil: { prefer: [sandboden] }, homeland: [west_nord], use: [N, F] }
+  - { id: papaya, name_key: PLANT_PAPAYA, growth: BAUM, climate: { Af: 1, Am: 1, Aw: 1 }, water: [FRISCH], homeland: [west_nord], use: [N, M] }
+  - { id: kolanuss, name_key: PLANT_KOLA_NUT, growth: BAUM, climate: { Af: 1 }, water: [FEUCHT], homeland: [ost_mitte], use: [S] }
+  - { id: guarana, name_key: PLANT_GUARANA, growth: KLETTERPFLANZE, climate: { Af: 1 }, water: [FEUCHT], homeland: [west_nord], use: [S] }
+  - { id: betel, name_key: PLANT_BETEL, growth: PALME, climate: { Af: 1, Am: 1 }, water: [FEUCHT], homeland: [ost_mitte], use: [S] }
+  - { id: kava, name_key: PLANT_KAVA, growth: STRAUCH, climate: { Af: 1 }, water: [FEUCHT], island_bonus: true, homeland: [suedost], use: [S, M] }
+  - { id: raffia, name_key: PLANT_RAFFIA_PALM, growth: PALME, climate: { Af: 1, Am: 1 }, water: [NASS, UFER], homeland: [ost_mitte], use: [F] }
+  - { id: annatto, name_key: PLANT_ANNATTO, growth: STRAUCH, climate: { Am: 1, Aw: 1 }, water: [FRISCH], homeland: [west_nord], use: [Fa, G] }
+  - { id: pfeilgiftliane, name_key: PLANT_ARROW_POISON_VINE, growth: KLETTERPFLANZE, climate: { Af: 1, Am: 1 }, water: [FEUCHT], homeland: [ost_mitte], use: [T, M] }
+
+  # 6.2 Savanne
+  - { id: sorghum, name_key: PLANT_SORGHUM, growth: GETREIDE, climate: { Aw: 1, As: 1, BSh: 1 }, water: [TROCKEN, FRISCH], homeland: [ost_mitte, ost_sued], use: [N, Fu] }
+  - { id: perlhirse, name_key: PLANT_PEARL_MILLET, growth: GETREIDE, climate: { Aw: 1, BSh: 1 }, water: [TROCKEN], soil: { prefer: [sandboden] }, homeland: [west_sued], use: [N] }
+  - { id: fingerhirse, name_key: PLANT_FINGER_MILLET, growth: GETREIDE, climate: { Aw: 1, Cwb: 1 }, water: [FRISCH], homeland: [ost_mitte], use: [N] }
+  - { id: auenreis, name_key: PLANT_FLOODPLAIN_RICE, growth: GETREIDE, climate: { Aw: 1 }, water: [UFER, NASS], soil: { prefer: [auenboden] }, homeland: [west_sued], use: [N] }
+  - { id: baumwolle, name_key: PLANT_COTTON, growth: STRAUCH, climate: { Aw: 1, Cfa: 1, BSh: { water: [OASE, UFER] } }, water: [FRISCH, OASE], drainage: GUT, homeland: [ost_sued], use: [F, O] }
+  - { id: kenaf, name_key: PLANT_KENAF, growth: STAUDE, climate: { Aw: 1 }, water: [FRISCH], homeland: [ost_mitte], use: [F, P] }
+  - { id: baobab, name_key: PLANT_BAOBAB, growth: BAUM, climate: { Aw: 1, BSh: 1 }, water: [TROCKEN], homeland: [ost_mitte], use: [N, F, M] }
+  - { id: akazie, name_key: PLANT_GUM_ACACIA, growth: BAUM, climate: { Aw: 1, BSh: 1, BWh: { water: [OASE] } }, water: [TROCKEN, OASE], worldwide: true, line: true, use: [W, Fu, H] }
+  - { id: shea, name_key: PLANT_SHEA, growth: BAUM, climate: { Aw: 1 }, water: [FRISCH], homeland: [ost_mitte], use: [O] }
+  - { id: erdnuss, name_key: PLANT_PEANUT, growth: HUELSENFRUCHT, climate: { Aw: 1, Cfa: 1 }, water: [FRISCH, FEUCHT], soil: { prefer: [sandboden] }, homeland: [west_nord], use: [N, O] }
+  - { id: augenbohne, name_key: PLANT_COWPEA, growth: HUELSENFRUCHT, climate: { Aw: 1, BSh: 1 }, water: [TROCKEN], homeland: [west_sued], use: [N, Fu] }
+  - { id: sesam, name_key: PLANT_SESAME, growth: STAUDE, climate: { Aw: 1, Cwa: 1, BSh: 1 }, water: [FRISCH], homeland: [ost_sued], use: [O, N] }
+  - { id: rizinus, name_key: PLANT_CASTOR, growth: STRAUCH, climate: { Aw: 1, BSh: 1 }, water: [TROCKEN, FRISCH], homeland: [ost_mitte], use: [O, T, M] }
+  - { id: tamarinde, name_key: PLANT_TAMARIND, growth: BAUM, climate: { Aw: 1 }, water: [FRISCH], homeland: [ost_mitte], use: [N, G] }
+  - { id: palmyra, name_key: PLANT_PALMYRA_PALM, growth: PALME, climate: { Aw: 1, As: 1 }, water: [TROCKEN, FRISCH], homeland: [ost_mitte], use: [N, P, F] }
+  - { id: cashew, name_key: PLANT_CASHEW, growth: BAUM, climate: { Aw: 1 }, water: [FRISCH, FEUCHT], soil: { prefer: [sandboden] }, fertility: ARM, homeland: [west_nord], use: [N, O] }
+  - { id: mango, name_key: PLANT_MANGO, growth: BAUM, climate: { Aw: 1, Am: 1 }, water: [FRISCH], homeland: [ost_mitte], use: [N, H] }
+  - { id: indigo, name_key: PLANT_INDIGO, growth: STRAUCH, climate: { Aw: 1, Cwa: 1 }, water: [FRISCH], homeland: [ost_sued], use: [Fa] }
+  - { id: sisal, name_key: PLANT_SISAL, growth: SUKKULENTE, climate: { As: 1, BSh: 1 }, water: [TROCKEN], homeland: [west_sued], use: [F] }
+  - { id: mais, name_key: PLANT_MAIZE, growth: GETREIDE, climate: { Aw: 1, Cfa: 1, Cwa: 1, Dfa: 1, BSh: { water: [UFER] } }, water: [FRISCH, FEUCHT], fertility: FRUCHTBAR, homeland: [west_nord], use: [N, Fu] }
+  - { id: elefantengras, name_key: PLANT_ELEPHANT_GRASS, growth: GRAS, climate: { Aw: 1, Am: 1 }, water: [FRISCH], homeland: [ost_mitte], use: [Fu, H] }
+
+  # 6.3 Heiße Trockengebiete
+  - { id: dattelpalme, name_key: PLANT_DATE_PALM, growth: PALME, climate: { BWh: 1, BSh: 1 }, water: [OASE], salt_tolerant: true, homeland: [ost_mitte], use: [N, F, H] }
+  - { id: agave, name_key: PLANT_AGAVE, growth: SUKKULENTE, climate: { BSh: 1, BWh: 1, Csa: 1 }, water: [TROCKEN], homeland: [west_nord, west_sued], use: [F, N, S] }
+  # Wirt der Cochenille-Laus → roter Farbstoff
+  - { id: opuntie, name_key: PLANT_PRICKLY_PEAR, growth: SUKKULENTE, climate: { BSh: 1, BWh: 1, Csa: 1 }, water: [TROCKEN], homeland: [west_sued], use: [N, Fu, Fa] }
+  # TODO: Nahrung oder Gift je Linie (pflanzen.md Abschnitt 8, Eigenschaften der Linien-Varianten)
+  - { id: saeulenkaktus, name_key: PLANT_COLUMNAR_CACTUS, growth: SUKKULENTE, climate: { BWh: 1, BSh: 1 }, water: [TROCKEN], line: true, worldwide: true, use: [N, T] }
+  - { id: jojoba, name_key: PLANT_JOJOBA, growth: STRAUCH, climate: { BWh: 1, BSh: 1 }, water: [TROCKEN], homeland: [west_sued], use: [W, O] }
+  - { id: kreosotbusch, name_key: PLANT_CREOSOTE_BUSH, growth: STRAUCH, climate: { BWh: 1 }, water: [TROCKEN], homeland: [west_sued], use: [M] }
+  - { id: weihrauch, name_key: PLANT_FRANKINCENSE, growth: BAUM, climate: { BWh: 1, BSh: 1 }, water: [TROCKEN], soil: { prefer: [rohboden_fels, rendzina, terra_rossa, kalkkruste] }, ph: [NEUTRAL, BASISCH], homeland: [ost_mitte], use: [W, M] }
+  - { id: myrrhe, name_key: PLANT_MYRRH, growth: STRAUCH, climate: { BWh: 1, BSh: 1 }, water: [TROCKEN], homeland: [ost_mitte], use: [W, M] }
+  - { id: halfagras, name_key: PLANT_ESPARTO, growth: GRAS, climate: { BSh: 1, BSk: 1, Csa: 1 }, water: [TROCKEN], soil: { prefer: [rendzina, terra_rossa, kalkkruste] }, ph: [NEUTRAL, BASISCH], worldwide: true, use: [F, P] }
+  - { id: henna, name_key: PLANT_HENNA, growth: STRAUCH, climate: { BWh: 1, BSh: 1, Aw: 1 }, water: [TROCKEN, FRISCH, OASE], homeland: [ost_mitte], use: [Fa] }
+  - { id: mesquite, name_key: PLANT_MESQUITE, growth: BAUM, climate: { BSh: 1, BWh: 1 }, water: [OASE], homeland: [west_sued], use: [N, H, Fu] }
+  - { id: aloe, name_key: PLANT_ALOE, growth: SUKKULENTE, climate: { BSh: 1, BWh: 1, Aw: 1 }, water: [TROCKEN], homeland: [ost_sued], use: [M] }
+  - { id: tamariske, name_key: PLANT_TAMARISK, growth: STRAUCH, climate: { BWh: 1, BSh: 1, BWk: 1 }, water: [OASE], salt_tolerant: true, worldwide: true, use: [H, B, Fu] }
+  - { id: gerste, name_key: PLANT_BARLEY, growth: GETREIDE, climate: { BSh: 1, BSk: 1, Csa: 1, Csb: 1, Csc: 1, Dfb: 1, Cwb: 1 }, water: [TROCKEN, FRISCH, OASE], salt_tolerant: true, homeland: [nordwest, ost_sued], use: [N, Fu, S] }
+  - { id: kichererbse, name_key: PLANT_CHICKPEA, growth: HUELSENFRUCHT, climate: { Csa: 1, BSh: 1 }, water: [TROCKEN, FRISCH], homeland: [ost_sued], use: [N] }
+  - { id: oleander, name_key: PLANT_OLEANDER, growth: STRAUCH, climate: { Csa: 1, Csb: 1, Csc: 1, BSh: 1 }, water: [OASE], homeland: [ost_mitte], use: [T] }
+  # Küstenwüste mit Nebel: KUESTE in BWh (pflanzen.md Abschnitt 2); keine Nutzung, Kuriosität
+  - { id: welwitschia, name_key: PLANT_WELWITSCHIA, growth: SUKKULENTE, climate: { BWh: 1 }, water: [KUESTE], fog: true, homeland: [west_sued], use: [] }
+
+  # 6.4 Kalte Trockengebiete
+  - { id: hanf, name_key: PLANT_HEMP, growth: STAUDE, climate: { BSk: 1, Dfa: 1, Dfb: 1, Cfa: 1, Csa: 1, Csb: 1, Csc: 1 }, water: [FRISCH, FEUCHT], fertility: FRUCHTBAR, homeland: [ost_nord], use: [F, P, O, S, M] }
+  - { id: kendyr, name_key: PLANT_KENDYR, growth: STAUDE, climate: { BSk: 1, BWk: 1 }, water: [UFER], salt_tolerant: true, homeland: [ost_nord], use: [F, M] }
+  - { id: federgras, name_key: PLANT_FEATHER_GRASS, growth: GRAS, climate: { BSk: 1 }, water: [TROCKEN, FRISCH], soil: { prefer: [schwarzerde, kastanienerde] }, worldwide: true, use: [Fu] }
+  - { id: beifuss, name_key: PLANT_WORMWOOD, growth: ZWERGSTRAUCH, climate: { BSk: 1, BWk: 1 }, water: [TROCKEN], worldwide: true, use: [M, G, S] }
+  - { id: saxaul, name_key: PLANT_SAXAUL, growth: STRAUCH, climate: { BWk: 1 }, water: [TROCKEN], soil: { prefer: [sandboden] }, salt_tolerant: true, homeland: [ost_nord, ost_sued], use: [B, H] }
+  - { id: ephedra, name_key: PLANT_EPHEDRA, growth: STRAUCH, climate: { BWk: 1, BSk: 1, ET: { elevation_m: [1000, null] } }, water: [TROCKEN], homeland: [ost_nord], use: [M, S] }
+  # TODO: „Gebirge“ als Standort ohne Klassenbezug kennt das Format nicht (pflanzen.md 6.4)
+  - { id: sanddorn, name_key: PLANT_SEA_BUCKTHORN, growth: STRAUCH, climate: { BSk: 1, Dfb: 1 }, water: [FRISCH, FEUCHT], soil: { prefer: [sandboden] }, homeland: [nordwest], use: [N, M] }
+  - { id: wildapfel, name_key: PLANT_WILD_APPLE, growth: BAUM, climate: { BSk: { elevation_m: [1000, null] }, Dfa: 1 }, water: [FRISCH], homeland: [ost_nord], use: [N] }
+  - { id: pistazie, name_key: PLANT_PISTACHIO, growth: BAUM, climate: { BSk: 1, Csa: 1 }, water: [TROCKEN], homeland: [ost_sued], use: [N, W] }
+  - { id: mandel, name_key: PLANT_ALMOND, growth: BAUM, climate: { BSk: 1, Csa: 1, Csb: 1, Csc: 1 }, water: [TROCKEN, FRISCH], homeland: [ost_sued], use: [N, O] }
+  - { id: luzerne, name_key: PLANT_ALFALFA, growth: HUELSENFRUCHT, climate: { BSk: 1, Csa: 1, Csb: 1, Csc: 1, Dfa: 1 }, water: [FRISCH], homeland: [west_nord], use: [Fu] }
+  - { id: rhabarber, name_key: PLANT_RHUBARB, growth: STAUDE, climate: { BSk: { elevation_m: [1000, null] }, Dwb: 1 }, water: [FRISCH], homeland: [ost_nord], use: [M] }
+  - { id: weizen, name_key: PLANT_WHEAT, growth: GETREIDE, climate: { BSk: 1, Csa: 1, Csb: 1, Csc: 1, Cfb: 1, Dfa: 1 }, water: [FRISCH, FEUCHT], soil: { prefer: [schwarzerde, loessboden] }, homeland: [nordwest], use: [N] }
+  - { id: safran, name_key: PLANT_SAFFRON, growth: KNOLLE, climate: { BSk: 1, Csa: 1 }, water: [TROCKEN], drainage: GUT, homeland: [ost_nord], use: [G, Fa, M] }
+  - { id: melone, name_key: PLANT_MELON, growth: KLETTERPFLANZE, climate: { BSk: 1, BSh: 1 }, water: [UFER, OASE], homeland: [ost_mitte], use: [N] }
+
+  # 6.5 Mediterran
+  - { id: oelbaum, name_key: PLANT_OLIVE, growth: BAUM, climate: { Csa: 1, Csb: 1 }, water: [TROCKEN], soil: { prefer: [rendzina, terra_rossa, kalkkruste] }, ph: [NEUTRAL, BASISCH], homeland: [nordwest], use: [O, N, H] }
+  - { id: weinrebe, name_key: PLANT_GRAPEVINE, growth: KLETTERPFLANZE, climate: { Csa: 1, Csb: 1, Cfa: 1, Cfb: 0.5 }, water: [FRISCH, FEUCHT], soil: { prefer: [terra_rossa] }, terrain: HANG, homeland: [nordwest, suedost], use: [N, S] }
+  - { id: feige, name_key: PLANT_FIG, growth: BAUM, climate: { Csa: 1, BSh: 1 }, water: [TROCKEN, FRISCH], homeland: [ost_mitte], use: [N] }
+  - { id: granatapfel, name_key: PLANT_POMEGRANATE, growth: STRAUCH, climate: { Csa: 1, BSk: 1 }, water: [TROCKEN, FRISCH], homeland: [ost_sued], use: [N, Fa] }
+  - { id: johannisbrot, name_key: PLANT_CAROB, growth: BAUM, climate: { Csa: 1 }, water: [FRISCH, FEUCHT], soil: { prefer: [rendzina, terra_rossa, kalkkruste] }, ph: [NEUTRAL, BASISCH], homeland: [nordwest], use: [N, Fu] }
+  # außerdem Kork
+  - { id: korkeiche, name_key: PLANT_CORK_OAK, growth: BAUM, climate: { Csa: 1, Csb: 1 }, water: [FRISCH, FEUCHT], soil: { prefer: [sandboden] }, ph: [STARK_SAUER, SCHWACH_SAUER], homeland: [nordwest], use: [H] }
+  - { id: lorbeer, name_key: PLANT_BAY_LAUREL, growth: BAUM, climate: { Csa: 1, Cfa: 1 }, water: [FRISCH], homeland: [nordwest], use: [G] }
+  - { id: rosmarin_thymian, name_key: PLANT_ROSEMARY_THYME, growth: ZWERGSTRAUCH, climate: { Csa: 1, Csb: 1 }, water: [FRISCH, FEUCHT], soil: { prefer: [rendzina, terra_rossa, kalkkruste, rohboden_fels] }, ph: [NEUTRAL, BASISCH], homeland: [nordwest], use: [G, M] }
+  - { id: lavendel, name_key: PLANT_LAVENDER, growth: ZWERGSTRAUCH, climate: { Csa: 1, Csb: 1 }, water: [FRISCH, FEUCHT], soil: { prefer: [rendzina, terra_rossa, kalkkruste] }, ph: [NEUTRAL, BASISCH], homeland: [west_nord], use: [M, O] }
+  - { id: flachs, name_key: PLANT_FLAX, growth: STAUDE, climate: { Csa: 1, Csb: 1, Csc: 1, Cfb: 1, Dfb: 1 }, water: [FRISCH], fertility: FRUCHTBAR, homeland: [nordwest], use: [F, P, O] }
+  - { id: zwergpalme, name_key: PLANT_DWARF_FAN_PALM, growth: PALME, climate: { Csa: 1 }, water: [TROCKEN], homeland: [nordwest], use: [F] }
+  - { id: linse, name_key: PLANT_LENTIL, growth: HUELSENFRUCHT, climate: { Csa: 1, Csb: 1, Csc: 1, BSk: 1 }, water: [TROCKEN, FRISCH], homeland: [ost_sued], use: [N] }
+  - { id: zypresse, name_key: PLANT_CYPRESS, growth: BAUM, climate: { Csa: 1, Csb: 1 }, water: [TROCKEN, FRISCH], homeland: [ost_sued], use: [H] }
+  - { id: pinie, name_key: PLANT_STONE_PINE, growth: BAUM, climate: { Csa: 1 }, water: [FRISCH, FEUCHT], soil: { prefer: [sandboden] }, homeland: [nordwest], use: [N, H, W] }
+  - { id: kaper, name_key: PLANT_CAPER, growth: STRAUCH, climate: { Csa: 1, BSh: 1 }, water: [FRISCH, FEUCHT], soil: { prefer: [rohboden_fels] }, homeland: [ost_sued], use: [G] }
+  - { id: mastix, name_key: PLANT_MASTIC, growth: STRAUCH, climate: { Csa: 1 }, water: [TROCKEN], homeland: [west_nord], use: [W] }
+  - { id: krapp, name_key: PLANT_MADDER, growth: STAUDE, climate: { Csa: 1, Csb: 1, Csc: 1, Cfb: 1, BSk: 1 }, water: [FRISCH], homeland: [nordwest], use: [Fa] }
+  # roter Farbstoff über eine Schildlaus
+  - { id: kermeseiche, name_key: PLANT_KERMES_OAK, growth: STRAUCH, climate: { Csa: 1 }, water: [TROCKEN], homeland: [ost_sued], use: [Fa] }
+
+  # 6.6 Feuchte und wintertrockene Subtropen
+  - { id: reis, name_key: PLANT_RICE, growth: GETREIDE, climate: { Cwa: 1, Cfa: 1, Am: 1, Aw: 1 }, water: [NASS, UFER], soil: { prefer: [auenboden] }, homeland: [ost_nord, ost_sued], use: [N, P, S] }
+  - { id: tee, name_key: PLANT_TEA, growth: STRAUCH, climate: { Cfa: 1, Cwa: 1, Cwb: 1 }, water: [FRISCH, FEUCHT], ph: [STARK_SAUER, SCHWACH_SAUER], terrain: HANG, homeland: [ost_nord], use: [S, M] }
+  # Futter der Seidenraupe → Faser
+  - { id: maulbeere, name_key: PLANT_WHITE_MULBERRY, growth: BAUM, climate: { Cfa: 1, Cwa: 1, Csa: 1, Dfa: 1 }, water: [FRISCH], homeland: [ost_nord], use: [Fu, N] }
+  - { id: papiermaulbeere, name_key: PLANT_PAPER_MULBERRY, growth: STRAUCH, climate: { Cfa: 1, Cwa: 1, Af: 1, Am: 1 }, water: [FRISCH], homeland: [ost_nord], use: [P, F] }
+  - { id: mitsumata, name_key: PLANT_MITSUMATA, growth: STRAUCH, climate: { Cfa: 1, Cwb: 1 }, water: [FRISCH, FEUCHT], shade: true, homeland: [ost_nord], use: [P] }
+  - { id: ramie, name_key: PLANT_RAMIE, growth: STAUDE, climate: { Cfa: 1, Cwa: 1 }, water: [FEUCHT], homeland: [ost_sued], use: [F] }
+  - { id: jute, name_key: PLANT_JUTE, growth: STAUDE, climate: { Cwa: 1, Am: 1 }, water: [UFER, NASS], soil: { prefer: [auenboden] }, homeland: [ost_mitte], use: [F] }
+  - { id: zitrus, name_key: PLANT_CITRUS, growth: BAUM, climate: { Cfa: 1, Cwa: 1, Csa: 1 }, water: [FRISCH, FEUCHT], frost_free: true, homeland: [ost_sued], use: [N, M] }
+  - { id: pfirsich, name_key: PLANT_PEACH_APRICOT, growth: BAUM, climate: { Cfa: 1, Cwa: 1, Dfa: 1, BSk: 1 }, water: [FRISCH], homeland: [ost_nord], use: [N] }
+  - { id: litschi, name_key: PLANT_LYCHEE, growth: BAUM, climate: { Cwa: 1 }, water: [FRISCH], homeland: [ost_sued], use: [N] }
+  - { id: soja, name_key: PLANT_SOYBEAN, growth: HUELSENFRUCHT, climate: { Cfa: 1, Cwa: 1, Dfa: 1, Dwa: 1 }, water: [FRISCH], homeland: [ost_nord], use: [N, O] }
+  - { id: kampfer, name_key: PLANT_CAMPHOR_TREE, growth: BAUM, climate: { Cfa: 1 }, water: [FEUCHT], homeland: [ost_nord], use: [M, W, H] }
+  - { id: lackbaum, name_key: PLANT_LACQUER_TREE, growth: BAUM, climate: { Cfa: 1, Cwa: 1, Dwa: 1 }, water: [FRISCH], homeland: [ost_nord], use: [W, T] }
+  - { id: tungbaum, name_key: PLANT_TUNG_TREE, growth: BAUM, climate: { Cfa: 1, Cwa: 1 }, water: [FRISCH], homeland: [suedost], use: [O] }
+  - { id: ginkgo, name_key: PLANT_GINKGO, growth: BAUM, climate: { Cfa: 1, Dfa: 1 }, water: [FRISCH], homeland: [ost_nord], use: [N, M] }
+  - { id: kudzu, name_key: PLANT_KUDZU, growth: KLETTERPFLANZE, climate: { Cfa: 1 }, water: [FRISCH], homeland: [ost_nord], use: [F, N, M] }
+  - { id: suesskartoffel, name_key: PLANT_SWEET_POTATO, growth: KNOLLE, climate: { Cfa: 1, Cwa: 1, Aw: 1, Am: 1 }, water: [FRISCH, FEUCHT], soil: { prefer: [sandboden] }, homeland: [west_nord, suedost], use: [N] }
+  - { id: tabak, name_key: PLANT_TOBACCO, growth: STAUDE, climate: { Cfa: 1, Cwa: 1, Aw: 1 }, water: [FRISCH, FEUCHT], fertility: FRUCHTBAR, homeland: [west_nord], use: [S, T] }
+  - { id: sumpfzypresse, name_key: PLANT_BALD_CYPRESS, growth: BAUM, climate: { Cfa: 1 }, water: [NASS], homeland: [west_nord], use: [H] }
+  - { id: pekannuss, name_key: PLANT_PECAN, growth: BAUM, climate: { Cfa: 1, Dfa: 1 }, water: [UFER], soil: { prefer: [auenboden] }, homeland: [west_nord], use: [N, H] }
+  - { id: papierrinde, name_key: PLANT_PAPERBARK, growth: BAUM, climate: { Cfa: 1, Aw: 1, Am: 1 }, water: [NASS, UFER], homeland: [suedost], use: [P, M, O] }
+  - { id: eukalyptus, name_key: PLANT_EUCALYPTUS, growth: BAUM, climate: { Cfa: 1, Cfb: 1, Aw: 1, BSh: 1 }, water: [TROCKEN, FRISCH], fertility: ARM, homeland: [suedost], use: [H, M, O] }
+
+  # 6.7 Ozeanisch gemäßigt
+  - { id: eiche, name_key: PLANT_OAK, growth: BAUM, climate: { Cfb: 1, Cfa: 1, Dfa: 1, Dfb: 1, Csa: 1, Csb: 1, Csc: 1 }, water: [FRISCH, FEUCHT], soil: { prefer: [braunerde] }, worldwide: true, line: true, use: [H, Fu, W] }
+  - { id: buche, name_key: PLANT_BEECH, growth: BAUM, climate: { Cfb: 1, Dfb: 1 }, water: [FRISCH, FEUCHT], soil: { prefer: [rendzina, braunerde] }, homeland: [nordwest], use: [H, Fu] }
+  - { id: esche, name_key: PLANT_ASH, growth: BAUM, climate: { Cfb: 1, Dfb: 1 }, water: [FRISCH], homeland: [west_nord], use: [H] }
+  - { id: ulme, name_key: PLANT_ELM, growth: BAUM, climate: { Cfb: 1, Dfa: 1 }, water: [FRISCH], homeland: [ost_nord], use: [H, F] }
+  - { id: eibe, name_key: PLANT_YEW, growth: BAUM, climate: { Cfb: 1, Csb: 1 }, water: [FRISCH, FEUCHT], soil: { prefer: [rendzina, terra_rossa, kalkkruste] }, ph: [NEUTRAL, BASISCH], homeland: [west_nord], use: [H, T, M] }
+  - { id: hasel, name_key: PLANT_HAZEL, growth: STRAUCH, climate: { Cfb: 1, Dfb: 1 }, water: [FRISCH], homeland: [nordwest, ost_sued], use: [N, H] }
+  - { id: brennnessel, name_key: PLANT_NETTLE, growth: STAUDE, climate: { Cfb: 1, Dfb: 1, Cfa: 1 }, water: [FRISCH, FEUCHT], soil: { prefer: [auenboden] }, fertility: FRUCHTBAR, worldwide: true, use: [F, N, Fa, M] }
+  - { id: faerberwaid, name_key: PLANT_WOAD, growth: STAUDE, climate: { Cfb: 1, Dfb: 1 }, water: [FRISCH], homeland: [nordwest], use: [Fa] }
+  - { id: faerberwau, name_key: PLANT_WELD, growth: STAUDE, climate: { Cfb: 1, Csa: 1, Csb: 1, Csc: 1 }, water: [FRISCH, FEUCHT], soil: { prefer: [rendzina, terra_rossa, kalkkruste] }, ph: [NEUTRAL, BASISCH], homeland: [west_nord], use: [Fa] }
+  - { id: hafer, name_key: PLANT_OATS, growth: GETREIDE, climate: { Cfb: 1, Dfb: 1 }, water: [FRISCH, FEUCHT], homeland: [west_nord], use: [N, Fu] }
+  - { id: roggen, name_key: PLANT_RYE, growth: GETREIDE, climate: { Cfb: 1, Dfb: 1, Dfc: 0.5 }, water: [FRISCH, FEUCHT], soil: { prefer: [sandboden] }, ph: [STARK_SAUER, SCHWACH_SAUER], homeland: [nordwest], use: [N] }
+  - { id: kohl_ruebe, name_key: PLANT_CABBAGE_TURNIP, growth: STAUDE, climate: { Cfb: 1, Dfb: 1 }, water: [FRISCH], homeland: [nordwest], use: [N, Fu] }
+  - { id: erbse_ackerbohne, name_key: PLANT_PEA_FIELD_BEAN, growth: HUELSENFRUCHT, climate: { Cfb: 1, Dfb: 1, Csa: 1, Csb: 1, Csc: 1 }, water: [FRISCH], homeland: [ost_nord], use: [N, Fu] }
+  - { id: apfel_birne, name_key: PLANT_APPLE_PEAR, growth: BAUM, climate: { Cfb: 1, Dfb: 1, Dfa: 1 }, water: [FRISCH], homeland: [nordwest], use: [N] }
+  - { id: hopfen, name_key: PLANT_HOPS, growth: KLETTERPFLANZE, climate: { Cfb: 1, Dfb: 1 }, water: [UFER], homeland: [nordwest], use: [M, S] }
+  - { id: heidekraut, name_key: PLANT_HEATHER, growth: ZWERGSTRAUCH, climate: { Cfb: 1, Cfc: 1 }, water: [FRISCH, FEUCHT], soil: { prefer: [podsol] }, ph: [STARK_SAUER, SCHWACH_SAUER], homeland: [nordwest], use: [Fu, Fa, B] }
+  - { id: ginster, name_key: PLANT_GORSE, growth: STRAUCH, climate: { Cfb: 1, Csb: 1 }, water: [FRISCH, FEUCHT], soil: { prefer: [sandboden] }, ph: [STARK_SAUER, SCHWACH_SAUER], homeland: [west_nord], use: [Fa, Fu, B] }
+  - { id: fingerhut, name_key: PLANT_FOXGLOVE, growth: STAUDE, climate: { Cfb: 1 }, water: [FRISCH, FEUCHT], ph: [STARK_SAUER, SCHWACH_SAUER], homeland: [west_nord], use: [M, T] }
+  - { id: riesenlebensbaum, name_key: PLANT_GIANT_ARBORVITAE, growth: BAUM, climate: { Cfb: 1, Dfb: { coast_km: 300 } }, water: [FEUCHT], homeland: [west_nord], use: [H, F] }
+  - { id: faserlilie, name_key: PLANT_FIBER_LILY, growth: STAUDE, climate: { Cfb: 1, Cfc: 1 }, water: [FEUCHT, NASS], homeland: [suedost], use: [F] }
+
+  # 6.8 Kontinental gemäßigt
+  - { id: kiefer, name_key: PLANT_PINE, growth: BAUM, climate: { Dfb: 1, Dfc: 1, Cfb: 1, Csa: 1 }, water: [FRISCH, FEUCHT], soil: { prefer: [sandboden, podsol] }, worldwide: true, line: true, use: [H, W] }
+  - { id: fichte, name_key: PLANT_SPRUCE, growth: BAUM, climate: { Dfb: 1, Dfc: 1, Dwb: 1 }, water: [FRISCH, FEUCHT], ph: [STARK_SAUER, SCHWACH_SAUER], homeland: [nordwest, ost_nord], use: [H, W] }
+  - { id: birke, name_key: PLANT_BIRCH, growth: BAUM, climate: { Dfb: 1, Dfc: 1, Cfb: 1, Dwb: 1 }, water: [FRISCH, FEUCHT], ph: [STARK_SAUER, SCHWACH_SAUER], worldwide: true, use: [P, H, N, W] }
+  - { id: linde, name_key: PLANT_LINDEN, growth: BAUM, climate: { Dfb: 1, Cfb: 1, Dfa: 1 }, water: [FRISCH, FEUCHT], soil: { prefer: [braunerde] }, homeland: [nordwest], use: [F, H, M] }
+  - { id: zuckerahorn, name_key: PLANT_SUGAR_MAPLE, growth: BAUM, climate: { Dfa: 1, Dfb: 1 }, water: [FRISCH], homeland: [west_nord], use: [N, H] }
+  - { id: walnuss, name_key: PLANT_WALNUT, growth: BAUM, climate: { Dfa: 1, Cfb: 1, Csa: 1, BSk: { elevation_m: [1000, null] } }, water: [FRISCH, FEUCHT], fertility: FRUCHTBAR, homeland: [ost_nord], use: [N, O, Fa, H] }
+  - { id: buchweizen, name_key: PLANT_BUCKWHEAT, growth: STAUDE, climate: { Dfb: 1, Dwb: 1 }, water: [FRISCH, FEUCHT], fertility: ARM, ph: [STARK_SAUER, SCHWACH_SAUER], homeland: [ost_nord, ost_sued], use: [N] }
+  - { id: rispenhirse, name_key: PLANT_PROSO_MILLET, growth: GETREIDE, climate: { Dfa: 1, Dwa: 1, BSk: 1 }, water: [TROCKEN, FRISCH], homeland: [ost_nord, ost_sued], use: [N] }
+  - { id: sonnenblume, name_key: PLANT_SUNFLOWER, growth: STAUDE, climate: { Dfa: 1, BSk: 1, Cfa: 1 }, water: [FRISCH, FEUCHT], soil: { prefer: [schwarzerde] }, homeland: [west_nord], use: [O, N] }
+  - { id: heidelbeere, name_key: PLANT_BLUEBERRY_LINGONBERRY, growth: ZWERGSTRAUCH, climate: { Dfb: 1, Dfc: 1 }, water: [FRISCH, FEUCHT], soil: { prefer: [podsol] }, homeland: [nordwest], use: [N, Fa] }
+  - { id: wildreis, name_key: PLANT_WILD_RICE, growth: GRAS, climate: { Dfb: 1, Dfa: 1 }, water: [STEHEND, UFER], homeland: [west_nord], use: [N] }
+  - { id: ginseng, name_key: PLANT_GINSENG, growth: STAUDE, climate: { Dwa: 1, Dwb: 1 }, water: [FRISCH, FEUCHT], shade: true, homeland: [ost_nord], use: [M] }
+  - { id: schwarzerle, name_key: PLANT_BLACK_ALDER, growth: BAUM, climate: { Dfb: 1, Cfb: 1 }, water: [NASS, UFER], homeland: [nordwest], use: [H] }
+
+  # 6.9 Subarktisch
+  - { id: laerche, name_key: PLANT_LARCH, growth: BAUM, climate: { Dfc: 1, Dfd: 1, Dwc: 1, Dwd: 1 }, water: [FRISCH, FEUCHT], soil: { tolerate: [permafrost] }, homeland: [nordwest, ost_nord], use: [H] }
+  - { id: tanne, name_key: PLANT_FIR, growth: BAUM, climate: { Dfc: 1, Dfb: 1 }, water: [FRISCH, FEUCHT], ph: [STARK_SAUER, SCHWACH_SAUER], homeland: [ost_nord], use: [H, W] }
+  - { id: zwergbirke, name_key: PLANT_DWARF_BIRCH, growth: STRAUCH, climate: { Dfc: 1, ET: 1 }, water: [FRISCH, FEUCHT], ph: [STARK_SAUER, SCHWACH_SAUER], worldwide: true, use: [B] }
+  - { id: weide, name_key: PLANT_WILLOW, growth: STRAUCH, climate: { Dfc: 1, Dfb: 1, Cfb: 1, ET: 1 }, water: [UFER], worldwide: true, use: [F, M] }
+  - { id: moltebeere, name_key: PLANT_CLOUDBERRY, growth: STAUDE, climate: { Dfc: 1, ET: 1 }, water: [NASS], soil: { prefer: [moor] }, homeland: [nordwest], use: [N] }
+  - { id: kraehenbeere, name_key: PLANT_CROWBERRY, growth: ZWERGSTRAUCH, climate: { Dfc: 1, ET: 1 }, water: [FRISCH, FEUCHT], ph: [STARK_SAUER, SCHWACH_SAUER], homeland: [nordwest], use: [N] }
+  - { id: weidenroeschen, name_key: PLANT_FIREWEED, growth: STAUDE, climate: { Dfc: 1, Dfb: 1 }, water: [FRISCH, FEUCHT], fire_pioneer: true, worldwide: true, use: [N, M, F] }
+  # außerdem Torfbildung
+  - { id: torfmoos, name_key: PLANT_PEAT_MOSS, growth: MOOS, climate: { Dfc: 1, Dfb: 1, Cfb: 1, Cfc: 1 }, water: [NASS], soil: { prefer: [moor] }, worldwide: true, use: [M, F] }
+  - { id: rentierflechte, name_key: PLANT_REINDEER_LICHEN, growth: FLECHTE, climate: { Dfc: 1, ET: 1 }, water: [TROCKEN, FRISCH], worldwide: true, use: [Fu, N] }
+
+  # 6.10 Tundra und Hochgebirge
+  - { id: wollgras, name_key: PLANT_COTTONGRASS, growth: GRAS, climate: { ET: 1, Dfc: 1 }, water: [NASS], soil: { prefer: [moor] }, worldwide: true, use: [F] }
+  - { id: polsterpflanzen, name_key: PLANT_CUSHION_PLANTS, growth: STAUDE, climate: { ET: 1 }, water: [FRISCH, FEUCHT], soil: { prefer: [rohboden_fels] }, worldwide: true, use: [F] }
+  - { id: steinbrech, name_key: PLANT_SAXIFRAGE, growth: STAUDE, climate: { ET: 1 }, water: [FRISCH, FEUCHT], soil: { prefer: [rohboden_fels] }, worldwide: true, use: [M] }
+  - { id: silberwurz, name_key: PLANT_MOUNTAIN_AVENS, growth: ZWERGSTRAUCH, climate: { ET: 1 }, water: [FRISCH, FEUCHT], soil: { prefer: [rendzina, terra_rossa, kalkkruste] }, ph: [NEUTRAL, BASISCH], homeland: [nordwest, ost_nord], use: [Fu] }
+  - { id: rosenwurz, name_key: PLANT_ROSEROOT, growth: STAUDE, climate: { ET: 1, Dfc: 1 }, water: [FRISCH, FEUCHT], soil: { prefer: [rohboden_fels] }, homeland: [ost_nord], use: [M] }
+  - { id: moosflechte, name_key: PLANT_MOSS_LICHEN, growth: FLECHTE, climate: { ET: 1, Dfc: 1 }, water: [FRISCH, FEUCHT], ph: [STARK_SAUER, SCHWACH_SAUER], worldwide: true, use: [N, M] }
+  - { id: edelweiss, name_key: PLANT_EDELWEISS, growth: STAUDE, climate: { ET: { elevation_m: [2500, null] } }, water: [FRISCH, FEUCHT], soil: { prefer: [rendzina, terra_rossa, kalkkruste] }, ph: [NEUTRAL, BASISCH], homeland: [ost_nord], use: [M] }
+
+  # 6.11 Tropisches und subtropisches Hochland
+  - { id: kartoffel, name_key: PLANT_POTATO, growth: KNOLLE, climate: { Cwb: 1, Cwc: 1, Cfb: 1, Dfb: 1 }, water: [FRISCH, FEUCHT], homeland: [west_nord], use: [N, T] }
+  - { id: oca, name_key: PLANT_OCA, growth: KNOLLE, climate: { Cwb: 1, Cwc: 1 }, water: [FRISCH], homeland: [west_nord], use: [N] }
+  - { id: ulluco, name_key: PLANT_ULLUCO, growth: KNOLLE, climate: { Cwb: 1, Cwc: 1 }, water: [FRISCH], homeland: [west_nord], use: [N] }
+  - { id: mashua, name_key: PLANT_MASHUA, growth: KNOLLE, climate: { Cwb: 1, Cwc: 1 }, water: [FRISCH], homeland: [west_nord], use: [N, M] }
+  - { id: quinoa, name_key: PLANT_QUINOA, growth: GETREIDE, climate: { Cwb: 1, Cwc: 1, BSk: { elevation_m: [1000, null] } }, water: [FRISCH, FEUCHT], salt_tolerant: true, homeland: [west_nord], use: [N] }
+  - { id: amarant, name_key: PLANT_AMARANTH, growth: GETREIDE, climate: { Cwb: 1, Cwa: 1, BSh: 1 }, water: [FRISCH], homeland: [west_nord], use: [N, Fa] }
+  - { id: koka, name_key: PLANT_COCA, growth: STRAUCH, climate: { Cwb: 1, Am: { elevation_m: [1000, null] } }, water: [FRISCH, FEUCHT], terrain: HANG, homeland: [west_nord], use: [S, M] }
+  - { id: chinarinde, name_key: PLANT_CINCHONA, growth: BAUM, climate: { Cwb: 1, Am: { elevation_m: [1000, null] } }, water: [FEUCHT], homeland: [west_nord], use: [M] }
+  - { id: kaffee, name_key: PLANT_COFFEE, growth: STRAUCH, climate: { Cwb: 1, Am: { elevation_m: [1000, null] } }, water: [FRISCH, FEUCHT], soil: { prefer: [vulkanboden] }, shade: true, homeland: [ost_mitte], use: [S] }
+  - { id: teff, name_key: PLANT_TEFF, growth: GETREIDE, climate: { Cwb: 1 }, water: [FRISCH, FEUCHT], soil: { tolerate: [vertisol] }, homeland: [ost_mitte], use: [N] }
+  - { id: ensete, name_key: PLANT_ENSETE, growth: STAUDE, climate: { Cwb: 1 }, water: [FRISCH], homeland: [ost_mitte], use: [N, F] }
+  - { id: kath, name_key: PLANT_KHAT, growth: STRAUCH, climate: { Cwb: 1 }, water: [FRISCH], homeland: [ost_mitte], use: [S] }
+  - { id: seidelbast, name_key: PLANT_DAPHNE, growth: STRAUCH, climate: { Cwb: 1, Dsb: { elevation_m: [1000, null] }, Dwb: { elevation_m: [1000, null] } }, water: [FRISCH, FEUCHT], terrain: HANG, shade: true, homeland: [ost_nord], use: [P] }
+  - { id: riesennessel, name_key: PLANT_GIANT_NETTLE, growth: STAUDE, climate: { Cwb: 1, Dwb: 1 }, water: [FEUCHT], homeland: [ost_nord], use: [F] }
+  - { id: rhododendron, name_key: PLANT_RHODODENDRON, growth: STRAUCH, climate: { Cwb: 1, Cfb: 1, Dwb: 1 }, water: [FRISCH, FEUCHT], ph: [STARK_SAUER, SCHWACH_SAUER], homeland: [ost_nord], use: [T] }
+
+  # 6.12 Feuchtgebiete und Ufer (azonal)
+  - { id: papyrus, name_key: PLANT_PAPYRUS, growth: GRAS, climate: { Aw: 1, Af: 1, BWh: 1, BSh: 1 }, water: [NASS, UFER], homeland: [ost_mitte], use: [P, F, H] }
+  # alle Klassen außer EF und ET
+  - { id: schilf, name_key: PLANT_REED, growth: GRAS, climate: { Af: 1, Am: 1, Aw: 1, As: 1, BWh: 1, BWk: 1, BSh: 1, BSk: 1, Cfa: 1, Cfb: 1, Cfc: 1, Csa: 1, Csb: 1, Csc: 1, Cwa: 1, Cwb: 1, Cwc: 1, Dfa: 1, Dfb: 1, Dfc: 1, Dfd: 1, Dsa: 1, Dsb: 1, Dsc: 1, Dsd: 1, Dwa: 1, Dwb: 1, Dwc: 1, Dwd: 1 }, water: [UFER, NASS], worldwide: true, use: [H, F, P] }
+  - { id: rohrkolben, name_key: PLANT_CATTAIL, growth: STAUDE, climate: { Af: 1, Am: 1, Aw: 1, As: 1, Cfa: 1, Cfb: 1, Cfc: 1, Csa: 1, Csb: 1, Csc: 1, Cwa: 1, Cwb: 1, Cwc: 1, Dfa: 1, Dfb: 1, Dfc: 1, Dfd: 1, Dsa: 1, Dsb: 1, Dsc: 1, Dsd: 1, Dwa: 1, Dwb: 1, Dwc: 1, Dwd: 1 }, water: [NASS], worldwide: true, use: [N, F] }
+  - { id: binse, name_key: PLANT_RUSH, growth: STAUDE, climate: { Af: 1, Am: 1, Aw: 1, As: 1, Cfa: 1, Cfb: 1, Cfc: 1, Csa: 1, Csb: 1, Csc: 1, Cwa: 1, Cwb: 1, Cwc: 1, Dfa: 1, Dfb: 1, Dfc: 1, Dfd: 1, Dsa: 1, Dsb: 1, Dsc: 1, Dsd: 1, Dwa: 1, Dwb: 1, Dwc: 1, Dwd: 1 }, water: [UFER], worldwide: true, use: [F] }
+  - { id: lotus, name_key: PLANT_LOTUS, growth: WASSERPFLANZE, climate: { Af: 1, Am: 1, Aw: 1, Cfa: 1, Cwa: 1 }, water: [STEHEND], homeland: [ost_sued], use: [N, M] }
+  - { id: wassernuss, name_key: PLANT_WATER_CHESTNUT, growth: WASSERPFLANZE, climate: { Cfa: 1, Cfb: 1, Dfa: 1 }, water: [STEHEND], homeland: [ost_nord], use: [N] }
+  # TODO: T-085 – braucht den Layer GEZEITEN, bis dahin ohne Vorkommen
+  - { id: mangrove, name_key: PLANT_MANGROVE, growth: BAUM, climate: { Af: 1, Am: 1, Aw: 1 }, water: [GEZEITEN], salt_tolerant: true, worldwide: true, use: [H, W, Fu] }
+  # TODO: T-085 – Brackwasser = GEZEITEN an Flussmündungen, bis dahin ohne Vorkommen
+  - { id: nipapalme, name_key: PLANT_NIPA_PALM, growth: PALME, climate: { Af: 1, Am: 1 }, water: [GEZEITEN], salt_tolerant: true, homeland: [suedost], use: [F, N] }
+  - { id: pappel, name_key: PLANT_POPLAR, growth: BAUM, climate: { BSk: 1, BWk: 1, Dfa: 1, Csa: 1, Csb: 1, Csc: 1 }, water: [UFER, OASE], worldwide: true, use: [H] }
+
+  # 6.13 Salzböden und Küste (azonal)
+  - { id: queller, name_key: PLANT_GLASSWORT, growth: STAUDE, climate: { BWh: 1, BWk: 1, BSh: 1, BSk: 1, Cfa: 1, Cfb: 1, Cfc: 1, Csa: 1, Csb: 1, Csc: 1, Cwa: 1, Cwb: 1, Cwc: 1, Dfa: 1, Dfb: 1, Dfc: 1, Dfd: 1, Dsa: 1, Dsb: 1, Dsc: 1, Dsd: 1, Dwa: 1, Dwb: 1, Dwc: 1, Dwd: 1 }, water: [KUESTE, GEZEITEN], soil: { prefer: [salzboden] }, salt_tolerant: true, worldwide: true, use: [N, I] }
+  - { id: salzkraut, name_key: PLANT_SALTWORT, growth: STAUDE, climate: { BWk: 1, BSk: 1, BWh: 1 }, water: [TROCKEN, FRISCH], soil: { prefer: [salzboden] }, salt_tolerant: true, worldwide: true, use: [Fu, I] }
+  # außerdem Dünenbefestigung
+  - { id: strandhafer, name_key: PLANT_MARRAM_GRASS, growth: GRAS, climate: { Cfb: 1, Dfb: 1 }, water: [KUESTE], soil: { prefer: [sandboden] }, salt_tolerant: true, worldwide: true, use: [F] }
+  # außerdem Dünger
+  - { id: seetang, name_key: PLANT_KELP, growth: ALGE, climate: { Cfa: 1, Cfb: 1, Cfc: 1, Csa: 1, Csb: 1, Csc: 1, Cwa: 1, Cwb: 1, Cwc: 1, Dfa: 1, Dfb: 1, Dfc: 1, Dfd: 1, Dsa: 1, Dsb: 1, Dsc: 1, Dsd: 1, Dwa: 1, Dwb: 1, Dwc: 1, Dwd: 1 }, water: [KUESTE], salt_tolerant: true, worldwide: true, use: [N, I] }
+
+  # 6.15 Ergänzungen 2026-10-25 (T-093): Gewürze der gemäßigten Zonen, Grundnahrung für Urodak, Brutahk und Hyrax
+  - { id: chili, name_key: PLANT_CHILI, growth: STAUDE, climate: { Cfa: 1, Cwa: 1, Aw: 1, BSh: 1 }, water: [FRISCH], homeland: [west_nord], use: [G, M, N] }
+  - { id: salbei, name_key: PLANT_SAGE, growth: ZWERGSTRAUCH, climate: { Csa: 1, Csb: 1, Cfa: 1 }, water: [TROCKEN, FRISCH], soil: { prefer: [rendzina, terra_rossa, kalkkruste] }, ph: [NEUTRAL, BASISCH], homeland: [west_nord], use: [G, M] }
+  - { id: brunnenkresse, name_key: PLANT_WATERCRESS, growth: STAUDE, climate: { Cfa: 1, Cfb: 1, Cwa: 1, Dfb: 1 }, water: [UFER, STEHEND], homeland: [west_sued], use: [G, N, M] }
+  - { id: pfefferbaum, name_key: PLANT_PEPPER_TREE, growth: BAUM, climate: { BSh: 1, Csa: 1, Cwa: 1 }, water: [TROCKEN, FRISCH], homeland: [west_sued], use: [G, H, W] }
+  - { id: senf, name_key: PLANT_MUSTARD, growth: STAUDE, climate: { Cfb: 1, Dfb: 1, Csa: 1, BSk: 1 }, water: [FRISCH], homeland: [nordwest], use: [G, O, M] }
+  - { id: kuemmel, name_key: PLANT_CARAWAY, growth: STAUDE, climate: { Dfb: 1, Dfc: 1, Cfb: 1 }, water: [FRISCH], homeland: [nordwest], use: [G, M] }
+  - { id: bergpfeffer, name_key: PLANT_MOUNTAIN_PEPPER, growth: STRAUCH, climate: { Cfa: 1, Cwa: 1, Dfa: 1 }, water: [FRISCH], terrain: HANG, homeland: [ost_nord], use: [G, M] }
+  - { id: knoblauch, name_key: PLANT_GARLIC, growth: KNOLLE, climate: { BSk: 1, Dfa: 1, Csa: 1, Cfa: 1 }, water: [TROCKEN, FRISCH], homeland: [ost_nord], use: [G, N, M] }
+  - { id: zwiebel, name_key: PLANT_ONION_LEEK, growth: KNOLLE, climate: { BSk: 1, Dfa: 1, Dfb: 1, Cfa: 1, Csa: 1 }, water: [FRISCH], homeland: [ost_sued], use: [N, G] }
+  - { id: koriander, name_key: PLANT_CORIANDER, growth: STAUDE, climate: { Csa: 1, BSk: 1, Cfa: 1, Cwa: 1 }, water: [FRISCH], homeland: [ost_sued], use: [G, M] }
+  - { id: minze, name_key: PLANT_MINT, growth: STAUDE, climate: { Cfa: 1, Cfb: 1, Cfc: 1, Csa: 1, Csb: 1, Csc: 1, Cwa: 1, Cwb: 1, Cwc: 1, Dfa: 1, Dfb: 1, Dfc: 1, Dfd: 1, Dsa: 1, Dsb: 1, Dsc: 1, Dsd: 1, Dwa: 1, Dwb: 1, Dwc: 1, Dwd: 1 }, water: [UFER, FEUCHT], worldwide: true, use: [G, M] }
+  - { id: wacholder, name_key: PLANT_JUNIPER, growth: STRAUCH, climate: { Dfb: 1, Dfc: 1, BSk: 1, Cfb: 1, ET: 1 }, water: [TROCKEN, FRISCH], worldwide: true, use: [G, M, H] }
+  - { id: pfeilkraut, name_key: PLANT_ARROWHEAD, growth: KNOLLE, climate: { Cfa: 1, Cfb: 1, Cwa: 1, Dfb: 1 }, water: [NASS, UFER], homeland: [west_sued], use: [N, Fu] }
+  - { id: topinambur, name_key: PLANT_JERUSALEM_ARTICHOKE, growth: KNOLLE, climate: { Cfa: 1, Cfb: 1, Dfa: 1, Dfb: 1 }, water: [FRISCH, FEUCHT], fertility: ARM, homeland: [west_sued], use: [N, Fu] }
+  - { id: esskastanie, name_key: PLANT_SWEET_CHESTNUT, growth: BAUM, climate: { Cfa: 1, Cfb: 1, Csa: 1 }, water: [FRISCH, FEUCHT], ph: [STARK_SAUER, SCHWACH_SAUER], homeland: [west_sued], use: [N, H, W] }
+  - { id: kuerbis, name_key: PLANT_PUMPKIN, growth: KLETTERPFLANZE, climate: { Cfa: 1, Cwa: 1, Dfa: 1, Aw: 1 }, water: [FRISCH, FEUCHT], fertility: FRUCHTBAR, homeland: [west_nord], use: [N, O] }
+  - { id: jujube, name_key: PLANT_JUJUBE, growth: BAUM, climate: { BSh: 1, BWh: { water: [OASE] }, Cwa: 1, Csa: 1 }, water: [TROCKEN, OASE], homeland: [ost_mitte, ost_sued], use: [N, M, H] }
+  - { id: sykomore, name_key: PLANT_SYCAMORE_FIG, growth: BAUM, climate: { BWh: 1, BSh: 1, Aw: 1 }, water: [OASE, UFER], homeland: [ost_mitte], use: [N, H] }
+
+  # 7. Fiktive Ergänzungen (O - welche aktiv sind, pflanzen.md Abschnitt 8)
+  - { id: kieselgras, name_key: PLANT_SILICA_GRASS, growth: GRAS, climate: { BSh: 1, BWh: 1 }, water: [TROCKEN], homeland: [west_sued], use: [F], fictional: true, active: false }
+  - { id: filzpolster, name_key: PLANT_FELT_CUSHION, growth: STAUDE, climate: { ET: 1 }, water: [FRISCH, FEUCHT], soil: { prefer: [rohboden_fels] }, homeland: [nordwest], use: [F], fictional: true, active: false }
+  - { id: bogenrinde, name_key: PLANT_SHEETBARK_TREE, growth: BAUM, climate: { Cfb: 1, Dfb: 1 }, water: [FRISCH], homeland: [west_nord], use: [P], fictional: true, active: false }
+  - { id: frostzucker, name_key: PLANT_FROSTSUGAR_SHRUB, growth: STRAUCH, climate: { Dfc: 1, ET: 1 }, water: [TROCKEN, FRISCH], homeland: [ost_nord], use: [N], fictional: true, active: false }
+  - { id: latexrinde, name_key: PLANT_PLATE_LATEX_TREE, growth: BAUM, climate: { Af: 1 }, water: [FEUCHT], homeland: [suedost], use: [W, P], fictional: true, active: false }

@@ -141,7 +141,7 @@ Kategorien: `GESTEIN`, `ERZ`, `BRENNSTOFF`, `SALZ`, `INDUSTRIE`, `EDELSTEIN` (je
 | `bismut` | Bismut (Wismut) | gemeinsam mit Zinn, Wolfram und Silber, teils gediegen | ABGELEITET | SELTEN | `zinn`, `silber` | Bismutbronze, wo Zinn knapp ist; leicht schmelzende Legierungen, weißes Pigment, Kosmetik, Heilmittel |
 | `gold_primaer` | Gold (gediegen, in Gängen) | KUESTENBOGEN, KRATON, ALTGEBIRGE | PUNKTUELL | SELTEN | – | Schmuck, Währung |
 | `gold_seife` | Waschgold | flussabwärts von Gold | SEIFE | SELTEN | `gold_primaer` | historisch fast immer die erste Goldquelle |
-| `silber` | Silber | KUESTENBOGEN, Flanken von KOLLISION, überall mit Blei (silberhaltiges Bleierz) | KLUMPIG | SELTEN | `blei` | Schmuck, Währung |
+| `silber` | Silber | KUESTENBOGEN, Flanken von KOLLISION, überall mit Blei (silberhaltiges Bleierz) | KLUMPIG | MITTEL | `blei` | Schmuck, Währung |
 | `silber_gediegen` | Gediegenes Silber | reichste Stellen der Silbergänge, oft mit Kobalt, Nickel und Arsen | ABGELEITET | SEHR_SELTEN | `silber` | Silber ohne Verhüttung, Schmuck, Währung |
 | `blei` | Blei | KUESTENBOGEN, KOLLISION-Flanken, in Kalkstein (auch Kalkstein-Becken und Kraton) | KLUMPIG | MITTEL | `kalkstein` | Rohre, Gewichte, Glasur |
 | `zink` | Zink | wie Blei | ABGELEITET | MITTEL | `blei` | Messing |

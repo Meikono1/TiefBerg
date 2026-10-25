@@ -4,7 +4,7 @@
 
 Was eine Gegend hergibt, entscheidet, was ihre Bewohner erfinden. Wo am Fluss Papyrus wächst, schreibt man auf Papyrus; wo es keinen gibt, auf Birkenrinde, Palmblättern oder Ton. Wo Flachs gedeiht, entsteht Leinen, in der Steppe dagegen Kleidung aus Wolle und Leder. Die Pflanzen sind deshalb keine Kulisse, sondern die Grundlage der Rezepte (Design-Referenz Abschnitt 9): Jede Landzelle außer Eis soll Pflanzen tragen, und Völker und Kulturen bauen auf dem auf, was dort wächst.
 
-Eine Pflanze wächst, wo Klima, Boden und Wasser zu ihr passen. Klima kommt aus den Köppen-Klassen, Boden aus `materialien_und_boeden.md` (mit Fruchtbarkeit und pH), Wasser aus Bodenfeuchte, Flüssen und Küste. Wie daraus je Zelle eine Eignung berechnet wird, steht in `welt_konfiguration.md` Abschnitte 11 und 12. Die Liste wird später zu YAML (`data/nature/pflanzen.yaml`); bis dahin ist diese Datei die Arbeitsgrundlage.
+Eine Pflanze wächst, wo Klima, Boden und Wasser zu ihr passen. Klima kommt aus den Köppen-Klassen, Boden aus `materialien_und_boeden.md` (mit Fruchtbarkeit und pH), Wasser aus Bodenfeuchte, Flüssen und Küste. Wie daraus je Zelle eine Eignung berechnet wird, steht in `welt_konfiguration.md` Abschnitte 11 und 12. Die Liste steht als YAML in `data/nature/pflanzen.yaml` (T-079); diese Datei bleibt die Arbeitsgrundlage, Änderungen werden in beide übernommen.
 
 ## 2. Angaben je Pflanze
 
@@ -36,7 +36,7 @@ Freitext in der Spalte **Standort** wird beim Überführen in YAML auf messbare 
 | Hang, gut drainiert | Mindest-Hangneigung bzw. kein `gley`/`moor` |
 | Gebirge, Hochland | Höhenbereich |
 | frostfrei | kältester Monat über 0 °C (`temperature_coldest_month`) |
-| bevorzugt Inseln | Bonus auf kleinen Landmassen |
+| bevorzugt Inseln | Bonus auf kleinen Landflächen |
 | Schatten, Unterholz | TODO: braucht das Konkurrenzmodell (`welt_konfiguration.md` Abschnitt 12) |
 | Pionier auf Brandflächen | TODO: Brände gibt es in den Weltdaten nicht |
 | Küstenwüste mit Nebel | TODO: Nebel gibt es in den Weltdaten nicht; bis dahin `KUESTE` in BWh |
@@ -77,11 +77,13 @@ Wie die Kategorien je Zelle bestimmt werden, steht in `welt_konfiguration.md` Ab
 | T | Gift |
 | I | Industriell (z. B. Soda aus Pflanzenasche) |
 
-## 5. Linien je Landmasse
+## 5. Heimat und Linien
 
-Auf getrennten Landmassen bringen gleiche Klimate ähnliche Pflanzenformen hervor, die aus ganz verschiedenen Familien stammen. Ein Säulenkaktus auf dem einen Kontinent und eine Kandelaber-Wolfsmilch auf dem anderen sehen fast gleich aus, sind aber nicht verwandt, und die Wolfsmilch führt giftigen Milchsaft. Auf einer abgelegenen Landmasse kann eine einzige Baumfamilie fast alle Waldnischen besetzen, und eine Inselgruppe hat statt Flachs ihre eigene Faserlilie. Wer von einem Kontinent auf den anderen reist, findet also Vertrautes, das sich anders verhält.
+Damit der Handel zwischen den Teilen der Welt lohnt, wächst eine Pflanze nicht überall, wo das Klima passt, sondern nur in ihrer Heimat. Die Welt ist dafür in sieben Regionen geteilt: Westkontinent Nord und Süd, das Nordwestland, Ostkontinent Nord, Mitte und Süd sowie Südland mit den Ostinseln (`lore/regionen.yaml`, Karte `lore/regionen.png`). Wer im Westen Tee trinken will, muss ihn aus dem Norden des Ostens holen, und wer im Osten Mais anbauen möchte, braucht erst jemanden, der die Körner über das Meer bringt. Einmal eingeführt, lässt sich eine Kulturpflanze auch in der Fremde anbauen; die Karte zeigt nur, wo sie von Natur aus wächst. Wie die Regionen zu ihren Pflanzen kommen, folgt dem Klima und den Völkern: Der Süden des Westens mit seinen Feuchtgebieten trägt den Auenreis der Urodak, der Osten in der Mitte die Gift- und Rauschpflanzen, mit denen Nagalith und Hyrax umgehen, und die unbewohnten Ostinseln die Gewürze, die nur über das Meer zu erreichen sind. Die Zuordnung je Pflanze steht in `data/nature/pflanzen.yaml` (`homeland`).
 
-Pflanzen mit `linie: true` bekommen deshalb je Landmasse eine eigene Variante, z. B. `saeulenkaktus_west` und `saeulenkaktus_ost`. Die Varianten unterscheiden sich leicht (essbar oder giftig, Faserqualität, Farbe) und können eigene Namen bekommen. Für diese Welt bieten sich an: Westkontinent, Ostkontinent, Nordwestland, Eisinsel, Inselketten im Osten, Südland.
+Eine kleine Grundflora wächst überall (`worldwide: true`): Schilf, Binsen, Rohrkolben, Weide, Birke, Brennnessel, Moose, Flechten, Tang und andere, die niemand handelt, weil jeder sie hat.
+
+Auf getrennten Landmassen bringen gleiche Klimate ähnliche Pflanzenformen hervor, die aus ganz verschiedenen Familien stammen. Ein Säulenkaktus auf dem einen Kontinent und eine Kandelaber-Wolfsmilch auf dem anderen sehen fast gleich aus, sind aber nicht verwandt, und die Wolfsmilch führt giftigen Milchsaft. Wer von einer Region in die andere reist, findet also Vertrautes, das sich anders verhält. Pflanzen mit `linie: true` bekommen deshalb je Region eine eigene Variante, z. B. `eiche_west_nord` und `eiche_ost_sued`. Die Varianten unterscheiden sich leicht (essbar oder giftig, Holzqualität, Farbe) und können eigene Namen bekommen. Linien sind heute Säulenkaktus, Akazie (der Dornbaum von Savanne und Steppe), Eiche und Kiefer: Holz gibt es so in jeder Region, nur nicht überall vom selben Baum.
 
 ## 6. Pflanzenliste
 
@@ -109,7 +111,7 @@ Pflanzen mit `linie: true` bekommen deshalb je Landmasse eine eigene Variante, z
 | `zuckerrohr` | Zuckerrohr | GRAS | Af, Am, Aw, Cwa | FEUCHT oder UFER | N |
 | `kautschuk` | Kautschukbaum | BAUM | Af | FEUCHT | W |
 | `kapok` | Kapokbaum | BAUM | Af, Am, Aw | FRISCH | F (Füllung), O |
-| `abaka` | Abaka (Manilahanf) | STAUDE | Af | FEUCHT, Vulkanboden | F |
+| `abaka` | Abaka (Faserbanane) | STAUDE | Af | FEUCHT, Vulkanboden | F |
 | `rattan` | Rattan | PALME | Af | FEUCHT, Unterholz | F, H (Möbel) |
 | `bambus` | Bambus | GRAS | Af, Am, Cfa, Cwa | FEUCHT | H, F, P, N (Sprossen) |
 | `teak` | Teak | BAUM | Am, Aw | FRISCH, gut drainiert | H |
@@ -135,11 +137,11 @@ Pflanzen mit `linie: true` bekommen deshalb je Landmasse eine eigene Variante, z
 | `sorghum` | Sorghum | GETREIDE | Aw, As, BSh | TROCKEN toleriert | N, Fu |
 | `perlhirse` | Perlhirse | GETREIDE | Aw, BSh | sandig, TROCKEN | N |
 | `fingerhirse` | Fingerhirse | GETREIDE | Aw, Cwb | FRISCH | N |
-| `afrikanischer_reis` | Afrikanischer Reis | GETREIDE | Aw | UFER, Überschwemmungsflächen | N |
+| `auenreis` | Auenreis | GETREIDE | Aw | UFER, Überschwemmungsflächen | N |
 | `baumwolle` | Baumwolle | STRAUCH | Aw, Cfa, BSh (nur OASE/UFER) | gut drainiert | F, O |
 | `kenaf` | Kenaf | STAUDE | Aw | FRISCH | F, P |
 | `baobab` | Baobab | BAUM | Aw, BSh | TROCKEN, speichert Wasser im Stamm | N, F (Bast), M |
-| `akazie` | Gummi-Akazie | BAUM | Aw, BSh, BWh (OASE) | TROCKEN | W (Gummi), Fu, H |
+| `akazie` | Gummi-Akazie (`linie: true`) | BAUM | Aw, BSh, BWh (OASE) | TROCKEN | W (Gummi), Fu, H |
 | `shea` | Sheabutterbaum | BAUM | Aw | FRISCH | O |
 | `erdnuss` | Erdnuss | HUELSENFRUCHT | Aw, Cfa | sandig | N, O |
 | `augenbohne` | Augenbohne | HUELSENFRUCHT | Aw, BSh | TROCKEN | N, Fu |
@@ -244,13 +246,13 @@ Pflanzen mit `linie: true` bekommen deshalb je Landmasse eine eigene Variante, z
 | `sumpfzypresse` | Sumpfzypresse | BAUM | Cfa | NASS | H |
 | `pekannuss` | Pekannuss | BAUM | Cfa, Dfa | UFER, Auenboden | N, H |
 | `papierrinde` | Papierrindenbaum (Melaleuca) | BAUM | Cfa, Aw, Am | NASS, UFER | P (Rindenbögen), M, O |
-| `eukalyptus` | Eukalyptus (`linie: true`) | BAUM | Cfa, Cfb, Aw, BSh | arm, TROCKEN toleriert | H, M, O |
+| `eukalyptus` | Eukalyptus | BAUM | Cfa, Cfb, Aw, BSh | arm, TROCKEN toleriert | H, M, O |
 
 ### 6.7 Ozeanisch gemäßigt (Cfb, Cfc)
 
 | ID | Name | Wuchsform | Klima | Standort | Nutzung |
 |---|---|---|---|---|---|
-| `eiche` | Eiche | BAUM | Cfb, Cfa, Dfa, Dfb, Cs | Braunerde | H, Fu (Eicheln), W (Gerbstoff) |
+| `eiche` | Eiche (`linie: true`) | BAUM | Cfb, Cfa, Dfa, Dfb, Cs | Braunerde | H, Fu (Eicheln), W (Gerbstoff) |
 | `buche` | Buche | BAUM | Cfb, Dfb | Kalk, Braunerde | H, Fu |
 | `esche` | Esche | BAUM | Cfb, Dfb | FRISCH | H (Werkzeugstiele, Speere) |
 | `ulme` | Ulme | BAUM | Cfb, Dfa | FRISCH | H, F (Bast) |
@@ -269,13 +271,13 @@ Pflanzen mit `linie: true` bekommen deshalb je Landmasse eine eigene Variante, z
 | `ginster` | Ginster / Stechginster | STRAUCH | Cfb, Csb | sauer, sandig | Fa (gelb), Fu, B |
 | `fingerhut` | Fingerhut | STAUDE | Cfb | sauer | M, T |
 | `riesenlebensbaum` | Riesenlebensbaum | BAUM | Cfb, Dfb (küstennah) | FEUCHT | H, F (Rinde) |
-| `faserlilie` | Faserlilie (Phormium-Typ, `linie: true`) | STAUDE | Cfb, Cfc | FEUCHT bis NASS | F |
+| `faserlilie` | Faserlilie (Phormium-Typ) | STAUDE | Cfb, Cfc | FEUCHT bis NASS | F |
 
 ### 6.8 Kontinental gemäßigt (Dfa, Dfb, Dwa, Dwb, Dsa, Dsb)
 
 | ID | Name | Wuchsform | Klima | Standort | Nutzung |
 |---|---|---|---|---|---|
-| `kiefer` | Kiefer | BAUM | Dfb, Dfc, Cfb, Csa | sandig, Podsol | H, W (Harz, Teer, Pech) |
+| `kiefer` | Kiefer (`linie: true`) | BAUM | Dfb, Dfc, Cfb, Csa | sandig, Podsol | H, W (Harz, Teer, Pech) |
 | `fichte` | Fichte | BAUM | Dfb, Dfc, Dwb | sauer | H, W |
 | `birke` | Birke | BAUM | Dfb, Dfc, Cfb, Dwb | sauer, Pionierpflanze | P (Rinde), H, N (Saft), W (Birkenteer) |
 | `linde` | Linde | BAUM | Dfb, Cfb, Dfa | Braunerde | F (Bast), H (Schnitzholz), M |
@@ -312,7 +314,7 @@ Pflanzen mit `linie: true` bekommen deshalb je Landmasse eine eigene Variante, z
 | `steinbrech` | Steinbrech | STAUDE | ET | Fels | M |
 | `silberwurz` | Silberwurz | ZWERGSTRAUCH | ET | Kalk | Fu |
 | `rosenwurz` | Rosenwurz (Rhodiola) | STAUDE | ET, Dfc | Fels | M |
-| `islaendisch_moos` | Isländisches Moos | FLECHTE | ET, Dfc | sauer | N, M |
+| `moosflechte` | Moosflechte | FLECHTE | ET, Dfc | sauer | N, M |
 | `edelweiss` | Edelweiß | STAUDE | ET (Hochgebirge) | Kalk | M |
 
 ### 6.11 Tropisches und subtropisches Hochland (Cwb, Cwc, Hanglagen in Af/Am)
@@ -332,7 +334,7 @@ Pflanzen mit `linie: true` bekommen deshalb je Landmasse eine eigene Variante, z
 | `ensete` | Ensete (Falsche Banane) | STAUDE | Cwb | FRISCH | N, F |
 | `kath` | Kath | STRAUCH | Cwb | FRISCH | S |
 | `seidelbast` | Seidelbast (Lokta) | STRAUCH | Cwb, Dsb, Dwb (Gebirge) | Hang, Schatten | P |
-| `himalaya_nessel` | Himalaya-Nessel | STAUDE | Cwb, Dwb | FEUCHT | F |
+| `riesennessel` | Riesennessel | STAUDE | Cwb, Dwb | FEUCHT | F |
 | `rhododendron` | Rhododendron | STRAUCH | Cwb, Cfb, Dwb | sauer | T (giftiger Honig) |
 
 ### 6.12 Feuchtgebiete und Ufer (azonal)
@@ -347,7 +349,7 @@ Pflanzen mit `linie: true` bekommen deshalb je Landmasse eine eigene Variante, z
 | `wassernuss` | Wassernuss | WASSERPFLANZE | Cfa, Cfb, Dfa | STEHEND | N |
 | `mangrove` | Mangrove | BAUM | Af, Am, Aw | GEZEITEN, salztolerant | H, W (Gerbstoff), Fu |
 | `nipapalme` | Nipapalme | PALME | Af, Am | Brackwasser, GEZEITEN | F (Dach), N (Zucker) |
-| `pappel` | Pappel / Euphrat-Pappel | BAUM | BSk, BWk, Dfa, Cs | UFER, OASE | H |
+| `pappel` | Pappel / Wüstenpappel | BAUM | BSk, BWk, Dfa, Cs | UFER, OASE | H |
 
 ### 6.13 Salzböden und Küste (azonal)
 
@@ -361,6 +363,31 @@ Pflanzen mit `linie: true` bekommen deshalb je Landmasse eine eigene Variante, z
 ### 6.14 Trockenflüsse und Oasen
 
 Keine eigenen Pflanzen, sondern eine Standortkombination. Entlang episodischer Flüsse und an Oasen in BW/BS erhalten folgende Pflanzen einen Bonus: `dattelpalme`, `tamariske`, `akazie`, `mesquite`, `pappel`, `oleander`, `henna`, `melone`, `baumwolle`, `gerste`.
+
+### 6.15 Ergänzungen: Gewürze und Grundnahrung
+
+Die Auswertung je Volk zeigte zwei Lücken. In den gemäßigten Zonen gab es kaum Gewürze, weil die Liste ihre Würze fast nur aus den Tropen und dem Mittelmeerraum holte; Humanic, Ruminan, Urodak und die Völker des kalten Nordens kochten ohne. Und im Süden des Westens fehlte Grundnahrung für die Urodak, die dort in feuchten, gemäßigten Wäldern leben, ebenso für die Brutahk mit ihrem großen Hunger. Jede Region bekommt deshalb ein eigenes Würzprofil, sodass Chili, Senf, Knoblauch und Koriander zu Handelsgütern werden, während Minze und Wacholder als wilde Würze überall wachsen. Die Hyrax brauchen kein neues Getreide: Sie leben zur Hälfte aus ihren Fruchthainen und aus Insekten, ihnen fehlten Obstbäume für die Oasen. Für die Brutahk reicht es, Hirse, Buchweizen, Hasel und Sorghum auch in Ost-Süd wachsen zu lassen.
+
+| ID | Name | Wuchsform | Klima | Standort | Nutzung | Heimat |
+|---|---|---|---|---|---|---|
+| `chili` | Chili / Paprika | STAUDE | Cfa, Cwa, Aw, BSh | FRISCH | G, M, N | West-Nord |
+| `salbei` | Salbei | ZWERGSTRAUCH | Csa, Csb, Cfa | Kalk, TROCKEN toleriert | G, M | West-Nord |
+| `brunnenkresse` | Brunnenkresse | STAUDE | Cfa, Cfb, Cwa, Dfb | UFER, STEHEND | G, N, M | West-Süd |
+| `pfefferbaum` | Pfefferbaum | BAUM | BSh, Csa, Cwa | TROCKEN toleriert | G, H, W | West-Süd |
+| `senf` | Senf | STAUDE | Cfb, Dfb, Csa, BSk | FRISCH | G, O, M | Nordwest |
+| `kuemmel` | Kümmel | STAUDE | Dfb, Dfc, Cfb | FRISCH | G, M | Nordwest |
+| `bergpfeffer` | Bergpfeffer | STRAUCH | Cfa, Cwa, Dfa | FRISCH, Hang | G, M | Ost-Nord |
+| `knoblauch` | Knoblauch | KNOLLE | BSk, Dfa, Csa, Cfa | TROCKEN toleriert | G, N, M | Ost-Nord |
+| `zwiebel` | Zwiebel / Lauch | KNOLLE | BSk, Dfa, Dfb, Cfa, Csa | FRISCH | N, G | Ost-Süd |
+| `koriander` | Koriander | STAUDE | Csa, BSk, Cfa, Cwa | FRISCH | G, M | Ost-Süd |
+| `minze` | Minze | STAUDE | alle C und D | UFER, FEUCHT | G, M | weltweit |
+| `wacholder` | Wacholder | STRAUCH | Dfb, Dfc, BSk, Cfb, ET | TROCKEN bis FRISCH | G, M, H | weltweit |
+| `pfeilkraut` | Pfeilkraut (Sumpfknolle) | KNOLLE | Cfa, Cfb, Cwa, Dfb | NASS, UFER | N, Fu | West-Süd |
+| `topinambur` | Topinambur | KNOLLE | Cfa, Cfb, Dfa, Dfb | FRISCH, arm toleriert | N, Fu | West-Süd |
+| `esskastanie` | Esskastanie | BAUM | Cfa, Cfb, Csa | sauer, FRISCH | N, H, W | West-Süd |
+| `kuerbis` | Kürbis | KLETTERPFLANZE | Cfa, Cwa, Dfa, Aw | FRISCH, fruchtbar | N, O | West-Nord |
+| `jujube` | Brustbeere (Jujube) | BAUM | BSh, BWh (OASE), Cwa, Csa | TROCKEN, OASE | N, M, H | Ost-Mitte, Ost-Süd |
+| `sykomore` | Maulbeerfeige | BAUM | BWh, BSh, Aw | OASE, UFER | N, H | Ost-Mitte |
 
 ## 7. Fiktive, plausible Ergänzungen (optional)
 
@@ -378,6 +405,6 @@ Diese Pflanzen existieren auf der Erde nicht, treiben aber reale Eigenschaften w
 
 - O - Abweichende Eigenschaften und Namen der Linien-Varianten (Abschnitt 5).
 - O - Welche fiktiven Pflanzen aktiv sind (Abschnitt 7).
-- O - Namen mit Bezug auf Orte der Erde brauchen eigene Namen: Afrikanischer Reis, Abaka (Manilahanf), Himalaya-Nessel, Isländisches Moos, Euphrat-Pappel.
-- O - Abbildung der Standort-Angaben (Abschnitt 2) bestätigen.
+- O - Englische Anzeigenamen in `data/lang/en.yaml` sind Platzhalter.
+- O - Abbildung der Standort-Angaben (Abschnitt 2) bestätigen; die Umsetzung mit Ergänzungen (Wasser ohne Angabe = FRISCH und FEUCHT, Kalk, Gebirge ab 1000 m) steht im Kopf von `data/nature/pflanzen.yaml`.
 - O - Die Liste ist noch nicht bestätigt (T-050); Tiere folgen in `Fauna.md`.

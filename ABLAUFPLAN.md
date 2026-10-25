@@ -7,7 +7,7 @@ Lebende Aufgabenliste. Claude aktualisiert sie nach jeder erledigten Aufgabe, du
 - Ergibt sich aus einer Aufgabe eine neue, steht bei der neuen `← T-###` (Herkunft).
 - Erledigte Aufgaben wandern nach **Erledigt**, mit Datum und ggf. `→ T-###` (Folgeaufgaben).
 - Verweise auf das Design-Dokument als `(Abschnitt N)`.
-- Nächste freie ID: **T-090**
+- Nächste freie ID: **T-094**
 
 ## In Arbeit
 
@@ -41,10 +41,9 @@ Test, ob eine Kulturgruppe vollständig auf den Stand der Kataru kommt, bevor di
 
 Verfahren: `lore/welt_konfiguration.md` Abschnitte 8–12, Inhalte: `lore/materialien_und_boeden.md`, `lore/pflanzen.md`. Alle Ebenen 2160 × 1080, Werkzeuge in Python, jeder Lauf schreibt Bilder nach `lore/`.
 
-- [ ] **T-085** Gezeiten als Datenebene: Quelle für die Wasserkategorie `GEZEITEN` klären (heute nur `lore/world/all-layers/07-tides-raw.png` aus dem Lauf 2026-10-10 als Bild, oder Zahlen aus einem neuen Lauf), danach Layer in `bodenfeuchte.bin` (`welt_konfiguration.md` Abschnitt 11) ← T-078.
-- [ ] **T-089** (Entwickler) Silber ist trotz Blei-Regel kaum erreichbar (13 % des Landes bis 400 km, 43 Völker über 500 km), weil SELTEN nur 0,3 % Abdeckung erlaubt. Entscheiden: Silber auf MITTEL (wie Blei, 2,2 %) oder bewusst selten lassen (Handelsgut wie Gold) (Abschnitt 4) ← T-088.
-- [ ] **T-079** Pflanzen: `data/nature/pflanzen.yaml` aus `lore/pflanzen.md` (Standort-Angaben nach Abschnitt 2 dort), `tools/pflanzen.py` mit Eignung, Linien und Prüfungen (Abschnitt 12), Ausgabe `pflanzen.bin`, Bilder (Abschnitt 5, 9) ← T-078, T-050.
-- [ ] **T-081** Werte des Spielfelds: Für einen gewählten Pixel (8192 × 4096) die Werte aus den umliegenden Zellen der Natur-Ebenen berechnen und in die Spielwelt übertragen; Loader für die Ebenen-Dateien im Kern. Verfahren offen (Abschnitt 4) ← T-082. Alle Natur-Ebenen bis auf Pflanzen liegen vor.
+- [ ] **T-085** Gezeiten als Datenebene: Quelle für die Wasserkategorie `GEZEITEN` klären (heute nur `lore/world/all-layers/07-tides-raw.png` aus dem Lauf 2026-10-10 als Bild, oder Zahlen aus einem neuen Lauf), danach Layer in `bodenfeuchte.bin` (`welt_konfiguration.md` Abschnitt 11). Danach `tools/pflanzen.py` neu laufen lassen: Mangrove und Nipapalme haben bis dahin kein Vorkommen, Queller nur an Salzküsten ← T-078, T-079.
+- [ ] **T-090** (Entwickler) Pflanzen-Ebene sichten (`lore/pflanzen_vielfalt.png`, `lore/regionen.png`, Einzelbilder `lore/ebenen/pflanzen/`), die Heimat je Pflanze in `data/nature/pflanzen.yaml` (`homeland`, Entwurf T-091) prüfen und die Annahmen in `welt_konfiguration.md` Abschnitt 12 bestätigen (Randzone 150 km, Bodengewichte, halbe Nachbarstufe der Feuchte). Fehlende Grundbedürfnisse sind geklärt: Ersatz oder Handel (Abschnitt 4, 5) ← T-079, T-091.
+- [ ] **T-081** Werte des Spielfelds: Für einen gewählten Pixel (8192 × 4096) die Werte aus den umliegenden Zellen der Natur-Ebenen berechnen und in die Spielwelt übertragen; Loader für die Ebenen-Dateien im Kern. Verfahren offen (Abschnitt 4) ← T-082. Alle Natur-Ebenen liegen vor (Gezeiten fehlen, T-085).
 
 ## Später – Meilenstein 5: Weltsimulation (Abschnitt 4, 5, 10, 11, 12)
 
@@ -61,6 +60,7 @@ Verfahren: `lore/welt_konfiguration.md` Abschnitte 8–12, Inhalte: `lore/materi
 - [ ] **T-050** (Entwickler) Liste der Pflanzen und Tiere, die die ganze Welt ausstattet (Zonen, Ressourcen wie Flachs → Leinen) (Abschnitt 5). Stand 2026-10-24: Pflanzen-Entwurf in `lore/pflanzen.md`, offen dort unter Offen (u. a. eigene Namen statt Erdbezug, fiktive Pflanzen, Linien).
 - [ ] **T-051** Vollständigkeitsprüfung als Test: jede Klima-/Vegetationszone hat Pflanzen und Tiere, jede Ressource aus Rezepten hat eine Quelle (Abschnitt 5) ← T-050.
 - [ ] **T-052** (Entwickler) Liste: welche Kreatur auf welchem Level liegt (Abschnitt 10).
+- [ ] **T-092** Anbau von Pflanzen außerhalb ihrer Heimat: wer Saatgut oder Setzlinge mitbringt, kann sie anbauen, wo Klima und Boden passen (Eignung aus `pflanzen.bin` ohne Heimatgrenze). Offen: Saatgut, Wissen, Dauer und ob das schon in der Vorsimulation geschieht (Design-Referenz Abschnitt 5, O) ← T-091, T-045.
 - [ ] **T-053** Einzelsimulation relevanter Personen und Kreaturen ab Level-Schwellwert, auch in der Vorsimulation (z. B. Abenteurer jagen einen Drachen, daraus entsteht seine Geschichte); Schwellwert offen (Abschnitt 10) ← T-052, T-045.
 
 Karte im Spiel (eigene Weltkarte mit bekannter Welt, Abschnitt 12) kommt mit T-014.
@@ -86,6 +86,14 @@ Karte im Spiel (eigene Weltkarte mit bekannter Welt, Abschnitt 12) kommt mit T-0
 Meilenstein 2 (Prototyp Expedition) wird aufgeschlüsselt, wenn Meilenstein 1 steht.
 
 ## Erledigt
+
+- [x] **T-093** 2026-10-25 Pflanzen ergänzt nach Auswertung je Volk (Gewürze, Grundnahrung, Segelfasern im Umkreis der Mittelpunkte): 12 Gewürze (Chili, Salbei, Brunnenkresse, Pfefferbaum, Senf, Kümmel, Bergpfeffer, Knoblauch, Zwiebel/Lauch, Koriander; Minze und Wacholder weltweit), 6 Grundnahrungspflanzen (Pfeilkraut, Topinambur, Esskastanie für die Urodak in West-Süd, Kürbis für West-Nord, Brustbeere und Maulbeerfeige für die Fruchthaine der Hyrax); Rispenhirse, Buchweizen, Hasel und Sorghum zusätzlich in Ost-Süd (Brutahk, Cristatus). `pflanzen.md` 6.15, `pflanzen.yaml`, `en.yaml`. Jetzt hat jedes Volk mindestens ein Gewürz und zwei Grundnahrungsmittel; Segel kann jedes Volk herstellen, gutes Segeltuch (Flachs, Hanf, Baumwolle) gibt es nur in Nordwest, Ost-Nord und Ost-Süd. 226 aktive Pflanzen, 250 Layer ← T-091
+
+- [x] **T-091** 2026-10-25 Pflanzen an Regionen gebunden (Entwickler: Handel spannender). 7 Regionen nach der Skizze des Entwicklers: Grenzen als Ebene `lore/regionen_grenzen.png`, Namen und Punkte in `lore/regionen.yaml` (ersetzt die Landmassen der Linien), Bild `lore/regionen.png`, Namen `REGION_*`. Jede Pflanze hat `homeland` oder `worldwide: true` (Pflicht, Prüfung im Werkzeug); Entwurf der Zuordnung nach Klima und Völkern, 28 weltweit; Linien jetzt Säulenkaktus, Akazie, Eiche, Kiefer (Eukalyptus und Faserlilie nur Südost). Erdnamen ersetzt (Auenreis, Moosflechte, Riesennessel, Wüstenpappel, Abaka ohne Ortsbezug). Prüfung der Grundbedürfnisse je Region. Ergebnis: 12 statt 35 Pflanzen je Zelle, 232 Layer, 6,4 MB; Holz fehlt auf 14 %, Faser auf 10 % des Landes, vor allem Kernwüsten (bleibt: Ersatz oder Handel). Design-Referenz Abschnitt 4 und 5 ergänzt ← T-079 → T-090, T-092
+
+- [x] **T-079** 2026-10-25 Pflanzen: `data/nature/pflanzen.yaml` (213 Pflanzen aus `lore/pflanzen.md`, davon 5 fiktive mit `active: false`; Abbildung der Standort-Angaben im Kopf der Datei, Namensschlüssel `PLANT_*` in `en.yaml`), `lore/landmassen.yaml` (6 Landmassen über Ankerpunkte, `LANDMASS_*`), `tools/pflanzen.py` + `tools/pflanzen_daten.py` (Eignung K × B × W × H × Hang × Frost × Inselbonus × Rauschen, Linien je Landmasse, Prüfungen). Ausgabe `data/world/pflanzen.bin` (220 Layer, 17 MB), `lore/pflanzen_vielfalt.png`, `lore/landmassen.png`, Einzelbilder. Im Mittel 35 Pflanzen je Landzelle; Nahrung und Faser fast überall, Holz/Brennstoff fehlt auf 9,9 % (Kernwüsten). Schatten, Brandflächen und Nebel nur als Daten (TODO), Gezeiten fehlen (T-085). Alle Werte als Vorschlag in `welt_konfiguration.md` Abschnitt 12, Lauf 60 s ← T-078, T-050 → T-090
+
+- [x] **T-089** 2026-10-25 Silber von SELTEN auf MITTEL (Entwickler): bis 400 km jetzt 30 % des Landes statt 13 % (Blei 37 %), 33 statt 43 Völker über 500 km; weiter begrenzt durch die Lage des Bleis. Lagerstätten neu erzeugt ← T-088
 
 - [x] **T-088** 2026-10-25 Erreichbarkeit der Rohstoffe geprüft (Anteil des Landes bis 150/400 km, Abstand je Volk) und vier Korrekturen (Entwickler): Steinsalz in allen Becken, Meersalz an allen flachen Küsten außer kalten; sedimentäres Kupfer MITTEL, neues Gangkupfer (`kupfer_gang`, `MATERIAL_VEIN_COPPER`); Blei auch im Kalk von Becken und Kraton, Silber mit Blei (neuer Schalter `presence`); Zinn 4 Fundorte, einer je Festland (`sites_per_landmass`), neu `exclude_koeppen`. Salz 42 → 67 %, Kupfer 34 → 66 % des Landes bis 400 km; Silber nur 11 → 13 % (Seltenheit, T-089) ← T-082 → T-089
 

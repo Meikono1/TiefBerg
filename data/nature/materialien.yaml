@@ -123,8 +123,8 @@ materials:
       rule: { kind: deposit, rooms: { KUESTENBOGEN: 1.0, KRATON: 1.0, ALTGEBIRGE: 1.0 } } }
   - { id: gold_seife, name_key: MATERIAL_PLACER_GOLD, category: ERZ, rarity: SELTEN, distribution: SEIFE, color: [230, 180, 40],
       rule: { kind: deposit, source: gold_primaer } }
-  # Silber auch im Bleierz (silberhaltiger Bleiglanz, 2026-10-25)
-  - { id: silber, name_key: MATERIAL_SILVER, category: ERZ, rarity: SELTEN, distribution: KLUMPIG, color: [190, 195, 210],
+  # Silber auch im Bleierz (silberhaltiger Bleiglanz, 2026-10-25); MITTEL statt SELTEN, damit es erreichbar ist (T-089)
+  - { id: silber, name_key: MATERIAL_SILVER, category: ERZ, rarity: MITTEL, distribution: KLUMPIG, color: [190, 195, 210],
       rule: { kind: deposit, any_of: [{ rooms: { KUESTENBOGEN: 1.0, KOLLISION: 0.5, OPHIOLITH: 0.5 } }, { source: blei, presence: true, weight: 0.7 }] } }
   - { id: silber_gediegen, name_key: MATERIAL_NATIVE_SILVER, category: ERZ, rarity: SEHR_SELTEN, distribution: ABGELEITET, color: [235, 235, 245],
       rule: { kind: deposit, source: silber, min_source: 0.2 } }

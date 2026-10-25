@@ -117,7 +117,7 @@ Die Welt ist fest und wird über mehrere Bitmaps beschrieben, aus denen Grenzen 
 - O - Vorschlag: Seltenheit als flächengewichteter Anteil der Landzellen mit Vorkommen: sehr häufig über 20 %, häufig 5–20 %, mittel 1–5 %, selten 0,1–1 %, sehr selten 0,01–0,1 %, extrem selten unter 0,01 % (einzelne Fundorte weltweit). Einzelne Materialien mit eigener Richtung, z. B. Zinn an 2 bis 4 Fundorten weltweit.
 - E - Böden (vorherrschend, Anteil der Landfläche): Schwarzerde 2–3 %, Braunerde nicht über rund 22 %.
 - E - Mittlere Fruchtbarkeit der Böden um 2,5 (flächengewichtet, Skala 0–5), etwas fruchtbarer als die Erde (Stand 2026-10-24: 2,47).
-- O - Vorschlag: Jede Landzelle außer Eis hat mindestens eine Pflanze für Nahrung, für Holz oder Brennmaterial und für Faser, sofern das Klima es zulässt.
+- E - Grundbedürfnisse (Nahrung, Holz oder Brennmaterial, Faser) müssen nicht überall aus heimischen Pflanzen kommen. Es gibt Ersatz (Papier aus dem Holz irgendeines Baums, Kleidung aus Tierhäuten) oder Handel. Fehlstellen loggt das Werkzeug je Region; reicht das nicht, wird die Pflanzenliste ergänzt (2026-10-25).
 - O - Was eine Region im Ortsgraph ist und welche Daten sie trägt.
 - O - Startort von Szenario 1 auf dem Ostkontinent.
 
@@ -134,6 +134,9 @@ Rund 70 Spezies in 16 Kulturgruppen, von drachenartigen Riesen bis zu Feenvölke
 - E - Größenklasse, Lebensdauer und Ernährung wirken auf Gebäude, Nahrungsbedarf, KCAL und Generationenfolge.
 - E - Mystische Wesen (z. B. Drachen) sind benannte Individuen mit Namen und Geschichte aus der Vorsimulation.
 - E - Eine Liste der Pflanzen und Tiere stattet die ganze Welt aus: Keine Klima- oder Vegetationszone bleibt ohne Leben, und jede Ressource (z. B. Leinen aus Flachs) hat eine Quelle, die irgendwo wächst bzw. lebt.
+- E - Pflanzen sind an Regionen gebunden, damit Handel zwischen den Regionen lohnt: Jede Pflanze hat eine Heimat aus einer oder mehreren der 7 Regionen (Grenzen vom Entwickler gezeichnet, `lore/regionen.yaml`, `lore/regionen_grenzen.png`). Nur eine kleine Grundflora wächst weltweit (Schilf, Weide, Birke, Moose …); verwandte Formen in allen Regionen sind Linien mit eigener Variante je Region (2026-10-25).
+- E - Kulturpflanzen lassen sich außerhalb ihrer Heimat anbauen, wenn jemand sie dorthin bringt, so wie Knollenfrüchte über das Meer in neue Länder kamen. Die Natur-Ebene zeigt nur die natürliche Verbreitung.
+- O - Wie Anbau außerhalb der Heimat abläuft (Saatgut, Wissen, Dauer, Eignung des Orts) und ob er schon in der Vorsimulation geschieht. Breitet sich in 1000 Jahren Vorsimulation alles aus, verliert der Handel seinen Reiz.
 - O - Regeln, damit Bestände in der Simulation nicht zusammenbrechen (Nachwachsen, Mindestbestände, Wanderung).
 - E - Fauna: prähistorische Tiere als Gegenstück zu den Anthro-Spezies. Sie liefern Rohstoffe wie Fleisch, Fell, Leder und Wolle (z. B. Wollmammut, Wollnashorn).
 - O - Konkrete Werte je Spezies (Größenklasse, Lebensdauer, Ernährung).

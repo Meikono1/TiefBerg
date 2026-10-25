@@ -1,0 +1,13 @@
+# Regionen der Pflanzen: Heimat und Linien (lore/pflanzen.md Abschnitt 5, Verfahren lore/welt_konfiguration.md Abschnitt 12).
+# Eingabe von tools/pflanzen.py. Die Grenzen stehen als Linien in lore/regionen_grenzen.png (2160 × 1080, transparent,
+# Linie = deckender Pixel), gezeichnet vom Entwickler am 2026-10-25. Jede Linie muss bis an den Kartenrand oder an eine
+# andere Linie reichen, sonst laufen zwei Regionen ineinander. point: [Länge, Breite] in Grad (Ost und Nord positiv),
+# irgendwo in der Region, auch im Meer. Namen sind Platzhalter.
+regions:
+  - { id: west_nord, name_key: REGION_WEST_NORTH, point: [-100, 25] }
+  - { id: west_sued, name_key: REGION_WEST_SOUTH, point: [-107, -27] }
+  - { id: nordwest, name_key: REGION_NORTHWEST, point: [8, 45] }
+  - { id: ost_nord, name_key: REGION_EAST_NORTH, point: [87, 37] }
+  - { id: ost_mitte, name_key: REGION_EAST_CENTER, point: [37, 0] }
+  - { id: ost_sued, name_key: REGION_EAST_SOUTH, point: [87, -10] }
+  - { id: suedost, name_key: REGION_SOUTHEAST, point: [163, -34] }
