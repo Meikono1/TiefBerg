@@ -7,7 +7,7 @@ Lebende Aufgabenliste. Claude aktualisiert sie nach jeder erledigten Aufgabe, du
 - Ergibt sich aus einer Aufgabe eine neue, steht bei der neuen `← T-###` (Herkunft).
 - Erledigte Aufgaben wandern nach **Erledigt**, mit Datum und ggf. `→ T-###` (Folgeaufgaben).
 - Verweise auf das Design-Dokument als `(Abschnitt N)`.
-- Nächste freie ID: **T-094**
+- Nächste freie ID: **T-104**
 
 ## In Arbeit
 
@@ -18,6 +18,20 @@ _(nichts)_
 Ablauf: Hauptmenü → Start → Szenarioauswahl → Szenario wählen → Weiter bzw. Doppelklick.
 
 - [ ] **T-036** (Entwickler) Szenen und Theme der Szenarioauswahl im Godot-Editor fertigstellen. Stand 2026-10-20: Hauptszene und die Module Marker, Listeneintrag und NewsCard laufen. Claude hat Größen und Layout der Module, `ScenarioButtonGroup.tres` und im Theme die Ring-Varianten sowie `MarkerLabel` gesetzt (Marker 40×40, Icon 24). Seit 2026-10-20 auch Schriften (Eczar Standard, Cardo für `DescriptionText`/`DescriptionLabel`), `HeaderLarge`, `HeaderSmall`, `LabelMuted`, `HintWarning` und das Lock-Icon in Marker und Listeneintrag. 2026-10-22 vom Entwickler in Godot getestet, läuft. 2026-10-22: Übergangslösungen entfernt (keine Ersatzpfade mehr, `ExportCheck` nur noch Prüfung); alle Exports in den Szenen zugewiesen, neues Modul `TagChip.tscn` + `TagChip.cs`, Theme-Varianten `TagChip`/`TagChipLabel`. Überzähligen `VBoxContainer` in `MapView` hat der Entwickler am 2026-10-22 entfernt. Offen: Button-Varianten, `MapModeButton.tscn` (T-037), Projekt-Grundeinstellungen prüfen ← T-030.
+
+## Als Nächstes – Ortsansicht (Abschnitt 3, 4, 12)
+
+Erste Spielszene für Siedlungen, Wildnis und RPG; Aufbau in der Design-Referenz Abschnitt 12. Szenen und Theme baut der Entwickler im Editor, Claude die Skripte und vorab die Knotenliste (Nodes und Exports).
+
+- [ ] **T-095** Gerüst der Ortsansicht: `scenes/ui/Map.tscn` (leere 3D-Szene) durch eine 2D-Szene ersetzen, `GameManager` wechselt nach Neues Spiel/Laden dorthin. Hintergrund, Kopfleiste, Ortsname, Haupttext (`RichTextLabel`, anklickbare Namen), Aktionsraster mit Tasten nach Position, Bereich Zeit (Datum, Play/Pause, Tag, Monat, Jahr, nächstes Ereignis über `GameManager.Snapshot`/`Send`), Menü. Datum vorerst im Weltkalender, `// TODO: T-023` für den Kalender des aktiven Charakters. Zuerst Knotenliste abstimmen ← T-014.
+- [ ] **T-096** Ortsgraph im Kern: Orte (ID, Ortsart, Namensschlüssel, Koordinaten in Metern, übergeordneter Knoten), Kanten mit Faktor, bekannte Orte je Person; Navigation als Baum in der Ortsansicht (Abschnitt 4, 12) ← T-014.
+- [ ] **T-097** Reisen: Weglänge über die Kanten, Reisezeit nach Geschwindigkeit der Person, Bereich Reise (Ziel, Dauer, Aufbrechen), Zeitsprung bis zur Ankunft; Abbruch durch Spieler oder Ereignis erzeugt einen vorübergehenden Ort mit Ortsart aus dem Gelände (Abschnitt 3, 4) ← T-096, T-094, T-056.
+- [ ] **T-098** Anwesende am Ort: beim Betreten berechnen, wer dort ist (Abschnitt 3: Position nur bei Bedarf), im Haupttext anklickbar; Kommen und Gehen als Ereignis ← T-096. Braucht Personen (Meilenstein 2).
+- [ ] **T-099** Linke Spalte: Charakterwechsel durch die Party (Ansicht wechselt mit dem Ort des Charakters), Status (Stufe, KCAL mit Farbstufen, Zustände; weitere Werte `// TODO: Abschnitt 7 – Attribute offen`), Untermenüs Charakter, Inventar, Zauber, Talente, Ausrüstung (Abschnitt 6, 8, 12) ← T-014.
+- [ ] **T-100** Tauschmittel je Siedlung: Liste der angenommenen Tauschmittel als Daten, Kopfleiste zeigt Bestand des aktiven Charakters, nicht geltende abgeblendet; Bewertung untereinander offen (Abschnitt 9) ← T-014.
+- [ ] **T-101** Vorschau einer Stadt aus der Vogelperspektive: Bild mit den Orten an ihren Koordinaten, nur zur Orientierung (Abschnitt 4, O) ← T-096.
+- [ ] **T-102** (Entwickler) KCAL und Fettanteil ausarbeiten: größere Reserve ermöglicht mehr Magie, senkt andere Werte; dazu Reserve, Regeneration und Folgen von Überverbrauch (Abschnitt 8, O) ← T-014.
+- [ ] **T-103** (Entwickler) Hintergrundbilder: Ordner `resources/locations/<ortsart>/` mit generischen Bildern je Ortsart anlegen; Liste der Ortsarten gemeinsam festlegen (Abschnitt 4) ← T-014.
 
 ## Als Nächstes – Völker (Abschnitt 5)
 
@@ -41,9 +55,7 @@ Test, ob eine Kulturgruppe vollständig auf den Stand der Kataru kommt, bevor di
 
 Verfahren: `lore/welt_konfiguration.md` Abschnitte 8–12, Inhalte: `lore/materialien_und_boeden.md`, `lore/pflanzen.md`. Alle Ebenen 2160 × 1080, Werkzeuge in Python, jeder Lauf schreibt Bilder nach `lore/`.
 
-- [ ] **T-085** Gezeiten als Datenebene: Quelle für die Wasserkategorie `GEZEITEN` klären (heute nur `lore/world/all-layers/07-tides-raw.png` aus dem Lauf 2026-10-10 als Bild, oder Zahlen aus einem neuen Lauf), danach Layer in `bodenfeuchte.bin` (`welt_konfiguration.md` Abschnitt 11). Danach `tools/pflanzen.py` neu laufen lassen: Mangrove und Nipapalme haben bis dahin kein Vorkommen, Queller nur an Salzküsten ← T-078, T-079.
 - [ ] **T-090** (Entwickler) Pflanzen-Ebene sichten (`lore/pflanzen_vielfalt.png`, `lore/regionen.png`, Einzelbilder `lore/ebenen/pflanzen/`), die Heimat je Pflanze in `data/nature/pflanzen.yaml` (`homeland`, Entwurf T-091) prüfen und die Annahmen in `welt_konfiguration.md` Abschnitt 12 bestätigen (Randzone 150 km, Bodengewichte, halbe Nachbarstufe der Feuchte). Fehlende Grundbedürfnisse sind geklärt: Ersatz oder Handel (Abschnitt 4, 5) ← T-079, T-091.
-- [ ] **T-081** Werte des Spielfelds: Für einen gewählten Pixel (8192 × 4096) die Werte aus den umliegenden Zellen der Natur-Ebenen berechnen und in die Spielwelt übertragen; Loader für die Ebenen-Dateien im Kern. Verfahren offen (Abschnitt 4) ← T-082. Alle Natur-Ebenen liegen vor (Gezeiten fehlen, T-085).
 
 ## Später – Meilenstein 5: Weltsimulation (Abschnitt 4, 5, 10, 11, 12)
 
@@ -52,6 +64,7 @@ Verfahren: `lore/welt_konfiguration.md` Abschnitte 8–12, Inhalte: `lore/materi
 - [ ] **T-043** (Entwickler) Gemalte Völker-Ebene als Verfeinerung der berechneten Heimatgebiete: PNG 4320×2160 deckungsgleich mit `resources/maps/weltkarte.png`, nur Farbflächen ohne Terrain, Schrift und Kantenglättung, unbemalt = berechnetes Gebiet gilt; dazu Zuordnung Farbe → Volk. Laden mit Prüfung (unbekannte Farben) und Vorrang vor der Berechnung. `voelkerkarte.png` ist nur Schaubild (Abschnitt 4) ← T-037, T-044.
 - [ ] **T-045** Vorsimulation: mehrere zufällige Startpunkte je Heimatgebiet, dort je eine erste Stadt (Anzahl und Verteilung offen; Siedlungen eines Volks, einer Kulturgruppe oder multikulturell, Abschnitt 5), dann Wachstum und Ausbau bis zum Startjahr; Multicore, Dauer messen. Grobe Ebene für Reiche und Bevölkerung, relevante Personen und Kreaturen einzeln (T-053). Reproduzierbarkeit nicht gefordert (Abschnitt 4, Vorschlag; Abschnitt 10) ← T-044, T-027.
 - [ ] **T-046** Mitgelieferte vorsimulierte Welt: erzeugen, mit Version ausliefern, bei Neues Spiel wählbar statt neu vorsimulieren; bei Änderungen an Simulation oder Daten neu erzeugen (Abschnitt 4) ← T-045.
+- [ ] **T-094** Spielfeld im Spiel: Godot lädt die Quellen der Feldwerte (`landmaske.bin`, Einzelraster und Ebenen-Dateien, Zuordnung Quelle → Mengen/Kategorien wie im Test `FieldSamplerTests`) beim Weltstart über `WorldDataFiles` und baut den `FieldSampler`; die Feldwahl (Szenario-Start T-047 bzw. Ortsansicht T-095) ruft `Sample` und überträgt das Ergebnis als Eintrag in die Spielwelt, mit Spielstand. Offen: was davon gespeichert wird und wie die Spielwelt das Feld aufbaut (Design-Referenz Abschnitt 4, O) ← T-081.
 - [ ] **T-047** Startbedingungen der Szenarien statt fester Startpunkte: Expedition mit Koboldkolonie in 20–80 km, Naga im Naga-Gebiet (Stadt aus der Vorsimulation), Verschieben bis etwa 50 km zu Stadt oder Burg. `ScenarioDefinition` dafür erweitern; `MapPoint` bleibt Anzeigepunkt der Auswahl (Abschnitt 11) ← T-045.
 - [ ] **T-048** Datenebenen darstellen: Id-Raster (eine Id je Zelle, z. B. Reich, Volk, Art) plus Farbtabelle per Shader über dem Terrain; Godot bekommt das Raster als Snapshot (Abschnitt 2, 4) ← T-037.
 - [ ] **T-037** Kartenmodi der Szenarioauswahl: Ressourcen, Bevölkerung, Politik, Flora/Fauna, Terrain darunter. Konfiguration (Id, Namensschlüssel, Icon, Datenebene), Moduswechsel behält Ausschnitt und Zoom. Welcher Weltstand gezeigt wird, ist offen (Abschnitt 12) ← T-030, T-046, T-048.
@@ -63,7 +76,7 @@ Verfahren: `lore/welt_konfiguration.md` Abschnitte 8–12, Inhalte: `lore/materi
 - [ ] **T-092** Anbau von Pflanzen außerhalb ihrer Heimat: wer Saatgut oder Setzlinge mitbringt, kann sie anbauen, wo Klima und Boden passen (Eignung aus `pflanzen.bin` ohne Heimatgrenze). Offen: Saatgut, Wissen, Dauer und ob das schon in der Vorsimulation geschieht (Design-Referenz Abschnitt 5, O) ← T-091, T-045.
 - [ ] **T-053** Einzelsimulation relevanter Personen und Kreaturen ab Level-Schwellwert, auch in der Vorsimulation (z. B. Abenteurer jagen einen Drachen, daraus entsteht seine Geschichte); Schwellwert offen (Abschnitt 10) ← T-052, T-045.
 
-Karte im Spiel (eigene Weltkarte mit bekannter Welt, Abschnitt 12) kommt mit T-014.
+Karte im Spiel (eigene Weltkarte mit bekannter Welt, Abschnitt 12) kommt über den Knopf Karte der Ortsansicht (T-095), Inhalt noch offen.
 
 ## Danach / Ideen
 
@@ -73,7 +86,6 @@ Karte im Spiel (eigene Weltkarte mit bekannter Welt, Abschnitt 12) kommt mit T-0
 - [ ] **T-055** Ereignisse für den Spieler: Was als Ereignis zählt (aus dem Weltereignislog, Abschnitt 12), Sprung zum nächsten solchen Ereignis statt zur nächsten Fälligkeit, und laufende Sprünge bei einem Ereignis unterbrechen (`TimeControl.SkipToNextEvent`, Abschnitt 3) ← T-027.
 - [ ] **T-056** Reisen: Personen mit Start, Ziel und Aufbruchszeit, Position nur bei Bedarf; Reise des Spielers als Sprung bis zur Ankunft, unterbrochen durch Ereignisse (Abschnitt 3) ← T-027, T-055.
 - [ ] **T-057** Debugmenü: öffnet sich beim Eintippen von D E B U G N O W (Abschnitt 12). Inhalt offen.
-- [ ] **T-014** `scenes/ui/Map.tscn` ist eine leere 3D-Szene → durch 2D-Szene ersetzen (Spiel ist 2D). Wird die Spielszene: zuerst die eigene Stadt (bzw. ihr Fehlen) und Zeitsteuerung (Pause, Echtzeit, Abschnitt laufen lassen, nächstes Ereignis) über `GameManager.Snapshot`/`Send`; später die Weltkarte im Spiel, u. a. mit bekannter Welt (Abschnitt 3, 12).
 - [ ] **T-018** Frame-Überwachung auf Godot-Seite: Frames über 8,33 ms (unter 120 FPS) zählen bzw. in die Aufwandsübersicht aufnehmen ← T-017.
 - [ ] **T-029** Manuelle Spielstände: Bricht das Spiel genau zwischen „alter Stand → `.old`“ und „`.tmp` → Stand“ ab, liegt der Stand nur noch als `<slot>.old`/`<slot>.tmp` vor und wird nicht gefunden. Beim Start erkennen und wiederherstellen (Autosaves sind nicht betroffen, sie bekommen immer neue Ordner) ← T-012.
 - [ ] **T-042** Übersetzungen aufteilen: statt `data/lang/en.yaml` ein Ordner `data/lang/en/` mit mehreren YAML-Dateien (z. B. nach Bereich: Menü, Szenarioauswahl, Szenarien, Tags). Ordnername = Sprachcode; `Localization.Initialize()` liest alle Dateien des Ordners in eine `Translation`, doppelte Schlüssel über Dateien hinweg → Warnung. Test zur Vollständigkeit der Szenario-Schlüssel und T-041 (Export-Filter) anpassen (Abschnitt 12) ← T-035.
@@ -86,6 +98,12 @@ Karte im Spiel (eigene Weltkarte mit bekannter Welt, Abschnitt 12) kommt mit T-0
 Meilenstein 2 (Prototyp Expedition) wird aufgeschlüsselt, wenn Meilenstein 1 steht.
 
 ## Erledigt
+
+- [x] **T-014** 2026-10-27 Spielszene durchgesprochen und aufgeteilt: Ortsansicht als erste Spielszene (Aufbau in der Design-Referenz Abschnitt 12), Ortsgraph mit Koordinaten statt Raster, abgebrochene Reisen als vorübergehender Ort (Abschnitt 4), Zeit steht bis zur nächsten Aktion (Abschnitt 3), Spielercharaktere brauchen nur Essen und Ruhe (Abschnitt 1), KCAL als Zahl mit Farbstufen (Abschnitt 8), Tauschmittel je Siedlung (Abschnitt 9), Haupthaus als Verwaltung des Herrschers → T-095 bis T-103
+
+- [x] **T-081** 2026-10-25 Werte des Spielfelds: Verfahren in der Design-Referenz Abschnitt 4 entschieden (bilinear über die vier Zellen nur gleicher Art wie das Feld, Kategorien nach größtem Gewicht, kein Zufall; nächste passende Zelle bis 10 Zellen als Vorschlag). Neues Werkzeug `tools/landmaske.py` → `data/world/landmaske.bin` (8192 × 4096, 0,1 MB) und `lore/landmaske.png`. Im Kern `LayerFile` + `LayerFileReader` (Ebenen-Dateien bleiben gepackt, je Feld nur bis zur nötigen Zeile entpackt), weitere Kennungen im `GridRasterReader`, `FieldSampler` und `FieldValues` (`TiefBerg.Simulation.Geography`). Tests mit Kunstdaten und über alle echten Weltdaten (378 Werte je Feld). Noch kein Aufrufer, Laden im Host und Übertragen in die Spielwelt → T-094 ← T-082 → T-094
+
+- [x] **T-085** 2026-10-25 Gezeiten als Datenebene: Quelle ist das Gezeitenbild aus Lauf 2026-10-23 (`lore/world/tides/`, die Simulation gibt keine Zahlen aus). Neues Werkzeug `tools/gezeiten.py` rechnet die Farben über die Legende in Tidenhub zurück (Stufen je Hälfte gleichmäßig, Höhenlinien per Auffüllen und Median entfernt; Abgleich mit dem Log: Zellmittel 53 cm statt 52, Median 45 cm statt 46) und schreibt `data/world/gezeiten.bin` (cm, 0–170, 170 = 1,7 m und mehr) und `lore/gezeiten.png`. In `tools/bodenfeuchte.py` neuer Layer `GEZEITEN` (Küstenzellen, Tidenhub 50 cm bis 1,5 m, flache Küste unter 0,2 % Gefälle oder Flussmündung bis 30 km; 1,7 % des Landes). Bodenfeuchte und Pflanzen neu erzeugt: Mangrove 0,25 %, Nipapalme 0,07 %, Queller 3,0 % des Landes; Ersatzpfad `MISSING_WATER` in `pflanzen.py` entfernt. Doku `welt_konfiguration.md` Abschnitt 6, 8, 11, 12. Alle Schwellen Vorschlag ← T-078, T-079
 
 - [x] **T-093** 2026-10-25 Pflanzen ergänzt nach Auswertung je Volk (Gewürze, Grundnahrung, Segelfasern im Umkreis der Mittelpunkte): 12 Gewürze (Chili, Salbei, Brunnenkresse, Pfefferbaum, Senf, Kümmel, Bergpfeffer, Knoblauch, Zwiebel/Lauch, Koriander; Minze und Wacholder weltweit), 6 Grundnahrungspflanzen (Pfeilkraut, Topinambur, Esskastanie für die Urodak in West-Süd, Kürbis für West-Nord, Brustbeere und Maulbeerfeige für die Fruchthaine der Hyrax); Rispenhirse, Buchweizen, Hasel und Sorghum zusätzlich in Ost-Süd (Brutahk, Cristatus). `pflanzen.md` 6.15, `pflanzen.yaml`, `en.yaml`. Jetzt hat jedes Volk mindestens ein Gewürz und zwei Grundnahrungsmittel; Segel kann jedes Volk herstellen, gutes Segeltuch (Flachs, Hanf, Baumwolle) gibt es nur in Nordwest, Ost-Nord und Ost-Süd. 226 aktive Pflanzen, 250 Layer ← T-091
 

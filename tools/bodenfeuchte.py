@@ -41,6 +41,15 @@ LAKE_SHORE_KM = 30.0
 OASIS_SHARE = 0.4             # OASE an Trockenflüssen und an Flüssen in B-Klimaten, klingt über OASIS_KM ab
 OASIS_KM = 20.0
 COAST_SHARE = 0.4             # KUESTE in Zellen direkt am Meer, nach einer weiteren Zelle 0
+# GEZEITEN in Zellen direkt am Meer: Anteil = TIDAL_SHARE × Tidenhub-Faktor × Flachheit. Der Faktor steigt von
+# TIDAL_FROM_CM bis TIDAL_FULL_CM auf 1 (größter Tidenhub der angrenzenden Meereszellen, tools/gezeiten.py), die
+# Flachheit fällt bis zum Gefälle TIDAL_FLAT_SLOPE auf 0. An Flussmündungen (ganzjähriger Fluss bis TIDAL_MOUTH_KM von
+# der Zelle) gilt die Küste als flach: Dort liegt das Brackwasser.
+TIDAL_SHARE = 0.4
+TIDAL_FROM_CM = 50.0
+TIDAL_FULL_CM = 150.0
+TIDAL_FLAT_SLOPE = 0.002     # wie die flache Küste der Böden (boeden.py COAST_FLAT_SLOPE)
+TIDAL_MOUTH_KM = 30.0
 ARID_KOEPPEN = {"BWh", "BWk", "BSh", "BSk"}
 # Wo eine Regel der Klimazonen die Köppen-Klasse geändert hat (vor allem „Südkette grüner“), passen Bodenwasser und
 # Regen der Klimasimulation nicht mehr zur Klasse. Dort wird die Bodenfeuchte um den Unterschied der typischen Werte
@@ -48,9 +57,7 @@ ARID_KOEPPEN = {"BWh", "BWk", "BSh", "BSk"}
 CLASS_SHIFT_SIGMA = 3.0       # Glättung der Verschiebung, in Zellen
 
 MOISTURE_CATEGORIES = ["TROCKEN", "FRISCH", "FEUCHT", "NASS"]
-# TODO: GEZEITEN (welt_konfiguration.md Abschnitt 11): Quelle offen, die Gezeiten liegen nur als Bild vor
-# (07-tides-raw.png, Lauf 2026-10-10). Bis dahin gibt es den Layer nicht.
-PLACE_CATEGORIES = ["UFER", "OASE", "KUESTE", "STEHEND"]
+PLACE_CATEGORIES = ["UFER", "OASE", "KUESTE", "GEZEITEN", "STEHEND"]
 CATEGORY_COLORS = {"TROCKEN": (225, 195, 130), "FRISCH": (130, 185, 90), "FEUCHT": (40, 130, 90), "NASS": (40, 80, 120)}
 LAKE_COLOR = (85, 140, 210)
 
@@ -65,6 +72,21 @@ def river_band(rivers, bands=RIVER_BANDS):
         distance = ebenen.wrapped_distance_km(mask)
         band = np.maximum(band, share * np.clip(1.0 - distance / width_km, 0.0, 1.0))
     return band
+
+
+def tidal_zone(grids, perennial, coast_factor):
+    """GEZEITEN-Anteil der Landzellen am Meer aus Tidenhub, Gefälle und Flussmündungen."""
+    sea_tides = np.where(grids.ocean, grids.tides.astype(np.float64), 0.0)
+    coast_tides = ndimage.maximum_filter(sea_tides, size=3, mode=("nearest", "wrap"))
+    tide_factor = np.clip((coast_tides - TIDAL_FROM_CM) / (TIDAL_FULL_CM - TIDAL_FROM_CM), 0.0, 1.0)
+    flat = np.clip(1.0 - grids.slope / TIDAL_FLAT_SLOPE, 0.0, 1.0)
+    if perennial.any():
+        flat = np.where(ebenen.wrapped_distance_km(perennial) <= TIDAL_MOUTH_KM, 1.0, flat)
+    coast = grids.land & (coast_factor > 0)
+    log.info("Küstenzellen: Tidenhub ab %.0f cm auf %.1f %%, flach oder Mündung auf %.1f %%", TIDAL_FROM_CM,
+             ebenen.coverage_percent(coast & (tide_factor > 0), coast, grids.area),
+             ebenen.coverage_percent(coast & (flat > 0), coast, grids.area))
+    return np.where(grids.land, TIDAL_SHARE * coast_factor * tide_factor * flat, 0.0)
 
 
 def align_to_classes(moisture, final_codes, original_codes, land):
@@ -94,7 +116,7 @@ def soft_categories(moisture):
 
 def build(grids):
     """grids: Raster aus tools/boeden.py (land, lake, ocean, koeppen_codes, original_codes, rivers, slope, soil_water,
-    rain, cell_km, area).
+    rain, tides, cell_km, area).
     Ergebnis: Liste (ID, uint8-Layer) und dict mit den Werten 0–1, die die Böden brauchen."""
     land, lake, ocean, cell_km = grids.land, grids.lake, grids.ocean, grids.cell_km
     rain_index = 1.0 - np.exp(-np.maximum(grids.rain, 0.0) / RAIN_SCALE_MM)
@@ -121,11 +143,12 @@ def build(grids):
     oasis_source = (grids.rivers == DRY_RIVER_CLASS) | (perennial & arid)
     oasis = OASIS_SHARE * np.clip(1.0 - ebenen.wrapped_distance_km(oasis_source) / OASIS_KM, 0.0, 1.0) \
         if oasis_source.any() else np.zeros(land.shape)
-    coast = COAST_SHARE * np.clip(1.0 - (ebenen.wrapped_distance_km(ocean) - cell_km) / cell_km, 0.0, 1.0)
+    coast_factor = np.clip(1.0 - (ebenen.wrapped_distance_km(ocean) - cell_km) / cell_km, 0.0, 1.0)
     places = {
         "UFER": np.where(land, np.maximum(rivers_band, lake_shore), 0.0),
         "OASE": np.where(land, oasis, 0.0),
-        "KUESTE": np.where(land, coast, 0.0),
+        "KUESTE": np.where(land, COAST_SHARE * coast_factor, 0.0),
+        "GEZEITEN": tidal_zone(grids, perennial, coast_factor),
         "STEHEND": lake.astype(np.float64),
     }
 

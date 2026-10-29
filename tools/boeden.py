@@ -9,6 +9,7 @@ Quellen:
   data/world/gesteinsraeume.bin    Gesteinsräume (Becken, Eisschild)
   data/world/gestein.bin           Gesteinsanteile (tools/gestein.py)
   data/world/fluesse.bin           Hauptflüsse und Trockenflüsse (tools/fluesse.py)
+  data/world/gezeiten.bin          Tidenhub des Meeres (tools/gezeiten.py)
   lore/Version 5 HM.png            Heightmap 8192 × 4096 (Hangneigung, Senken)
   lore/world/climate-data/soil_water_index, rainfall_annual   Bodenwasser und Regen (Lauf 2026-10-23)
   lore/world/all-layers/02-climate_zones-raw.png   Köppen-Klassen vor den Regeln (Angleich der Bodenfeuchte)
@@ -377,6 +378,7 @@ def load_grids():
         room_ids=room_ids, room_keys=room_keys(rooms, room_ids), high_mountains=zones == HIGH_MOUNTAIN_ZONE,
         soil_water=fluesse.read_climate(fluesse.CLIMATE_DATA / "soil_water_index", width, height),
         rain=fluesse.read_climate(fluesse.CLIMATE_DATA / "rainfall_annual", width, height),
+        tides=ebenen.read_raster("gezeiten.bin", b"TBGZ"),
     )
     log.info("Senken ab %.0f m Tiefe: %.2f %% der Landfläche", BASIN_MIN_DEPTH_M,
              ebenen.coverage_percent(grids.basin, land, grids.area))

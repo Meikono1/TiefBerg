@@ -201,7 +201,7 @@ public partial class GameManager : Node
         _homelands = homelands;
         _simulation = new SimulationThread(LogManager.SimulationLoggerFactory, world, TimeProvider.System);
         LogManager.WorldTimeSource = () => world.Clock.Now;
-        // Startet pausiert (Abschnitt 3); weiter geht es über Befehle der Spielszene (T-014)
+        // Startet pausiert (Abschnitt 3); weiter geht es über Befehle der Ortsansicht (T-095)
         _simulation.Start();
     }
 

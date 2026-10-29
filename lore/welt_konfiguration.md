@@ -231,7 +231,7 @@ Das World Climate Lab erzeugt eine Welt nicht exakt gleich neu: Mit denselben Ei
 
 **Lauf 2026-10-10** ist der gültige Stand des Klimas. Von ihm gibt es nur die 13 Ebenen als Bilder: `lore/world/all-layers` (raw und framed); Zahlen und Aufnahmen über das Jahr gibt es von ihm nicht.
 
-**Lauf 2026-10-23** ist ein späterer Lauf mit denselben Einstellungen. Aus ihm stammen in `lore/world/`: `climate-data` (Zahlen: Temperatur, Niederschlag, Luftfeuchte und Taupunkt je Monat, Schnee und Eis, Bodenfeuchte, Meeresströmung oben und in der Tiefe als u/v im Jahresmittel), `wind_circulation` und `surface_currents` (je 96 Aufnahmen über das Jahr) sowie die Einzelbilder `vegetation`, `ice_cover`, `soil_moisture`, `current_paths` und `energy_flow`. Wind als Zahlen lässt sich nicht exportieren. Nicht übernommen: seine 20 Ebenen (andere Zeichnung, nicht nach Farben auslesbar), Tiefenströmung, Temperatur- und Taupunkt-Aufnahmen (dieselben Werte stehen als Zahlen in `climate-data`).
+**Lauf 2026-10-23** ist ein späterer Lauf mit denselben Einstellungen. Aus ihm stammen in `lore/world/`: `climate-data` (Zahlen: Temperatur, Niederschlag, Luftfeuchte und Taupunkt je Monat, Schnee und Eis, Bodenfeuchte, Meeresströmung oben und in der Tiefe als u/v im Jahresmittel), `wind_circulation` und `surface_currents` (je 96 Aufnahmen über das Jahr) sowie die Einzelbilder `vegetation`, `ice_cover`, `soil_moisture`, `current_paths` und `energy_flow`. Wind als Zahlen lässt sich nicht exportieren. Von seinen 20 Ebenen ist nur die Gezeitenebene übernommen (`tides`, raw und framed mit Legende), weil es die Gezeiten nicht als Zahlen gibt; ihr Farbverlauf ist auslesbar (Abschnitt 11). Nicht übernommen: die übrigen 19 Ebenen (andere Zeichnung, nicht nach Farben auslesbar), Tiefenströmung, Temperatur- und Taupunkt-Aufnahmen (dieselben Werte stehen als Zahlen in `climate-data`).
 
 Ähnlichkeit der Bilder zum Lauf 2026-10-10 (Korrelation): Temperatur 0,996, Niederschlag 0,993, Wind 0,82, Meeresströmung 0,69. Die Klimazonen stimmen an Land nur zu 61 % überein, weil die Köppen-Einteilung an ihren Schwellen empfindlich ist.
 
@@ -241,6 +241,7 @@ Das World Climate Lab erzeugt eine Welt nicht exakt gleich neu: Mit denselben Ei
 | Temperatur, Niederschlag, Luftfeuchte als Zahlen | Lauf 2026-10-23. Annahme: Die Abweichung zum gültigen Lauf ist vernachlässigbar |
 | Wind | Lauf 2026-10-23, Aufnahmen über das Jahr (Stärke); Richtung aus Windgürteln nach Breitengrad (T-039) |
 | Meeresströmung | Lauf 2026-10-23, Zahlen (Jahresmittel) und Aufnahmen über das Jahr |
+| Gezeiten | Lauf 2026-10-23, Bild `lore/world/tides/tides-raw.png`, über die Legende in Tidenhub zurückgerechnet (Abschnitt 11) |
 
 Die Aufnahmen aus einem Lauf vom 2026-10-20 (Wind, Meeresströmung) sind durch Lauf 2026-10-23 ersetzt, weil dieser näher am gültigen Lauf liegt.
 
@@ -292,16 +293,18 @@ Ergebnis (2026-10-23): 9.717 / 5.538 / 2.743 Zellen Fluss / großer Fluss / Stro
 
 **Maßstab** (Design-Referenz Abschnitt 4): Planetenradius 6371 km. Das Spielfeldraster ist die Heightmap mit 8192 × 4096, ein Pixel ≈ 4,9 km am Äquator. Alle Weltdaten liegen auf dem Raster der Klimazonen mit 2160 × 1080, eine Zelle ≈ 18,5 km am Äquator. Die echte Zellbreite skaliert mit `cos(Breite)`; Flächenanteile, Abdeckungen und Kalibrierung werden deshalb immer nach Fläche gewichtet, sonst wären polnahe Gebiete überrepräsentiert. Abstände in den Regeln stehen in Kilometern, nicht in Zellen, damit sie nicht an der Auflösung hängen.
 
-**Spielfeld:** Die Werte eines gewählten Pixels werden aus den umliegenden Zellen der Weltdaten berechnet (O - Verfahren, Design-Referenz Abschnitt 4). Was in dem Feld konkret liegt, setzt die Spielwelt beim Betreten.
+**Spielfeld:** Die Werte eines gewählten Pixels werden aus den umliegenden Zellen der Weltdaten berechnet (Design-Referenz Abschnitt 4, im Kern `FieldSampler`): bilinear zwischen den vier Zellen um die Feldmitte, aber nur über Zellen derselben Art wie das Feld (Land bzw. Wasser), Gewichte neu verteilt; Kategorien (Klimazone, Köppen-Klasse, Gesteinsraum, Fluss, Hauptboden) nach dem größten Gewicht; passt keine der vier Zellen, die nächste passende bis 10 Zellen Abstand. Ob das Feld Land ist, sagt `landmaske.bin` (Meermaske in voller Auflösung 8192 × 4096, Binnengewässer kennt sie nicht). Mengen stehen in der Einheit der Quelle (Anteile 0–255, Tidenhub in cm). Die Ebenen-Dateien bleiben gepackt im Speicher und werden je Feld nur bis zur nötigen Zeile entpackt. Was in dem Feld konkret liegt, setzt die Spielwelt beim Betreten.
 
 **Pipeline:** Jede Stufe liest nur die Eingaben und die Ergebnisse früherer Stufen und schreibt eigene Dateien, damit sie einzeln neu erzeugt werden kann.
 
 | Stufe | Werkzeug | Ergebnis | Abschnitt |
 |---|---|---|---|
 | Klimazonen und Köppen-Klassen | `tools/klimazonen.py` | `klimazonen.bin`, `koeppen.bin` | 5, 8 |
+| Landmaske des Spielfelds | `tools/landmaske.py` | `landmaske.bin` (8192 × 4096) | 8 |
 | Flüsse und Fließrichtung | `tools/fluesse.py` | `fluesse.bin`, `fliessrichtung.bin` | 7, 10 |
 | Gesteinsräume | `tools/gesteinsraeume.py` | `gesteinsraeume.bin` | 9 |
 | Grundgestein und Gesteine | `tools/gestein.py` | `gestein.bin` | 10 |
+| Gezeiten | `tools/gezeiten.py` | `gezeiten.bin` | 11 |
 | Bodenfeuchte und Böden | `tools/boeden.py` | `bodenfeuchte.bin`, `boeden.bin` | 11 |
 | Lagerstätten | `tools/lagerstaetten.py` | `lagerstaetten.bin` | 10 |
 | Pflanzen | `tools/pflanzen.py` | `pflanzen.bin` | 12 |
@@ -311,7 +314,7 @@ Die Lagerstätten laufen nach den Böden, weil einige von ihnen vom Boden oder v
 **Inhalte und Ergebnisse:**
 
 - Die Regeln je Material, Boden und Pflanze sind Inhalte und stehen als YAML unter `data/nature/` (`materialien.yaml`, `boeden.yaml`, `pflanzen.yaml`). Sie sind Eingabe der Werkzeuge und zugleich die Metadaten fürs Spiel (Name, Kategorie, Fruchtbarkeit, Nutzung). Neue Einträge brauchen keine Codeänderung. Arbeitsstand der Listen: `lore/materialien_und_boeden.md`, `lore/pflanzen.md`.
-- Ergebnisse liegen unter `data/world/`. Ebenen-Dateien mit vielen Layern (`gestein.bin`, `lagerstaetten.bin`, `boeden.bin`, `pflanzen.bin`, `bodenfeuchte.bin`): Kennung, uint32 Version, Breite, Höhe, Anzahl Layer, dann je Layer die ID (uint16 Länge + UTF-8) und die Länge der gepackten Daten, danach die Layer, je ein Byte pro Zelle (Norden zuerst, ab 180° W), einzeln mit zlib gepackt. Seltene Materialien sind fast überall 0 und werden dadurch sehr klein. Ebenen mit einem Wert je Zelle (`koeppen.bin`, `gesteinsraeume.bin`, `fliessrichtung.bin`) folgen dem Format von `klimazonen.bin`.
+- Ergebnisse liegen unter `data/world/`. Ebenen-Dateien mit vielen Layern (`gestein.bin`, `lagerstaetten.bin`, `boeden.bin`, `pflanzen.bin`, `bodenfeuchte.bin`; ebenso `landmaske.bin` mit einem Layer `land`): Kennung, uint32 Version, Breite, Höhe, Anzahl Layer, dann je Layer die ID (uint16 Länge + UTF-8) und die Länge der gepackten Daten, danach die Layer, je ein Byte pro Zelle (Norden zuerst, ab 180° W), einzeln mit zlib gepackt. Seltene Materialien sind fast überall 0 und werden dadurch sehr klein. Ebenen mit einem Wert je Zelle (`koeppen.bin`, `gesteinsraeume.bin`, `fliessrichtung.bin`, `gezeiten.bin`) folgen dem Format von `klimazonen.bin`.
 - Ein Layer reicht von 0 bis 255: 0 = kein Vorkommen, 255 = ergiebigste Stelle dieses Eintrags auf dem Planeten (Normalisierung je Eintrag). Meer ist immer 0. Wie selten ein Eintrag insgesamt ist, sagt seine Seltenheitsklasse.
 - **Bilder:** Jeder Lauf schreibt Übersichtskarten nach `lore/` (Land und Meer als Hintergrund) und je Layer ein Graustufenbild nach `lore/ebenen/<kategorie>/<id>.png`. `lore/ebenen/` hat ein `.gdignore`, damit Godot die vielen Bilder nicht importiert.
 
@@ -442,7 +445,23 @@ Ergebnis Lagerstätten (2026-10-25): `lagerstaetten.bin` mit 68 Layern, Lauf run
 
 ## 11. Bodenfeuchte und Böden
 
-Werkzeug `tools/boeden.py` (Bodenfeuchte in `tools/bodenfeuchte.py`), Inhalte in `data/nature/boeden.yaml`, Lauf rund 17 s. Alle Zahlenwerte unten sind O - Vorschlag (im Werkzeug als Annahmen markiert) und werden an den Bildern abgestimmt.
+Werkzeug `tools/boeden.py` (Bodenfeuchte in `tools/bodenfeuchte.py`), Inhalte in `data/nature/boeden.yaml`, Lauf rund 17 s. Vorher läuft `tools/gezeiten.py` (rund 5 s). Alle Zahlenwerte unten sind O - Vorschlag (im Werkzeug als Annahmen markiert) und werden an den Bildern abgestimmt.
+
+### Gezeiten
+
+Die Klimasimulation rechnet die Gezeiten aus drei Himmelskörpern (Mond, Stern, Mond eins; vorherrschende Tide 10,3 h). Weil die Weltdaten keine Meerestiefen enthalten, nimmt sie einen geschätzten Meeresboden mit Kontinentalschelfen; daher steigt der Tidenhub an fast allen flachen Schelfen. Zahlen gibt sie nicht aus, nur das Bild.
+
+**Quelle:** `lore/world/tides/tides-raw.png` (Lauf 2026-10-23, 8192 × 4096). Legende in `tides-framed.png`: sieben Farbstufen, beschriftet 0 m, 46 cm (vierte Stufe) und 1,7 m+, Höhenlinien alle 5 cm.
+
+**Zurückrechnen** (`tools/gezeiten.py`):
+
+- Jedes Pixel wird auf den Farbverlauf der Legende abgebildet. Annahme: Die Stufen liegen je Hälfte gleichmäßig (0, 15, 31, 46, 87, 129, 170 cm). Für die untere Hälfte bestätigen das die 5-cm-Höhenlinien; für die ganze Skala passt der Abgleich mit dem Log der Simulation: Zellmittel des Meeres 53 cm (Simulation 52 cm), Median 45 cm (Legendenmitte 46 cm).
+- Pixel, die nicht auf dem Verlauf liegen (Land, Höhenlinien) und ein Pixel Rand darum werden aus dem nächsten gültigen Pixel aufgefüllt. Die geglätteten Ränder der Linien liegen farblich auf der Skala (Blau mit Weiß gemischt) und nimmt ein Median über 7 Pixel heraus.
+- Über 1,7 m zeigt das Bild keinen Unterschied; der größte Tidenhub der Simulation ist 7 m. Für Pflanzen reicht das, für spätere Nutzungen (Häfen, Gezeitenmühlen) nicht.
+
+**Ausgabe:** `data/world/gezeiten.bin` (Kennung `TBGZ`, Einzelraster): Tidenhub in cm je Meereszelle, 0–170 (170 = 1,7 m und mehr), Land und Binnengewässer 0. Bild `lore/gezeiten.png`.
+
+**Stand 2026-10-25:** Tidenhub im Flächenmittel des Meeres 62 cm, 1,7 m und mehr auf 0,5 % des Meeres. Küstennahes Meer: ab 50 cm auf 78 %, ab 1 m auf 51 %, ab 1,7 m auf 5 %.
 
 ### Bodenfeuchte
 
@@ -459,13 +478,13 @@ Werkzeug `tools/boeden.py` (Bodenfeuchte in `tools/bodenfeuchte.py`), Inhalte in
   - `OASE` an Trockenflüssen und an ganzjährigen Flüssen in BW/BS: 40 %, klingt über 20 km ab.
   - `KUESTE` 40 % in Zellen direkt am Meer, eine Zelle weiter 0.
   - `STEHEND` = die Binnengewässer selbst (255). Das ist der einzige Layer mit Werten außerhalb des Landes.
-  - TODO: `GEZEITEN`: Die Gezeiten liegen nur als Bild vor (`07-tides-raw.png`, Lauf 2026-10-10), Quelle offen. Bis dahin gibt es den Layer nicht.
+  - `GEZEITEN` in Zellen direkt am Meer (wie `KUESTE`): 40 % × Tidenhub-Faktor × Flachheit. Der Faktor steigt von 50 cm bis 1,5 m Tidenhub auf 1 (größter Wert der angrenzenden Meereszellen), die Flachheit fällt bis 0,2 % Gefälle auf 0 (wie die flache Küste der Böden). Bis 30 km um ganzjährige Flüsse gilt die Küste als flach: An den Mündungen liegt das Brackwasser.
 
 Eine Zelle kann mehrere Kategorien haben (z. B. `FRISCH` und `UFER`).
 
-**Ausgabe:** `data/world/bodenfeuchte.bin` (Kennung `TBBF`, Layer `bodenfeuchte`, `feuchtgebiet`, `TROCKEN`, `FRISCH`, `FEUCHT`, `NASS`, `UFER`, `OASE`, `KUESTE`, `STEHEND`), Bild `lore/bodenfeuchte.png` (vorherrschende Feuchtekategorie), Einzelbilder unter `lore/ebenen/bodenfeuchte/`.
+**Ausgabe:** `data/world/bodenfeuchte.bin` (Kennung `TBBF`, Layer `bodenfeuchte`, `feuchtgebiet`, `TROCKEN`, `FRISCH`, `FEUCHT`, `NASS`, `UFER`, `OASE`, `KUESTE`, `GEZEITEN`, `STEHEND`), Bild `lore/bodenfeuchte.png` (vorherrschende Feuchtekategorie), Einzelbilder unter `lore/ebenen/bodenfeuchte/`.
 
-**Stand 2026-10-24:** vorherrschend Trocken 23,6 %, Frisch 49,4 %, Feucht 26,2 %, Nass 0,8 % des Landes; Feuchtgebietsanteil auf 16 % des Landes über 0.
+**Stand 2026-10-24:** vorherrschend Trocken 23,6 %, Frisch 49,4 %, Feucht 26,2 %, Nass 0,8 % des Landes; Feuchtgebietsanteil auf 16 % des Landes über 0. `GEZEITEN` (Stand 2026-10-25) auf 1,7 % des Landes, an 41 % der Küstenzellen über 0.
 
 ### Böden
 
@@ -529,7 +548,7 @@ eignung = K(köppen) × B(boden) × W(wasser) × H(höhe) × S(salz) × rauschen
 - **Regionen:** Grenzen als Linien in `lore/regionen_grenzen.png` (2160 × 1080, transparent, deckender Pixel = Grenze; übertragen aus der Skizze des Entwicklers vom 2026-10-25, das linke Ende im Meer bis an den Kartenrand verlängert), Namen und je ein Punkt in `lore/regionen.yaml`. Die Flächen zwischen den Linien sind die Regionen; der Kartenrand begrenzt, Ost und West laufen nicht um. Linienzellen und Splitter ohne Punkt gehen an die nächstgelegene Region. Hängen zwei Punkte zusammen, bricht das Werkzeug ab (Linie nicht geschlossen). Bild `lore/regionen.png`. Layer einer Linie ohne Vorkommen in einer Region entfallen.
 - Fiktive Pflanzen mit `active: false` werden übersprungen. Schatten, Brandflächen und Nebel stehen in den Daten, wirken aber noch nicht (TODO, siehe Konkurrenz unten).
 
-**Stand 2026-10-25** (nach der Bindung an Regionen, T-091, und den Ergänzungen T-093): 226 aktive Pflanzen, davon 31 weltweit und 4 Linien (Säulenkaktus, Akazie, Eiche, Kiefer), 250 Layer, 7,5 MB, Lauf rund 70 s. Im Mittel 14 Pflanzen je Landzelle (Median 13, höchstens 45), vor der Bindung 35. Ohne Pflanze sind 0,6 % des Landes. Grundbedürfnisse fehlen auf: Nahrung 0,9 %, Faser 10,4 %, Holz oder Brennmaterial 13,2 % des Landes, fast nur in den Kernwüsten (BWh) von Ost-Mitte und Ost-Süd (je rund 22 %). Laut Design-Referenz Abschnitt 4 gibt es dafür Ersatz oder Handel. Die Werte je Region schreibt das Werkzeug ins Log. Jedes Volk hat im Umkreis seines Mittelpunkts mindestens ein Gewürz und zwei Grundnahrungsmittel (Prüfung 2026-10-25). Mangrove und Nipapalme haben kein Vorkommen, und Queller wächst nur an Salzküsten, weil `GEZEITEN` fehlt (T-085).
+**Stand 2026-10-25** (nach der Bindung an Regionen, T-091, und den Ergänzungen T-093): 226 aktive Pflanzen, davon 31 weltweit und 4 Linien (Säulenkaktus, Akazie, Eiche, Kiefer), 250 Layer, 7,5 MB, Lauf rund 70 s. Im Mittel 14 Pflanzen je Landzelle (Median 13, höchstens 45), vor der Bindung 35. Ohne Pflanze sind 0,6 % des Landes. Grundbedürfnisse fehlen auf: Nahrung 0,9 %, Faser 10,4 %, Holz oder Brennmaterial 13,2 % des Landes, fast nur in den Kernwüsten (BWh) von Ost-Mitte und Ost-Süd (je rund 22 %). Laut Design-Referenz Abschnitt 4 gibt es dafür Ersatz oder Handel. Die Werte je Region schreibt das Werkzeug ins Log. Jedes Volk hat im Umkreis seines Mittelpunkts mindestens ein Gewürz und zwei Grundnahrungsmittel (Prüfung 2026-10-25). Seit `GEZEITEN` vorliegt (T-085): Mangrove auf 0,25 % des Landes an den tropischen Küsten beider Festländer, Nipapalme auf 0,07 % an den Inseln des Südostens, Queller auf 3,0 %.
 
 - E - Fehlendes Holz in den Kernwüsten bleibt: Ersatz oder Handel (Design-Referenz Abschnitt 4, 2026-10-25).
 

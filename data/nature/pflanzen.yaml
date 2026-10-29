@@ -257,9 +257,8 @@ plants:
   - { id: binse, name_key: PLANT_RUSH, growth: STAUDE, climate: { Af: 1, Am: 1, Aw: 1, As: 1, Cfa: 1, Cfb: 1, Cfc: 1, Csa: 1, Csb: 1, Csc: 1, Cwa: 1, Cwb: 1, Cwc: 1, Dfa: 1, Dfb: 1, Dfc: 1, Dfd: 1, Dsa: 1, Dsb: 1, Dsc: 1, Dsd: 1, Dwa: 1, Dwb: 1, Dwc: 1, Dwd: 1 }, water: [UFER], worldwide: true, use: [F] }
   - { id: lotus, name_key: PLANT_LOTUS, growth: WASSERPFLANZE, climate: { Af: 1, Am: 1, Aw: 1, Cfa: 1, Cwa: 1 }, water: [STEHEND], homeland: [ost_sued], use: [N, M] }
   - { id: wassernuss, name_key: PLANT_WATER_CHESTNUT, growth: WASSERPFLANZE, climate: { Cfa: 1, Cfb: 1, Dfa: 1 }, water: [STEHEND], homeland: [ost_nord], use: [N] }
-  # TODO: T-085 – braucht den Layer GEZEITEN, bis dahin ohne Vorkommen
   - { id: mangrove, name_key: PLANT_MANGROVE, growth: BAUM, climate: { Af: 1, Am: 1, Aw: 1 }, water: [GEZEITEN], salt_tolerant: true, worldwide: true, use: [H, W, Fu] }
-  # TODO: T-085 – Brackwasser = GEZEITEN an Flussmündungen, bis dahin ohne Vorkommen
+  # Brackwasser: GEZEITEN schließt die Flussmündungen ein (welt_konfiguration.md Abschnitt 11)
   - { id: nipapalme, name_key: PLANT_NIPA_PALM, growth: PALME, climate: { Af: 1, Am: 1 }, water: [GEZEITEN], salt_tolerant: true, homeland: [suedost], use: [F, N] }
   - { id: pappel, name_key: PLANT_POPLAR, growth: BAUM, climate: { BSk: 1, BWk: 1, Dfa: 1, Csa: 1, Csb: 1, Csc: 1 }, water: [UFER, OASE], worldwide: true, use: [H] }
 

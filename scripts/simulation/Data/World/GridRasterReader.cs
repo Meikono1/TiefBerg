@@ -6,13 +6,17 @@ using TiefBerg.Diagnostics;
 
 namespace TiefBerg.Data.World;
 
-// Liest Zellraster aus tools/klimazonen.py und tools/fluesse.py (lore/welt_konfiguration.md Abschnitt 5, 7):
+// Liest Zellraster aus tools/klimazonen.py, tools/fluesse.py, tools/gesteinsraeume.py und tools/gezeiten.py
+// (lore/welt_konfiguration.md Abschnitt 5, 7, 9, 11):
 // 4 Byte Kennung, uint32 Version, Breite, Höhe (Little Endian), danach ein Byte je Zelle.
 // Defekte Dateien werden geloggt und abgelehnt; es gibt keinen Ersatz, weil die Welt ohne sie nicht entstehen kann.
 public sealed class GridRasterReader
 {
     public const string ZonesMagic = "TBKZ";
     public const string RiversMagic = "TBFL";
+    public const string KoeppenMagic = "TBKP";
+    public const string RockRoomsMagic = "TBGR";
+    public const string TidesMagic = "TBGZ";
 
     private const int SupportedVersion = 1;
     private const int HeaderLength = 16;

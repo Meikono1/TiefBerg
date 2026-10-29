@@ -52,7 +52,6 @@ OUT_MAGIC = b"TBPF"
 OUT_DIVERSITY_IMAGE = ROOT / "lore" / "pflanzen_vielfalt.png"
 OUT_REGION_IMAGE = ROOT / "lore" / "regionen.png"
 CATEGORY = "pflanzen"
-MISSING_WATER = {"GEZEITEN"}   # TODO: T-085 – Layer GEZEITEN fehlt in bodenfeuchte.bin, Pflanzen damit bleiben dort leer
 
 # Annahmen (welt_konfiguration.md Abschnitt 12, O - Vorschlag):
 RIM_KM = 150.0                 # Randzone: Zellen anderer Klassen bis so weit von der Kernzone
@@ -121,8 +120,6 @@ def load_grids(regions):
     for category in pflanzen_daten.WATER_CATEGORIES:
         if category in moisture:
             water[category] = flat(moisture[category]).astype(np.float32) / 255.0
-        elif category in MISSING_WATER:
-            water[category] = np.zeros(index.size, np.float32)
         else:
             raise ValueError(f"bodenfeuchte.bin: Layer {category!r} fehlt (zuerst tools/boeden.py ausführen)")
     elevation, slope = boeden.read_terrain(width, height)
@@ -243,9 +240,6 @@ def build_layers(plants, grids, regions):
         for flag in ("shade", "fire_pioneer", "fog"):
             if plant.entry.get(flag):
                 log.info("%s: %s noch nicht berücksichtigt (TODO, welt_konfiguration.md Abschnitt 12)", plant.id, flag)
-        missing = MISSING_WATER.intersection(plant.water)
-        if missing:
-            log.warning("%s: Wasserkategorie %s fehlt in den Weltdaten (T-085)", plant.id, ", ".join(sorted(missing)))
         base = suitability(plant, grids)
         for layer_id, allowed in layer_keys(plant, regions):
             raw = base * noise_factor(layer_id, grids)

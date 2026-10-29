@@ -30,7 +30,7 @@ Verbindliche Referenz für Design und Architektur. Bei Widerspruch zwischen Code
 - E - Die Seele tritt in Personen ein. Über Generationen baut der Spieler mehrere Charaktere auf und wechselt zwischen ihnen. Sie müssen nicht verwandt sein.
 - E - Charaktere ziehen als Party, eine Gruppe von Abenteurern, in Dungeons (Abschnitt 7).
 - E - Eigener Stammbaum als Kernfeature (Abschnitt 6).
-- E - Spielercharaktere sind besonders, weil der Spieler ihre Geschichte erlebt: weniger Krankheit, keine zufälligen permanenten Verletzungen. Sonst gelten dieselben Regeln wie für NPCs.
+- E - Spielercharaktere sind besonders, weil der Spieler ihre Geschichte erlebt: weniger Krankheit, keine zufälligen permanenten Verletzungen und von den Bedürfnissen (Abschnitt 9) nur Essen und Ruhe. Sonst gelten dieselben Regeln wie für NPCs.
 - E - Jede Kulturgruppe und Spezies hat eigene Königreiche und Dörfer, die passiv weiterlaufen und technologisch unterschiedlich weit sein können.
 - E - Technologie ist offen. Eisen, Kupfer oder Schwarzpulver sind ab Start möglich, wenn die Voraussetzungen erfüllt sind.
 - E - Reiche erreichen 100.000 Einwohner und mehr.
@@ -70,7 +70,8 @@ Die Weltzeit ist ein `ulong`-Zähler in Sekunden seit Weltstart; Kalender und An
 - E - Die Vorsimulation beginnt bei Weltzeit 0. Das Spiel beginnt rund 1000 Jahre später in der fertigen Welt mit Städten, Charakteren und Geschichten (Abschnitt 4, 11); das genaue Startjahr kommt aus dem Szenario. So ist auch Vergangenheit (z. B. Geburt eines Drachen, der zum Start 150 Jahre alt ist) als positive `ulong`-Weltzeit darstellbar, und Szenarien können zu verschiedenen Zeiten in dieselbe Welt einsteigen.
 - E - Jede Spezies hat einen eigenen Kalender mit eigener Epoche: der Weltzeit, zu der dessen Jahr 1 beginnt. Aufbau (Tage, Monate, Jahre) ist für alle gleich.
 - E - Kalender kennen Daten vor ihrem Jahr 1 (wie "vor Christus"): Jahr 1 davor folgt direkt auf Jahr 1 danach, ein Jahr 0 gibt es nicht.
-- E - Geschwindigkeit 1 ist Echtzeit: 1 Weltsekunde pro Echtzeitsekunde. Das Spiel startet pausiert und läuft danach mit Normalgeschwindigkeit.
+- E - Geschwindigkeit 1 ist Echtzeit: 1 Weltsekunde pro Echtzeitsekunde. Das Spiel startet pausiert.
+- E - In der Ortsansicht steht die Zeit, bis der Spieler eine Aktion wählt (Reisen, Arbeiten, Rasten …). Dann läuft sie bis zum Ende der Aktion oder bis ein Ereignis sie unterbricht und steht danach wieder. Echtzeit läuft nur, wenn der Spieler sie über Play startet.
 - E - Zeitraffer vorerst nur als Sprung: einen Abschnitt (fester Dauer ab jetzt: 1 Tag = 20 Stunden, 1 Monat = 23 Tage, 1 Jahr = 276 Tage) oder bis zum nächsten Ereignis, jeweils auf Anfrage. Danach gilt Pause. Gleichmäßige Stufen schneller als Echtzeit gibt es vorerst nicht.
 - O - Vorschlag: Bis ein Weltereignislog existiert, ist „nächstes Ereignis“ die nächste Fälligkeit im Scheduler. Was später als Ereignis für den Spieler zählt (und Sprünge unterbricht), ist offen.
 - E - Im Kampf läuft die Zeit in Runden (6 Sekunden) und steht, bis der eigene Charakter gehandelt hat (Abschnitt 7).
@@ -101,11 +102,19 @@ Die Welt ist fest und wird über mehrere Bitmaps beschrieben, aus denen Grenzen 
 - E - Mehrere Bitmaps sagen, was wo ist. Grenzen werden daraus berechnet.
 - E - Kulturen liegen auf einer eigenen Karte und sind fluide.
 - E - Gebietsarten: Kerngebiet, Einflussgebiet, Mischgebiet zweier Kulturen, Wildnis.
-- E - Ortsgraph statt Raster: Welt → Region → Siedlung → Ort (z. B. Hütte, Koboldhöhle, Marktplatz). Bewegung zwischen Knoten kostet Zeit.
+- E - Ortsgraph statt Raster: Welt → Region → Siedlung → Ort (z. B. Hütte, Koboldhöhle, Marktplatz). Bewegung zwischen Knoten kostet Zeit. Es gibt kein Raster zum Laufen, weder in Städten noch draußen; ein Raster gibt es nur im Kampf und in Dungeons (Abschnitt 7).
+- E - Orte haben eine Lage: Koordinaten in Metern innerhalb ihrer Siedlung bzw. Region, Siedlungen liegen auf einem Spielfeld der Weltkarte. Verbindungen sind Kanten im Ortsgraphen (so entstehen Mauern, Flüsse, Brücken ohne Raster); die Länge einer Kante ergibt sich aus den Koordinaten, ein Faktor je Kante bildet Treppen, Sumpfpfade u. Ä. ab.
+- E - Reisezeit = Weglänge ÷ Geschwindigkeit der Person (Spezies, Größe, Last).
+- E - Wird eine Reise abgebrochen (vom Spieler oder durch ein Ereignis), entsteht an der berechneten Stelle ein vorübergehender Ort („auf dem Weg nach …“). Seine Ortsart kommt vom Gelände (in der Stadt z. B. Gasse, draußen aus den Werten des Spielfelds). Dort spielt das Ereignis; danach geht es weiter, zurück oder zu einem neuen Ziel. Ist niemand mehr dort, verschwindet der Ort.
+- E - Jede Ortsart hat generische Hintergrundbilder in einem eigenen Ordner (`resources/locations/<ortsart>/`). Liegen mehrere darin, wählt der Ort eines fest über seine ID (gleicher Ort, gleiches Bild). Fehlen sie, wird das als Error geloggt, ohne Ersatzbild.
+- O - Varianten der Hintergrundbilder je Kultur, Tageszeit oder Jahreszeit.
+- O - Vorschau einer Stadt aus der Vogelperspektive (Bild mit den Orten an ihren Koordinaten), nur zur Orientierung.
 - E - Spielfeld: Der Spieler wählt einen Pixel der Karte 8192 × 4096 (Raster der Heightmap) und beginnt dort. Ein Pixel ist am Äquator rund 4,9 × 4,9 km (≈ 24 km²) und wird polwärts schmaler (bei 60° Breite halb so breit). Siedlungen und Orte liegen im Ortsgraph unterhalb dieser Auflösung.
 - E - Weltdaten (Klima, Flüsse, Gestein, Lagerstätten, Bodenfeuchte, Böden, Pflanzen) liegen auf einem gemeinsamen, kleineren Raster 2160 × 1080 (eine Zelle ≈ 18,5 km am Äquator). Jede Ebene hat dieselbe Größe, jede Zelle hat für jedes Material, jeden Boden und jede Pflanze einen Wert. Feiner gibt es die Klimadaten nicht.
 - E - Wird ein Spielfeld gewählt, berechnet das Spiel seine Werte aus den umliegenden Zellen der Weltdaten (Mittelwert bzw. Interpolation) und überträgt sie als Eintrag in die Spielwelt. Was im Feld konkret liegt (Erzader, Bach, Wäldchen), wird erst dort gesetzt.
-- O - Verfahren für die Werte des Spielfelds (gewichteter Mittelwert, bilinear, Zufall im Feld) und wie die Spielwelt das Feld daraus aufbaut.
+- E - Verfahren für die Werte des Spielfelds: bilinear zwischen den vier umliegenden Zellen, aber nur über Zellen derselben Art wie das Feld (Land bzw. Wasser); die Gewichte der übrigen werden auf sie verteilt, damit das Meer Küstenfelder nicht verarmt. Kategorien (Klimazone, Köppen-Klasse, Gesteinsraum, Hauptboden, Fluss) bekommt das Feld nach dem größten Gewicht. Kein Zufall: gleiches Feld, gleiche Werte. Ob ein Feld Land oder Wasser ist, sagt die Meermaske in voller Auflösung (8192 × 4096). Die Ebenen bleiben gepackt im Speicher und werden für ein Feld nur so weit entpackt wie nötig.
+- O - Vorschlag: Liegt keine der vier Zellen auf derselben Art (Insel oder Bucht kleiner als eine Zelle), gilt die nächste Zelle dieser Art bis 10 Zellen (rund 185 km) Abstand; weiter weg hat das Feld keine Werte.
+- O - Wie die Spielwelt das Feld aus den Werten aufbaut (was konkret darin liegt) und was davon im Weltzustand gespeichert wird.
 - O - Die angezeigte Weltkarte (`resources/maps/weltkarte.png`) hat 4320 × 2160, das Spielfeldraster 8192 × 4096; die Auswahl rechnet zwischen beiden um.
 - E - Ressourcen (Gestein, Lagerstätten, Böden, Pflanzen) werden von Werkzeugen in `tools/` einmal mit festem Startwert erzeugt und liegen dann fest; sie werden nicht je Spiel neu verteilt. Verfahren: `lore/welt_konfiguration.md` Abschnitte 8–12, Inhalte: `lore/materialien_und_boeden.md`, `lore/pflanzen.md`.
 - E - Als Zwischenschritt bekommt jede Landzelle einen **Gesteinsraum** (geologische Herkunft, z. B. altes Vulkangebiet oder uralter Kontinentkern). Er bestimmt, welche Gesteine und Lagerstätten zusammen auftreten. Gesteinsräume sind keine Gebiete im Spiel und haben mit Grenzen nichts zu tun. Die Zuordnung erfolgt je Gebirgskette von Hand.
@@ -209,7 +218,9 @@ Magie kostet KCAL und verknüpft damit Magie, Ernährung, Spezies-Größe und Wi
 
 - E - Magie basiert auf KCAL.
 - E - Große Spezies haben mehr Reserve, aber höheren Grundumsatz. Nahrung wird zur Magieressource. Zauber haben ein Level, Kosten skalieren damit.
-- E - Jeder hat eine KCAL-Reserve, relevant ist sie aber nur für Magier. Einzeln getrackt wird KCAL nur bei Magiern und anderweitig wichtigen Personen, nicht bei Bauern.
+- E - Jeder hat eine KCAL-Reserve, relevant ist sie aber nur für Magier. Einzeln getrackt wird KCAL nur bei Magiern und anderweitig wichtigen Personen (dazu zählen alle Spielercharaktere), nicht bei Bauern.
+- E - Die KCAL-Reserve ist eine feste Zahl, die mit der Zeit sinkt und durch Essen steigt. Die Anzeige markiert sie in Farbstufen (z. B. satt, hungrig, ausgehungert).
+- O - Fettanteil: Eine größere Reserve ermöglicht mehr Magie, senkt aber andere Werte. Ausarbeitung durch den Entwickler.
 - E - Für die Siedlung wirkt Magie wie Technologie: Personen, die sie gelernt haben, geben Boni.
 - E - Körpermagie: Eine Rasse kann selbst die Herkunft ihrer Magie sein. Sie wirkt angeboren im eigenen Körper, ist keine Tradition, muss nicht gelernt werden und kostet KCAL (`lore/Magiesystem.md`, z. B. Atmung der Veskral, Knochensinn der Gnolle).
 - O - Vorschlag: KCAL ganzzahlig speichern.
@@ -237,6 +248,8 @@ Der Herrscher vergibt Aufträge, die Einwohner arbeiten sie ab und bringen ihre 
 - O - Welche Pflanzen und Materialien natürlich vorkommen (Grundlage aller Rezepte). Arbeitsstand: `lore/materialien_und_boeden.md` und `lore/pflanzen.md`, noch nicht bestätigt; die Listen werden zu YAML unter `data/`.
 - E - Das Spiel startet nicht im Kapitalismus. Bis Wohlstand entsteht, zählen Vertrauen und Beziehungen mehr; jeder kennt jeden, die Gemeinschaft hilft sich.
 - E - Währung ergibt sich aus den Umständen: das Gut, das die Krone festlegt und das akzeptiert wird, oder ein Gut, das selten, aber verfügbar ist. Beispiel: Die Startkobolde handeln mit Zähnen oder Schuppen von Nagaji; wer Besucher will, muss die Nagaji beschützen.
+- E - Tauschmittel gelten je Siedlung, auch mehrere zugleich. Jede Siedlung führt die Liste der Tauschmittel, die sie annimmt.
+- O - Wie Tauschmittel entstehen, wechseln und gegeneinander bewertet werden (Wechselkurse, Wertverfall, Akzeptanz).
 
 **Bedürfnisse**
 
@@ -299,7 +312,17 @@ Ein Szenario ist ein Einstiegspunkt in die fertig vorsimulierte Welt, kein absol
 Logging ist Pflicht und dient zugleich als Chronik des Reiches im Spiel.
 
 - E - Haupttext über `RichTextLabel` mit BBCode. Namen und Orte sind anklickbar (`meta_clicked`) und öffnen Personenkarte, Stammbaum oder Ort.
-- O - Welche Ansichten nötig sind, kommt später.
+- E - Ortsansicht ist die erste Spielszene, für Siedlungen, Wildnis und RPG gleichermaßen. Aufbau:
+  - Hintergrund: Bild der Ortsart über die ganze Fläche, alles andere liegt darüber; Textflächen halbtransparent (Theme-Variante).
+  - Oben: Tauschmittel und Vorräte des aktiven Charakters (Tauschmittel, die hier nicht gelten, abgeblendet), Einwohnerzahl der Siedlung, Knöpfe Karte, Quests, Chronik und Menü.
+  - Links: Charakterwechsel (◄ Name ►) durch die Party, Status des aktiven Charakters (Stufe, KCAL, Zustände; weitere Werte folgen mit dem Regelsystem, Abschnitt 7) und Knöpfe für Untermenüs (Charakter, Inventar, Zauber, Talente, Ausrüstung), die sich links anstelle des Status öffnen.
+  - Mitte: Name des Orts groß über dem Bild, darunter ein scrollbarer Haupttext mit Absätzen und farbig abgesetzten Hinweisen, darunter ein Aktionsraster mit Tasten (1–6 und die Reihe darunter, belegt nach Tastenposition, nicht nach Buchstabe); Felder ohne Aktion bleiben leer.
+  - Rechts: Navigation als aufklappbarer Baum des Ortsgraphen (nur Orte, die der aktive Charakter kennt; Siedlungen mit Einwohnerzahl), darunter Zeit (Datum im Kalender des aktiven Charakters; Play/Pause, Tag, Monat, Jahr, nächstes Ereignis) und Reise (Ziel, Dauer, Aufbrechen).
+- E - Die Ortsansicht zeigt immer den aktiven Charakter: Party-Mitglieder können an verschiedenen Orten sein, ein Wechsel tauscht Ort, Bild, Text, Navigation und Inventar. Inventar ist je Person, ein gemeinsames Party-Inventar gibt es nicht.
+- E - Einwohnerzahlen sind geschätzt („ca. 40“). Genau sieht sie nur der Herrscher im Haupthaus.
+- E - Das Haupthaus ist das Verwaltungsgebäude einer Siedlung und ein Ort im Ortsgraphen. Betritt es ihr Herrscher, öffnet sich die Verwaltung als eigene Szene (Siedlungswerte, Aufträge, Einwohner); alle anderen sehen es als normalen Ort (Halle, Wachen, Audienz).
+- O - Wo Ereignisse erscheinen, die eine Entscheidung brauchen (Vorschlag: als Absatz mit Optionen im Haupttext, die Zeit steht bis zur Wahl).
+- O - Weitere Ansichten (Weltkarte im Spiel, Chronik, Stammbaum, Verwaltung im Haupthaus) im Einzelnen.
 - E - Szenarioauswahl: Hauptmenü → Start → Szenarioauswahl auf der Weltkarte. Oben Jahresanzeige (Startjahr des gewählten Szenarios) und Buttons für Kartenmodi; links die Liste aller Szenarien und darunter die Details (Vorschaubild, Titel, Tags, Beschreibung); in der Mitte die Karte; unten die neuesten Szenarien mit Text zu Änderungen und Features; unten links Zurück (Hauptmenü), unten rechts Weiter.
 - E - Die Karte lässt sich verschieben (Ziehen) und zoomen (Mausrad, Buttons, Zurücksetzen auf Gesamtansicht). Kartenmodi tauschen die Kartenebene, Ausschnitt und Zoom bleiben.
 - E - Szenarien erscheinen zusätzlich als Punkte mit Icon auf der Karte. Punkt, Listeneintrag und News-Karte wählen dasselbe aus; die Auswahl fährt die Karte an den Punkt heran („Zoom zum Punkt“), abschaltbar. Doppelklick wirkt wie Weiter.

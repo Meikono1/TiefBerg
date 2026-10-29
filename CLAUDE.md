@@ -37,7 +37,7 @@ dotnet test --solution Tiefberg.sln    # xUnit-Tests des Simulationskerns (tests
 - Spiel starten: im Godot-Editor (F5), Hauptszene ist `scenes/ui/MainMenu.tscn`.
 - Laufzeit-Check ohne Fenster (ca. 12 s, Log auf der Konsole; vorher `dotnet build Tiefberg.sln`):
   `& "C:\Users\Christian\Desktop\shadowrun\test\Godot_v4.7.1-stable_mono_win64_console.exe" --headless --path . --max-fps 120 --quit-after 1500 -- --new-game`
-  Ohne `-- --new-game` bleibt das Spiel im Menü und die Simulation läuft nicht. Auch mit startet sie pausiert; Weltzeit läuft erst über Befehle (Spielszene T-014). `-- --continue` lädt den neuesten Spielstand. Beim Beenden entsteht ein Autosave.
+  Ohne `-- --new-game` bleibt das Spiel im Menü und die Simulation läuft nicht. Auch mit startet sie pausiert; Weltzeit läuft erst über Befehle (Ortsansicht T-095). `-- --continue` lädt den neuesten Spielstand. Beim Beenden entsteht ein Autosave.
 - Spielstände: `user://saves/<slot>/world.sav` + `scenario.sav` (Windows: `%APPDATA%\Godot\app_userdata\Tiefberg\saves`).
 - Tests: `tests/Tiefberg.Simulation.Tests` (xUnit v3 auf Microsoft.Testing.Platform, per `global.json`; daher `dotnet test --solution …` statt `dotnet test Tiefberg.sln`). Getestet wird nur der Godot-freie Kern; Logger dort `NullLogger<T>.Instance`. Linter gibt es noch nicht.
 - Logs zur Laufzeit: `user://logs/game_*.log` (Windows: `%APPDATA%\Godot\app_userdata\Tiefberg\logs`), die letzten 10 werden behalten.
@@ -59,9 +59,9 @@ Aktueller Stand (Meilenstein 1 „Fundament“ begonnen):
 - Logging: `LogManager` (statisch, Datei + Godot-Konsole, Thread-sicher, fängt unbehandelte Exceptions) und `GameLogger` pro Klasse über `LogManager.GetLogger<T>()`. Dieses Logging nutzt Godot-APIs und gehört damit zur Präsentations-/Host-Schicht. Der Simulationskern bekommt `ILogger<T>` (Microsoft.Extensions.Logging) per Konstruktor. `LogManager.SimulationLoggerFactory` erzeugt diese Logger, und `SimulationLoggerProvider` leitet sie in denselben `LogManager` um: eine Datei, ein Format, die Weltzeit aus `LogManager.WorldTimeSource` vorangestellt. Jede Zeile enthält Systemzeit und Klasse.Methode (`[CallerMemberName]`); im Kern ist das per Analyzer erzwungen.
 - Zeitmessung: `TiefBerg.Diagnostics.Perf` misst pro Klasse.Methode, warnt bei Budgetüberschreitung (`PerfBudgets.TickMs = 8` ms für 120 FPS), Rechenscheiben enden nach `PerfBudgets.SliceMs = 6` ms, und `GameManager._Process` loggt alle 10 s eine Aufwandsübersicht.
 - Zufall: `DiceService` / `RandomSource` in `TiefBerg.Simulation.Dice` (xoshiro256**, Zustand speicherbar), über `World.Dice`. `System.Random` ist im Kern gesperrt.
-- Welt: `tools/klimazonen.py` und `tools/fluesse.py` erzeugen die Raster `data/world/*.bin` (Doku `lore/welt_konfiguration.md`). Beim Weltstart liest `WorldDataFiles` (Godot) Raster, Tabellen und Völker (`data/peoples/`) und rechnet im Kern die Heimatgebiete (`HomelandCalculator`, `TiefBerg.Simulation.Geography`, rund 1,2 s); Ergebnis `GameManager.Homelands`.
+- Welt: `tools/klimazonen.py` und `tools/fluesse.py` erzeugen die Raster `data/world/*.bin` (Doku `lore/welt_konfiguration.md`). Beim Weltstart liest `WorldDataFiles` (Godot) Raster, Tabellen und Völker (`data/peoples/`) und rechnet im Kern die Heimatgebiete (`HomelandCalculator`, `TiefBerg.Simulation.Geography`, rund 1,2 s); Ergebnis `GameManager.Homelands`. Die Werte eines Spielfelds (Pixel 8192 × 4096) berechnet `FieldSampler` (`TiefBerg.Simulation.Geography`) aus `landmaske.bin`, den Einzelrastern und den Ebenen-Dateien (`LayerFileReader`); im Host noch nicht angebunden (T-094).
 - Speichern: Format im Kern (`WorldStateSerializer`, `ScenarioStateSerializer`, `SaveFormat`), Dateien und Autosave-Rotation im `SaveService` (Godot). Simulationssysteme brauchen eine feste `Id` (Zuordnung im Spielstand).
 
 ## Bekannte Abweichungen (Stand jetzt)
 
-- `scenes/ui/Map.tscn` ist eine leere 3D-Szene, das Spiel ist 2D (T-014).
+- `scenes/ui/Map.tscn` ist eine leere 3D-Szene, das Spiel ist 2D; wird durch die Ortsansicht ersetzt (T-095).
